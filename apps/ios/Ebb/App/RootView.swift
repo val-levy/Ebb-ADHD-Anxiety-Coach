@@ -13,7 +13,7 @@ struct RootView: View {
     var body: some View {
         TabView(selection: $tab) {
             HomeView(mode: $calmMode).tabItem { Label("Calm", systemImage: "leaf") }.tag(AppPage.Tab.calm)
-            ReflectView().tabItem { Label("Reflect", systemImage: "message") }.tag(AppPage.Tab.reflect)
+            ReflectView().tabItem { Label("Reflect", image: "ReflectBubble") }.tag(AppPage.Tab.reflect)
             ProfileView().tabItem { Label("Profile", systemImage: "person.crop.circle") }.tag(AppPage.Tab.profile)
         }
         // Swipe sideways anywhere to move along Quick ⇄ Guided ⇄ Reflect ⇄ Profile.
