@@ -1,6 +1,6 @@
 # Ebb: instructions for every agent
 
-Ebb is an iPhone app for adults with ADHD and anxiety. You tap when you're spiraling, do a reset of 90 seconds or less (paced breathing, physiological sigh, grounding, body break), rate it with one tap, and see which resets helped this week. The full product vision is in `.claude/docs/product-spec.md`. Read it before any product or design work.
+Ebb is an iPhone app for adults with ADHD and anxiety. You tap when you're spiraling, do a reset of 90 seconds or less (paced breathing, physiological sigh, grounding, body break), rate it with one tap, and see which resets helped this week. The full product vision is in `.claude/docs/product-spec.md`. Read it before any product or design work. Where each part stands and what to build next is in `.claude/docs/roadmap.md` (master) and its per-segment docs; update them when a segment changes status.
 
 ## Keeping this file current (standing instruction)
 When the user gives an instruction meant to last (a rule, preference, convention, decision or process), **add it to this file in the right section in the same turn**, so every future agent follows it. One-off task requests don't belong here; they go in that item's progress.md.
