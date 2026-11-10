@@ -8,6 +8,7 @@ struct HomeView: View {
     @Binding var mode: CalmMode
     @State private var shown: CalmMode = .quick
     @State private var slideFrom: Edge = .trailing
+    @Environment(\.calmModeArea) private var modeArea
 
     private let columns = [GridItem(.flexible(), spacing: 14), GridItem(.flexible(), spacing: 14)]
 
@@ -36,6 +37,7 @@ struct HomeView: View {
                         }
                     }
                 }
+                .onGeometryChange(for: CGRect.self) { $0.frame(in: .global) } action: { modeArea.wrappedValue = $0 }
                 .mascotTip(.swipe)   // spotlight the cards you swipe across
                 .id(shown)   // fresh pop-in when switching modes
                 .transition(.asymmetric(insertion: .move(edge: slideFrom),
