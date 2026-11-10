@@ -1,0 +1,9 @@
+.DS_Store
+apps/ios/Config.xcconfig
+apps/ios/*.xcodeproj
+xcuserdata/
+DerivedData/
+supabase/.branches
+supabase/.temp
+.env
+.DS_Store
