@@ -11,7 +11,6 @@ struct SceneScreen<Content: View>: View {
     @AppStorage("seenTips") private var seen: [String] = []
     /// When this screen was last left. Away longer than a quick mis-swipe → back to the top on return.
     @State private var leftAt: Date?
-    @Environment(\.isActivePage) private var isActive
 
     var body: some View {
         ScrollViewReader { reader in
@@ -60,8 +59,8 @@ struct SceneScreen<Content: View>: View {
                     .padding(.top, -40)
             }
         }
-        .onChange(of: isActive) { _, active in
-            guard active else { leftAt = .now; return }
+        .onDisappear { leftAt = .now }
+        .onAppear {
             if let leftAt, Date.now.timeIntervalSince(leftAt) > 0.8 { reader.scrollTo("top", anchor: .top) }
             leftAt = nil
         }
@@ -70,7 +69,7 @@ struct SceneScreen<Content: View>: View {
         .ignoresSafeArea(edges: .top)
         .background { VStack(spacing: 0) { Theme.skyTop; Theme.canvas } .ignoresSafeArea() }
         .overlayPreferenceValue(TipSpotKey.self) { spot in
-            if let spot, isActive {
+            if let spot {
                 GeometryReader { geo in
                     TipCoach(tip: spot.tip, spot: geo[spot.bounds], screen: geo.size)
                 }
