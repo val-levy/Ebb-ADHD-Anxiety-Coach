@@ -8,6 +8,7 @@ struct RootView: View {
     @State private var swipeLocks = 0
     /// Decided on a drag's first movement: sideways drags freeze vertical scrolling until the finger lifts.
     @State private var draggingSideways: Bool?
+    @State private var calmModeArea = CGRect.zero
 
     var body: some View {
         TabView(selection: $tab) {
@@ -17,7 +18,7 @@ struct RootView: View {
         }
         // Swipe sideways anywhere to move along Quick ⇄ Guided ⇄ Reflect ⇄ Profile.
         // Only clearly horizontal swipes count, so vertical scrolling and taps are untouched.
-        .simultaneousGesture(DragGesture(minimumDistance: 12).onChanged { g in
+        .simultaneousGesture(DragGesture(minimumDistance: 12, coordinateSpace: .global).onChanged { g in
             guard draggingSideways == nil, swipeLocks == 0 else { return }
             draggingSideways = abs(g.translation.width) > abs(g.translation.height)
         }.onEnded { g in
@@ -25,12 +26,15 @@ struct RootView: View {
             guard swipeLocks == 0, draggingSideways == true else { return }
             let dx = g.translation.width
             guard abs(dx) > 60, abs(dx) > abs(g.translation.height) * 1.5 else { return }
-            let next = AppPage(tab: tab, calmMode: calmMode).swiped(dx: dx)
-            if next.tab == .calm { calmMode = next == .calmQuick ? .quick : .guided }
+            let here = AppPage(tab: tab, calmMode: calmMode)
+            let onGrid = tab == .calm && calmModeArea.contains(g.startLocation)
+            let next = onGrid ? here.swiped(dx: dx) : here.swipedTab(dx: dx)
+            if onGrid { calmMode = next == .calmQuick ? .quick : .guided }
             withAnimation(.snappy) { tab = next.tab }
         })
         .scrollDisabled(draggingSideways == true)
         .environment(\.tabSwipeLocks, $swipeLocks)
+        .environment(\.calmModeArea, $calmModeArea)
         .sensoryFeedback(.selection, trigger: tab)
         .tint(Theme.accent)
         .buttonStyle(SquishyButtonStyle())
