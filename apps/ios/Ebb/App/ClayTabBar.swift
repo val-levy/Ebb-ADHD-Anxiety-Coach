@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Bottom bar for the sliding pager: tap a tab to slide to it.
+/// Bottom bar for the sliding pager, drawn to match the system tab bar (system font, sizes, material, hairline).
 struct ClayTabBar: View {
     @Binding var tab: AppPage.Tab
 
@@ -9,20 +9,25 @@ struct ClayTabBar: View {
     ]
 
     var body: some View {
-        HStack {
+        HStack(spacing: 0) {
             ForEach(items, id: \.0) { item, title, symbol in
-                Button { tab = item } label: {
-                    VStack(spacing: 3) {
-                        Image(systemName: symbol).font(ClayFont.title3)
-                        Text(title).font(ClayFont.caption)
-                    }
-                    .frame(maxWidth: .infinity)
-                    .foregroundStyle(tab == item ? Theme.accent : .secondary)
+                VStack(spacing: 2) {
+                    Image(systemName: tab == item ? symbol + ".fill" : symbol)
+                        .font(.system(size: 22))
+                        .frame(height: 28)
+                    Text(title).font(.system(size: 10, weight: .medium))
                 }
-                .accessibilityAddTraits(tab == item ? .isSelected : [])
+                .frame(maxWidth: .infinity)
+                .foregroundStyle(tab == item ? Theme.accent : Color(.systemGray))
+                .contentShape(Rectangle())
+                .onTapGesture { tab = item }   // native tab items don't squish
+                .accessibilityElement(children: .combine)
+                .accessibilityAddTraits(tab == item ? [.isButton, .isSelected] : .isButton)
             }
         }
-        .padding(.top, 10)
+        .padding(.top, 7)
+        .padding(.bottom, 2)
         .background(.bar)
+        .overlay(alignment: .top) { Divider() }
     }
 }
