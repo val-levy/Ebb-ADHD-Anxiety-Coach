@@ -23,6 +23,14 @@ enum AppPage: Int, CaseIterable {
         }
     }
 
+    /// Swipe outside the Quick/Guided grid: skip the Calm modes and move a whole tab. Landing on Calm keeps its mode.
+    func swipedTab(dx: CGFloat) -> AppPage {
+        let tabs: [Tab] = [.calm, .reflect, .profile]
+        let i = tabs.firstIndex(of: tab)! + (dx < 0 ? 1 : -1)
+        guard tabs.indices.contains(i) else { return self }
+        return AppPage(tab: tabs[i], calmMode: .quick)   // the caller keeps Calm's current mode
+    }
+
     /// Swipe left (dx < 0) goes to the next stop; swipe right goes back. Stays put at either end.
     func swiped(dx: CGFloat) -> AppPage {
         AppPage(rawValue: rawValue + (dx < 0 ? 1 : -1)) ?? self
