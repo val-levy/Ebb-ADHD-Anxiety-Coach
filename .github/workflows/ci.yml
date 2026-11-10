@@ -1,0 +1,20 @@
+name: ci
+on: [push, pull_request]
+jobs:
+  db:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: supabase/setup-cli@v1
+      - run: supabase start -x studio,imgproxy,inbucket,edge-runtime,logflare,vector
+      - run: supabase/tests/rls.sh http://127.0.0.1:54421 "$(supabase status -o json | jq -r .ANON_KEY)"
+  ios:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - run: brew install xcodegen
+      - working-directory: apps/ios
+        run: |
+          cp Config.example.xcconfig Config.xcconfig
+          xcodegen generate
+          xcodebuild -project Ebb.xcodeproj -scheme Ebb -destination 'generic/platform=iOS Simulator' build CODE_SIGNING_ALLOWED=NO
