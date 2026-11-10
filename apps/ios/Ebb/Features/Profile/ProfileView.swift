@@ -5,6 +5,7 @@ struct ProfileView: View {
     @EnvironmentObject private var resets: ResetStore
     @EnvironmentObject private var calm: CalmStore
     @State private var showingSettings = false
+    @Environment(\.isActivePage) private var isActive
 
     private var achievements: [Achievement] {
         Achievement.all(resets: resets.week.count, sessions: calm.history.count, helped: resets.helpedCount)
@@ -38,6 +39,6 @@ struct ProfileView: View {
             .navigationDestination(isPresented: $showingSettings) { SettingsView() }
         }
         // Leaving the tab closes Settings, so coming back always lands on Profile.
-        .onDisappear { showingSettings = false }
+        .onChange(of: isActive) { _, active in if !active { showingSettings = false } }
     }
 }
