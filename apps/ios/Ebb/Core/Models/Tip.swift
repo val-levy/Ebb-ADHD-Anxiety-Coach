@@ -1,0 +1,42 @@
+import Foundation
+
+/// The mascot's first-time tips. Each screen shows its own tips one at a time, in declaration order.
+enum Tip: String, CaseIterable {
+    case panic, modePicker, swipe, brainDump, helped, patterns, avatar, friends, achievements
+
+    enum Screen { case calm, reflect, profile }
+
+    var screen: Screen {
+        switch self {
+        case .panic, .modePicker, .swipe: .calm
+        case .brainDump, .helped, .patterns: .reflect
+        case .avatar, .friends, .achievements: .profile
+        }
+    }
+
+    var text: String {
+        switch self {
+        case .panic: "Panicking? Tap here anytime and I'll walk you through it."
+        case .modePicker: "Quick resets take 90 seconds. Guided sessions go deeper."
+        case .swipe: "Psst: swipe sideways anywhere to hop between screens."
+        case .brainDump: "Head too full? Dump it all here and get one small next step."
+        case .helped: "This shows what's been helping you most."
+        case .patterns: "Over time I'll spot when things get hard for you."
+        case .avatar: "Tap me to pick a different animal. I'll change too!"
+        case .friends: "Invite friends so you can breathe together."
+        case .achievements: "Little wins show up here as you go."
+        }
+    }
+
+    /// The one tip to show on `screen` right now: its first unseen tip, or none.
+    static func current(on screen: Screen, seen: [String]) -> Tip? {
+        allCases.first { $0.screen == screen && !seen.contains($0.rawValue) }
+    }
+
+    static func selfCheck() {
+        assert(current(on: .calm, seen: []) == .panic)
+        assert(current(on: .calm, seen: ["panic"]) == .modePicker)
+        assert(current(on: .reflect, seen: ["panic"]) == .brainDump)
+        assert(current(on: .calm, seen: ["panic", "modePicker", "swipe"]) == nil)
+    }
+}
