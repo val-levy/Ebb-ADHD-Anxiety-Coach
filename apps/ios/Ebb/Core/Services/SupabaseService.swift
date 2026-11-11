@@ -31,6 +31,8 @@ final class SupabaseService {
             .gte("created_at", value: date).execute().value
     }
 
+    var currentUserId: UUID? { client.auth.currentUser?.id }
+
     /// nil when the user has no note yet (or is anonymous: RLS returns nothing).
     func note() async throws -> Note? {
         let rows: [Note] = try await client.from("notes").select("body,updated_at").limit(1).execute().value

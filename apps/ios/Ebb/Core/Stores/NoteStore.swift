@@ -16,7 +16,12 @@ final class NoteStore: ObservableObject {
     }
 
     /// Pulls the server copy; if there is none yet, the local text gets uploaded.
+    /// Local text belongs to whoever wrote it: if the signed-in user changed, drop it instead of showing or uploading it.
     func load() async {
+        let me = service.currentUserId?.uuidString
+        let owner = UserDefaults.standard.string(forKey: "dumpOwner")
+        if let owner, owner != me { saveTask?.cancel(); loading = true; text = ""; loading = false }
+        if let me { UserDefaults.standard.set(me, forKey: "dumpOwner") }
         guard let note = try? await service.note() else { return scheduleSave() }
         loading = true; text = note.body; loading = false
     }

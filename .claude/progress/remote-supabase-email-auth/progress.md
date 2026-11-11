@@ -13,6 +13,8 @@ App points at the remote Supabase project `ebb` (ref bmhzzwzbpakjuybthjis, user'
 - [ ] Phone-number sign-in: dropped by user (most will use Apple)
 - [ ] Custom SMTP: Supabase free tier + default email can't customise templates and rate-limits reset emails
 
+- [ ] Before real users: enable email confirmations + custom SMTP (reviewer flagged unverified-email pre-hijacking)
+
 ## Background knowledge
 - Anonymous→email upgrade uses auth.update(user:) then MUST refreshSession(): the old JWT keeps is_anonymous=true and profiles insert RLS returns 403 (verified with curl).
 - Email confirmations off (config.toml, pushed with `supabase config push`).
@@ -27,6 +29,9 @@ App points at the remote Supabase project `ebb` (ref bmhzzwzbpakjuybthjis, user'
 - files: Core/Services/AuthService.swift, Core/Services/SupabaseService.swift, Core/Stores/{SessionStore,NoteStore}.swift, Core/Models/Note.swift, Features/Auth/{SignInSheet,EmailSignInFields}.swift, Features/Reflect/BrainDumpCard.swift, supabase/migrations/20261110000500_notes.sql, apps/ios/Config.xcconfig (gitignored)
 
 ## Session log
+### 2026-11-11 15:29 PST
+- Security review follow-up: local brain dump is now tagged with its owner (UserDefaults "dumpOwner"); NoteStore.load() clears it and cancels a pending save when the signed-in user changes, and runs on every profile change. Not tested with two real accounts on a device.
+- Accepted risk, not changed: email confirmations are OFF (user wanted a 10-minute prototype, no SMTP), so an email can be claimed without verifying it. Turn on enable_confirmations (and custom SMTP) before real users.
 ### 2026-11-11 15:26 PST
 - Added forgot password (link flow), chat_messages table, DEVELOPMENT_TEAM in Config.xcconfig. Builds clean; simulator updated; phone not installed (unavailable). Reset email request returns 200 but the full link round trip was not tested (needs a real inbox on the phone).
 ### 2026-11-10 23:46 PST

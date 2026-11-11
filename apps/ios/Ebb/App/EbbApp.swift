@@ -20,6 +20,7 @@ struct EbbApp: App {
                 .environmentObject(notes)
                 .font(ClayFont.body)   // handwritten clay type by default; styled text uses ClayFont.*
                 .task { await session.start(); await store.load(); await notes.load() }
+                .onChange(of: session.profile?.id) { Task { await notes.load() } }  // sign in / out / delete swaps the note
                 #if DEBUG
                 .onAppear { Tip.selfCheck(); PanicGate.selfCheck(); Username.selfCheck() }
                 #endif
