@@ -18,7 +18,7 @@ struct PanicBlockedView: View {
             }
             Text("Sign in to keep using panic help in Ebb.").font(ClayFont.subheadline).padding(.top, 8)
             Button {
-                session.queuedSheet = .signIn(reason: "Sign in to keep using panic help anytime")
+                session.queuedSheet = session.authSheet(reason: "Sign in to keep using panic help anytime")
                 dismiss()
             } label: {
                 Text("Sign in").font(ClayFont.headline).foregroundStyle(.white)

@@ -51,6 +51,6 @@ final class AuthService {
 
     func deleteAccount() async throws {
         try await client.functions.invoke("delete-account")
-        try await signOut()
+        try? await signOut()  // the account is gone; a failed re-anon sign-in retries at next launch
     }
 }

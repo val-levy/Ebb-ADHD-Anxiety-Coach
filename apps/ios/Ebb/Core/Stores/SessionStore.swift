@@ -38,9 +38,7 @@ final class SessionStore: ObservableObject {
         do {
             try await auth.ensureSignedIn()
             profile = try await auth.fetchProfile()
-        } catch {
-            profile = nil
-        }
+        } catch {}  // keep whatever we had; offline must not look like signed out
         #if DEBUG  // screenshots: -authSheet signIn|setup
         switch UserDefaults.standard.string(forKey: "authSheet") {
         case "signIn": sheet = .signIn(reason: "Save your progress and keep what helps you")
@@ -51,7 +49,12 @@ final class SessionStore: ObservableObject {
         #endif
     }
 
-    func panicGate() -> PanicGate { .decide(usesSoFar: panicUses.value, signedIn: isSignedIn) }
+    /// Apple-linked (local session, works offline) means panic is always free, profile or not.
+    private var hasAccount: Bool { !auth.isAnonymous }
+    func panicGate() -> PanicGate { .decide(usesSoFar: panicUses.value, signedIn: hasAccount) }
+
+    /// Sign-in for anonymous users; setup if Apple is linked but there's no profile yet.
+    func authSheet(reason: String) -> AuthSheet { auth.isAnonymous ? .signIn(reason: reason) : .setup }
 
     /// Runs the panic ladder for a tap on "I'm panicking". `start` actually opens the session.
     func panicTapped(start: @escaping () -> Void) {
@@ -61,7 +64,7 @@ final class SessionStore: ObservableObject {
         case .promptAfter: promptAfterPanic = true; begin()
         case .promptBeforeSkippable:
             skipAction = { [weak self] in self?.sheet = nil; self?.skipAction = nil; begin() }
-            sheet = .signIn(reason: "Sign in to keep using panic help anytime")
+            sheet = authSheet(reason: "Sign in to keep using panic help anytime")
         case .blocked: panicBlocked = true
         }
     }
@@ -69,15 +72,15 @@ final class SessionStore: ObservableObject {
     func panicSessionEnded() {
         guard promptAfterPanic else { return }
         promptAfterPanic = false
-        if !isSignedIn { sheet = .signIn(reason: "Glad you got through it. Sign in to keep panic help ready next time") }
+        if !isSignedIn { sheet = authSheet(reason: "Glad you got through it. Sign in to keep panic help ready next time") }
     }
 
-    func recordPanicStart() { if !isSignedIn { panicUses.increment() } }
+    func recordPanicStart() { if !hasAccount { panicUses.increment() } }
 
     /// True when signed in; otherwise opens sign-in (or setup if Apple is linked but no profile yet).
     func requireSignIn(reason: String) -> Bool {
         if isSignedIn { return true }
-        sheet = auth.isAnonymous ? .signIn(reason: reason) : .setup
+        sheet = authSheet(reason: reason)
         return false
     }
 
@@ -117,5 +120,5 @@ final class SessionStore: ObservableObject {
         do { try await auth.deleteAccount(); profile = nil; return true } catch { return false }
     }
 
-    func refreshProfile() async { profile = try? await auth.fetchProfile() }
+    func refreshProfile() async { if let p = try? await auth.fetchProfile() { profile = p } }
 }
