@@ -2,3 +2,6 @@
 // Local: run `supabase start`, then paste the anon key it prints.
 SUPABASE_URL = http:/$()/127.0.0.1:54421
 SUPABASE_ANON_KEY = paste-anon-key-here
+
+// Sign in with Apple entitlement. Leave empty on a free team; set to Ebb/Ebb.entitlements on a paid account.
+EBB_ENTITLEMENTS =

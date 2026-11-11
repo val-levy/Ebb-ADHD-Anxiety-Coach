@@ -26,3 +26,5 @@ targets:
     settings:
       CODE_SIGN_STYLE: Automatic
       ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+      # Empty on the free team. Paid account: set EBB_ENTITLEMENTS = Ebb/Ebb.entitlements in Config.xcconfig.
+      CODE_SIGN_ENTITLEMENTS: $(EBB_ENTITLEMENTS)

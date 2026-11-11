@@ -6,7 +6,7 @@ and what to build next. Each segment has its own doc.
 | Segment | Status | Doc |
 |---|---|---|
 | Built so far | iPhone app, resets, sessions, settings UI, mascot | [built-so-far.md](built-so-far.md) |
-| Accounts (Sign in with Apple) | planned, waiting on review | [plan](../../docs/superpowers/plans/2026-11-10-accounts.md) · [spec](../../docs/superpowers/specs/2026-11-10-accounts-design.md) |
+| Accounts (Sign in with Apple) | built on `feat/accounts`; on-device Apple sign-in waits for paid account | [plan](../../docs/superpowers/plans/2026-11-10-accounts.md) · [spec](../../docs/superpowers/specs/2026-11-10-accounts-design.md) |
 | Phase 0: personal prototype | not started | [phase-0-prototype.md](phase-0-prototype.md) |
 | Phase 1: MVP | iPhone screens done; Watch, detection, real nudges missing | [phase-1-mvp.md](phase-1-mvp.md) |
 | Phase 2: personalization | not started | [phase-2-personalization.md](phase-2-personalization.md) |

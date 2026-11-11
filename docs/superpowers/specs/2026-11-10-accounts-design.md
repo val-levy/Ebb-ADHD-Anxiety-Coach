@@ -1,5 +1,7 @@
 # Ebb accounts — design
 
+**Status:** approved and built (branch `feat/accounts`); Sign in with Apple untestable on device until the paid Apple account.
+
 Date: 2026-11-10 · Status: draft for approval · Project 1 of 4 on the road to production
 (accounts → hosted backend → friends → App Store).
 
