@@ -2,7 +2,7 @@ import SwiftUI
 
 /// Brain dump: type (or dictate) everything spinning around, then get one small next step.
 struct BrainDumpCard: View {
-    @EnvironmentObject private var notes: NoteStore
+    @EnvironmentObject private var dumps: BrainDumpStore
     @State private var nextStep: String?
 
     var body: some View {
@@ -14,23 +14,27 @@ struct BrainDumpCard: View {
                     Text("Tap the mic on the keyboard to dictate.").font(ClayFont.footnote).foregroundStyle(.secondary)
                 }
             }
-            TextEditor(text: $notes.text)
+            TextEditor(text: $dumps.draft)
                 .scrollContentBackground(.hidden)
                 .frame(minHeight: 140)
                 .padding(10)
                 .background(Theme.tile, in: .rect(cornerRadius: Theme.tileRadius, style: .continuous))
                 .overlay(alignment: .topLeading) {
-                    if notes.text.isEmpty {
+                    if dumps.draft.isEmpty {
                         Text("Everything that's spinning around…").foregroundStyle(.tertiary).padding(18).allowsHitTesting(false)
                     }
                 }
-            Button { withAnimation(.spring) { nextStep = NextStepSuggester.suggest(from: notes.text) } } label: {
+            Button { withAnimation(.spring) { nextStep = NextStepSuggester.suggest(from: dumps.draft) } } label: {
                 Label("Give me one small step", systemImage: "sparkles")
                     .font(ClayFont.headline).foregroundStyle(.white)
                     .frame(maxWidth: .infinity).padding(.vertical, 14)
                     .overlay { GrainOverlay().clipShape(.rect(cornerRadius: 22, style: .continuous)) }
                     .clay(Theme.clayTeal, radius: 22)
             }
+            Button("Save for later") { Task { await dumps.saveDraft() } }
+                .font(ClayFont.subheadline).foregroundStyle(.secondary)
+                .disabled(dumps.draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                .frame(maxWidth: .infinity)
             if let nextStep {
                 Text(nextStep).font(ClayFont.headline)
                     .frame(maxWidth: .infinity, alignment: .leading)

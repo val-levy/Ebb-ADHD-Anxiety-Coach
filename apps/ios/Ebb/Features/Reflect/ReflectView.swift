@@ -9,8 +9,11 @@ struct ReflectView: View {
             SceneScreen(title: "Reflect", tips: .reflect, mascotAt: 0.78) {
                 BrainDumpCard().lockedUntilSignIn("Sign in to save brain dumps").mascotTip(.brainDump).floating().popIn(0)
 
+                SectionLabel("Past brain dumps")
+                BrainDumpHistoryCard().lockedUntilSignIn("Sign in to save brain dumps").mascotTip(.pastDumps).popIn(1)
+
                 SectionLabel("What helped this week")
-                HelpedCard().mascotTip(.helped).popIn(1)
+                HelpedCard().mascotTip(.helped).popIn(2)
 
                 SectionLabel("Patterns")
                 if store.weeklyInsights.isEmpty {
@@ -20,11 +23,11 @@ struct ReflectView: View {
                         .padding()
                         .clay()
                         .mascotTip(.patterns)
-                        .popIn(2)
+                        .popIn(3)
                 } else {
                     ForEach(Array(store.weeklyInsights.enumerated()), id: \.element.id) { index, insight in
                         PatternRow(symbol: insight.symbol, text: insight.text)
-                            .popIn(index + 2)
+                            .popIn(index + 3)
                     }
                     .mascotTip(.patterns)
                 }

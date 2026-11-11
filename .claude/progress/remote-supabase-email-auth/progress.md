@@ -29,6 +29,8 @@ App points at the remote Supabase project `ebb` (ref bmhzzwzbpakjuybthjis, user'
 - files: Core/Services/AuthService.swift, Core/Services/SupabaseService.swift, Core/Stores/{SessionStore,NoteStore}.swift, Core/Models/Note.swift, Features/Auth/{SignInSheet,EmailSignInFields}.swift, Features/Reflect/BrainDumpCard.swift, supabase/migrations/20261110000500_notes.sql, apps/ios/Config.xcconfig (gitignored)
 
 ## Session log
+### 2026-11-11 15:36 PST
+- Brain dump history: migration 0700 renames notes -> brain_dumps (many rows per user, id pk, created_at). NoteStore -> BrainDumpStore (local draft + saved dumps; draft clears only after a successful save). New "Save for later" button, "Past brain dumps" card (BrainDumpHistoryCard + BrainDumpRow: 2-line preview, tap to expand, trash to delete), new Tip .pastDumps. Verified on remote with curl: owner-only read, forged insert 403, other user's delete removes nothing. Simulator + phone built; phone launch refused (locked), UI not yet seen by agent or user.
 ### 2026-11-11 15:29 PST
 - Security review follow-up: local brain dump is now tagged with its owner (UserDefaults "dumpOwner"); NoteStore.load() clears it and cancels a pending save when the signed-in user changes, and runs on every profile change. Not tested with two real accounts on a device.
 - Accepted risk, not changed: email confirmations are OFF (user wanted a 10-minute prototype, no SMTP), so an email can be claimed without verifying it. Turn on enable_confirmations (and custom SMTP) before real users.

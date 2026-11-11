@@ -33,15 +33,17 @@ final class SupabaseService {
 
     var currentUserId: UUID? { client.auth.currentUser?.id }
 
-    /// nil when the user has no note yet (or is anonymous: RLS returns nothing).
-    func note() async throws -> Note? {
-        let rows: [Note] = try await client.from("notes").select("body,updated_at").limit(1).execute().value
-        return rows.first
+    func brainDumps(limit: Int = 50) async throws -> [BrainDump] {
+        try await client.from("brain_dumps").select("id,body,created_at")
+            .order("created_at", ascending: false).limit(limit).execute().value
     }
 
-    func save(_ note: Note) async throws {
-        guard client.auth.currentUser?.isAnonymous == false else { return }
-        try await client.from("notes").upsert(note, onConflict: "user_id").execute()
+    func insert(_ dump: BrainDump) async throws {
+        try await client.from("brain_dumps").insert(dump).execute()
+    }
+
+    func deleteBrainDump(id: UUID) async throws {
+        try await client.from("brain_dumps").delete().eq("id", value: id).execute()
     }
 
     func insert(_ entry: ResetEntry) async throws {
