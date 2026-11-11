@@ -1,4 +1,7 @@
-# Ebb: On-Device ADHD & Anxiety Companion
+# Ebb: a calm companion for busy minds
+
+> **Wording (2026-11-10):** all copy follows [wording-and-safety.md](wording-and-safety.md). Ebb is built with
+> ADHD brains in mind but never claims to detect, treat or manage a condition.
 
 Nov 4, 2026 · @Val
 
@@ -6,7 +9,7 @@ Nov 4, 2026 · @Val
 
 Ebb is an Apple Watch and iPhone companion that notices rising stress from your body's signals and offers a 60-second reset on your wrist, within about a minute. Everything runs on the device: no server, no account, no data leaves the phone.
 
-- **For:** adults with ADHD and co-occurring anxiety who already wear an Apple Watch and forget to open calming apps when it matters.
+- **For:** adults with busy, easily overloaded minds (built with ADHD in mind) who already wear an Apple Watch and forget to open calming apps when it matters.
 - **How:** heart rate that rises while the body is still is treated as a stress signal. A small personal model decides whether to nudge, and the user's one-tap feedback retrains it nightly.
 - **Why local:** moment-to-moment mental-health data is the most sensitive data a person has, and a nudge only helps in the moment.
 - **Biggest risk:** Apple Watch does not give third-party apps continuous, fast heart rate all day. Ebb works around this with guard windows, an on-demand tap, and an optional Bluetooth sensor (see Setbacks).
@@ -70,14 +73,14 @@ The main signal is heart rate that rises while the body stays still. If heart ra
 
 **Detection window:** a stress response builds over 30–90 seconds, and it takes about that long to rule out standing up or laughing. Ebb judges rolling 60-second windows, so nudges land within about a minute. Second-by-second reaction would mostly produce false alarms.
 
-**States Ebb looks for:**
+**Signals Ebb looks for** (described as signals, never as conditions; see [wording-and-safety.md](wording-and-safety.md) §4):
 
-| State | Signal pattern | Likely meaning |
+| Signal | Pattern | What Ebb offers |
 | --- | --- | --- |
-| Anxiety spike | HR well above rolling resting baseline, low motion, sustained 60+ s | Acute stress or panic building |
-| Agitation | Repetitive small wrist movements, HR mildly elevated | ADHD restlessness or rising frustration |
-| Hyperfocus | Near-zero movement for 2+ hours, no breaks | A crash, missed meals, or dysregulation is coming |
-| Low-threshold day | Short sleep or low overnight HRV | Same trigger hits harder today, so Ebb nudges earlier |
+| Stress signal | HR well above rolling resting baseline, low motion, sustained 60+ s | A breathing reset |
+| Restless signal | Repetitive small wrist movements, HR mildly elevated | A grounding or body reset |
+| Long stretch still | Near-zero movement for 2+ hours, no breaks | A body break |
+| Low-threshold day | Short sleep or low overnight HRV | Nudges a little earlier today |
 
 **Three ways a reset gets triggered:**
 
@@ -89,16 +92,16 @@ The main signal is heart rate that rises while the body stays still. If heart ra
 
 ## Interventions
 
-Every reset is one tap to start and takes under 90 seconds. Anxiety and ADHD overload need different help, so Ebb picks from two families based on the detected state.
+Every reset is one tap to start and takes under 90 seconds. A stress signal and feeling overloaded need different help, so Ebb picks from two families based on the signal.
 
 | Reset | For | Length | Where it runs | What happens |
 | --- | --- | --- | --- | --- |
-| Haptic paced breathing | Anxiety spike | 60 s | Watch | Taps guide a long exhale. Eyes-free, works in meetings. |
-| Physiological sigh | Anxiety spike | 30 s | Watch | Two inhales, one long exhale, repeated 3 times. |
-| Grounding prompt | Anxiety spike | 45 s | Watch | One screen: "Name 3 things you can see." |
-| Body break | Hyperfocus | 90 s | Watch | "Stand up, drink water." Interrupts hyperfocus before the crash. |
-| One next thing | ADHD overload | \~60 s | iPhone | Say what's overwhelming; an on-device language model returns one 5-minute starting step. |
-| Brain dump | ADHD overload | \~60 s | iPhone or Watch dictation | Dictate everything spinning; Ebb files it so you don't have to hold it. |
+| Haptic paced breathing | Stress signal | 60 s | Watch | Taps guide a long exhale. Eyes-free, works in meetings. |
+| Physiological sigh | Stress signal | 30 s | Watch | Two inhales, one long exhale, repeated 3 times. |
+| Grounding prompt | Stress signal | 45 s | Watch | One screen: "Name 3 things you can see." |
+| Body break | Long stretch still | 90 s | Watch | "Stand up, drink water." Interrupts hyperfocus before the crash. |
+| One next thing | Overload | \~60 s | iPhone | Say what's overwhelming; an on-device language model returns one 5-minute starting step. |
+| Brain dump | Overload | \~60 s | iPhone or Watch dictation | Dictate everything spinning; Ebb files it so you don't have to hold it. |
 
 After each reset, one tap: **helped**, **didn't help**, or **false alarm**. Over time Ebb learns which reset works for which state, time of day, and place, and offers that one first.
 
@@ -106,13 +109,13 @@ After each reset, one tap: **helped**, **didn't help**, or **false alarm**. Over
 
 For this audience, how Ebb speaks and how often it interrupts matter more than how accurate the model is.
 
-1. **Never say "your heart rate is high."** For an anxious person that sentence is a trigger and invites compulsive checking. Ebb offers instead: "Want a quick reset?" Raw numbers stay out of the live experience.
+1. **Describe the signal, offer an action.** Alerts name the signal, never a condition, and always open a reset: "Your heart rate's up while you're sitting still. Breather?" Never "panic attack detected" or a raw number. No warning-only alerts. Settings calls it "Stress signals". Full rules: [wording-and-safety.md](wording-and-safety.md) §4.
 2. **False alarms cost more than misses.** ADHD users mute apps that cry wolf within days. Start conservative and cap nudges at 3 a day by default.
 3. **One tap, under 90 seconds, on the wrist.** If a reset needs the phone or reading, it won't get used in the moment.
 4. **Fight novelty decay.** ADHD brains tune out repeated stimuli. Rotate haptic patterns and wording automatically.
 5. **No streaks, no guilt.** Show "resets that helped this week," never a broken streak.
 6. **The user is always in control.** Snooze for an hour, pause for the day, or turn off guard windows with one tap.
-7. **A safety valve, not a clinic.** Ebb is a wellness tool, not a medical device. If the user signals a crisis, it surfaces a trusted contact or a crisis line such as 988 in the US.
+7. **A safety valve, not a clinic.** "Ebb is a wellness tool, not medical advice. It doesn't diagnose or treat any condition." If the user signals a crisis, it surfaces a trusted contact or a crisis line such as 988 in the US.
 
 ## Technical architecture
 
@@ -156,7 +159,7 @@ The hardest setback is platform access: Apple Watch won't give Ebb fast heart ra
 | Setback | Why it hurts | Workaround |
 | --- | --- | --- |
 | App Store review of workout sessions | Running a "workout" when the user isn't exercising may be rejected | Use a session type that fits (mindfulness or "other"), explain the use plainly in review notes, and have a fallback build without long sessions |
-| Medical device regulation | Claiming to detect or treat anxiety or panic can make the app a regulated medical device | Use wellness language ("stress," "reset," "calm"), avoid diagnosis or treatment claims, and get a short regulatory review before launch |
+| Medical device regulation | Claiming to detect or treat anxiety or panic can make the app a regulated medical device | Follow [wording-and-safety.md](wording-and-safety.md) (FDA General Wellness guidance, App Store 1.4.1) and have a lawyer review it and the listing before launch |
 | Health data rules | Even local apps fall under App Store health-data rules and some state privacy laws | No servers, no analytics on health data, a clear privacy label, and opt-in iCloud backup only |
 | Crisis situations | Some users will be in real danger | Clear crisis path in the app, honest copy that Ebb isn't emergency care |
 | Small reachable market | Requires Apple Watch plus ADHD/anxiety | Start there for focus; later add Bluetooth bands and Wear OS once the core works |
