@@ -8,7 +8,7 @@ struct BrainDumpCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             HStack(spacing: 12) {
-                ClayIconTile(symbol: "tray.and.arrow.down.fill")
+                ClayIconTile(symbol: "cloud.fill")
                 VStack(alignment: .leading) {
                     Text("Unload your head").font(ClayFont.headline)
                     Text("Tap the mic on the keyboard to dictate.").font(ClayFont.footnote).foregroundStyle(.secondary)

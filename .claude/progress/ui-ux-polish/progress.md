@@ -22,6 +22,8 @@ A cohesive refinement pass across Ebb’s primary iPhone flows, improving visual
 - references: `.claude/resources/references/design-references/clay/README.md`
 
 ## Session log
+### 2026-11-11 15:45 PST
+- BrainDumpCard header icon: tray.and.arrow.down.fill → cloud.fill (softer, comfier). Built sim + phone, installed on phone; launch refused (phone locked), not visually checked.
 ### 2026-11-10 23:48 PST
 - Settings "everything is a bubble" fix: Account/Crisis/Schedule used Section outside a List, so .padding().clay() applied to every child (titles, rows, footers each got a raised bubble). Converted all three to SettingsCard (one card per section). Swipe-to-delete never worked outside List; schedule rows now have a long-press Remove. Built + installed on iPhone and simulator; not visually checked by agent (Settings not screenshotted).
 ### 2026-11-10 19:05 PST → 2026-11-10 19:07 PST
