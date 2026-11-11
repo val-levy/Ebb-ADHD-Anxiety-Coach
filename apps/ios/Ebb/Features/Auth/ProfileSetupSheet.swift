@@ -31,7 +31,11 @@ struct ProfileSetupSheet: View {
             }
             .padding(24)
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .clayCanvas()
         .interactiveDismissDisabled(model.isSaving)
+        .presentationDetents([.fraction(0.78)])
+        .presentationDragIndicator(.visible)
         .sheet(isPresented: $picking) { AvatarPicker(selection: $model.animal) }
     }
 

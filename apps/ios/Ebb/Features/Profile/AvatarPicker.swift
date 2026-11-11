@@ -7,6 +7,7 @@ struct AvatarPicker: View {
 
     var body: some View {
         VStack(spacing: 20) {
+            Spacer(minLength: 12)
             Text("Pick your animal").font(ClayFont.title2.bold())
             LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 3), spacing: 18) {
                 ForEach(AvatarAnimal.allCases) { a in
@@ -19,9 +20,13 @@ struct AvatarPicker: View {
                     }
                 }
             }
+            Spacer(minLength: 12)
         }
         .padding(24)
-        .presentationDetents([.medium])
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .clayCanvas()
+        .presentationDetents([.fraction(0.72)])
+        .presentationDragIndicator(.visible)
         .sensoryFeedback(.selection, trigger: selection)
     }
 }

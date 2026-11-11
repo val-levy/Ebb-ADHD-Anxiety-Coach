@@ -42,7 +42,9 @@ struct RootView: View {
         .tint(Theme.accent)
         .buttonStyle(SquishyButtonStyle())
         .sheet(isPresented: $nudges.isShowing) {
-            NudgeSheet().presentationDetents([.height(280)])
+            NudgeSheet()
+                .presentationDetents([.fraction(0.72)])
+                .presentationDragIndicator(.visible)
         }
         .sheet(item: $session.sheet) { sheet in
             switch sheet {

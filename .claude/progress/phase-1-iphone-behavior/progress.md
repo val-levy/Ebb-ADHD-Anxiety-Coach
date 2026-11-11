@@ -22,6 +22,11 @@ Turns the Phase 1 iPhone nudge controls from prototype UI into persisted, enforc
 - references: `.claude/resources/references/design-references/clay/README.md`
 
 ## Session log
+### 2026-11-10 18:44 PST → 2026-11-10 18:47 PST
+- Redesigned NudgeSheet to use its panel intentionally: clay reset hero, clear full-width primary action, and bottom utility actions. Preview now uses a consistent 72%-height sheet with a visible drag handle.
+- Applied the matching clay-canvas, spacious panel treatment to sign-in, profile setup, and animal picker sheets; retained native delete confirmations because their destructive system semantics are clearer.
+- Verified: Simulator build/install/launch and connected-iPhone build/install/launch succeeded. Popup layout is not yet hand-reviewed on both devices.
+
 ### 2026-11-10 18:26 PST → 2026-11-10 18:30 PST
 - Fixed Preview a check-in silently doing nothing after several uses: previews had been counted toward the real daily cap. They now always open and do not change the cap; planned and future signal check-ins retain the cap/pause/snooze rules.
 - Verified: Simulator build/install/launch succeeded. Connected-iPhone build and install succeeded; automatic launch was denied because the phone was locked.

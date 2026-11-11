@@ -10,6 +10,7 @@ struct SignInSheet: View {
 
     var body: some View {
         VStack(spacing: 18) {
+            Spacer(minLength: 12)
             AnimalAvatar(animal: .panda, size: 96)
             Text("Sign in to Ebb").font(ClayFont.title2)
             Text(reason).font(ClayFont.body).foregroundStyle(.secondary).multilineTextAlignment(.center)
@@ -29,10 +30,12 @@ struct SignInSheet: View {
             if let onSkip {
                 Button("Not now", action: onSkip).font(ClayFont.headline).foregroundStyle(.secondary)
             }
+            Spacer(minLength: 12)
         }
         .padding(24)
-        .clay()
-        .padding(16)
-        .presentationDetents([.medium, .large])
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .clayCanvas()
+        .presentationDetents([.fraction(0.72)])
+        .presentationDragIndicator(.visible)
     }
 }

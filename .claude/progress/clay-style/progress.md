@@ -26,6 +26,10 @@ User asked (2026-11-10) for the app to feel "more comfy, playful, almost play-do
 - screenshot: scratchpad clay.png (not kept)
 
 ## Session log
+### 2026-11-10 18:44 PST → 2026-11-10 18:47 PST
+- Made modal sheets consistent with the clay system: NudgeSheet, SignInSheet, ProfileSetupSheet, and AvatarPicker use a warm clay canvas, intentional 72–78% panel height, drag indicator, and content distributed through the available space. Native destructive account confirmations remain system dialogs.
+- Verified: Simulator and iPhone builds/install/launch succeeded. Not hand-verified: visual layout across device sizes and Dynamic Type.
+
 ### 2026-11-10 14:23 PST → 2026-11-10 14:25 PST
 - Secret meadow (Snapchat-style pull-down): SceneScreen tracks overscroll via onGeometryChange(.scrollView minY) and overlays SecretMeadow (440pt) above the scene. Pieces pop up with a spring + light haptic as the pull uncovers them: Panda, Penguin (new), Flamingo, Elephant, Giraffe, Lion; the deepest pull shows HotAirBalloon + "You found the secret meadow 🌼". New Theme.hillMeadow. Removed .refreshable from Calm/Reflect (its spinner would cover the meadow; data still loads on appear).
 - App-wide swipe: AppPage model orders Quick ⇄ Guided ⇄ Reflect ⇄ Settings; RootView owns tab + calmMode and a single simultaneous DragGesture (>60pt, mostly horizontal) with selection haptic. HomeView takes a mode binding and follows it with the direction-safe select(); removed its own grid swipe so the gestures don't fight.
