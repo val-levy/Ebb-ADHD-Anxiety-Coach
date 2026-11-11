@@ -14,7 +14,7 @@ struct EbbApp: App {
                 .font(ClayFont.body)   // handwritten clay type by default; styled text uses ClayFont.*
                 .task { await store.load() }
                 #if DEBUG
-                .onAppear { Tip.selfCheck() }
+                .onAppear { Tip.selfCheck(); PanicGate.selfCheck() }
                 #endif
         }
     }
