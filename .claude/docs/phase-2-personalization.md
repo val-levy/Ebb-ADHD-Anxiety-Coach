@@ -14,7 +14,8 @@ Nudges tuned to each person, learned on their own phone, rated "helped" more oft
   Learn separate resting baselines for on- and off-medication hours.
 - **Body-break nudge:** the Body break reset exists; nothing detects near-zero movement for 2+ hours to trigger it.
 - **Low-threshold days:** short sleep or low overnight HRV (HealthKit summaries) lowers the threshold that day.
-- **Novelty rotation:** rotate haptic patterns and nudge wording so they don't fade into the background.
+- **Novelty rotation:** rotate haptic patterns and nudge wording so they don't fade into the background. Every
+  variant follows [wording-and-safety.md](wording-and-safety.md) §4–§5.
 
 ## Depends on
 Phase 1 storing every nudge with its label, and the Watch detector accepting updated thresholds.
