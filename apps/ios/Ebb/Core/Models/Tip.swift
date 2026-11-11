@@ -2,14 +2,14 @@ import Foundation
 
 /// The mascot's first-time tips. Each screen shows its own tips one at a time, in declaration order.
 enum Tip: String, CaseIterable {
-    case panic, modePicker, swipe, brainDump, pastDumps, helped, patterns, avatar, friends, achievements
+    case panic, modePicker, swipe, brainDump, pastDumps, helped, avatar, friends, achievements
 
     enum Screen { case calm, reflect, profile }
 
     var screen: Screen {
         switch self {
         case .panic, .modePicker, .swipe: .calm
-        case .brainDump, .pastDumps, .helped, .patterns: .reflect
+        case .brainDump, .pastDumps, .helped: .reflect
         case .avatar, .friends, .achievements: .profile
         }
     }
@@ -21,8 +21,7 @@ enum Tip: String, CaseIterable {
         case .swipe: "Psst: swipe sideways anywhere to hop between screens."
         case .brainDump: "Head too full? Dump it all here and get one small next step."
         case .pastDumps: "Brain dumps you save wait here. Tap one to read it again."
-        case .helped: "This shows what's been helping you most."
-        case .patterns: "Over time I'll spot when things get hard for you."
+        case .helped: "Tap here to see what has been helping you."
         case .avatar: "Tap me to pick a different animal. I'll change too!"
         case .friends: "Invite friends so you can breathe together."
         case .achievements: "Little wins show up here as you go."

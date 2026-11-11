@@ -22,6 +22,8 @@ A cohesive refinement pass across Ebb’s primary iPhone flows, improving visual
 - references: `.claude/resources/references/design-references/clay/README.md`
 
 ## Session log
+### 2026-11-11 15:51 PST
+- Reflect layout option 3 (journal-first): pill, past dumps, one WeekSummaryCard linking to new InsightsScreen (HelpedCard + PatternsSection, extracted). Dropped the .patterns tip; .helped tip now sits on the summary card. No horizontal carousel (would fight the tab swipe). If it doesn't land, fall back to option 1 (Journal|Insights picker, tap-only). Built sim + phone; not visually checked.
 ### 2026-11-11 15:50 PST
 - Researched journaling/mood apps for a Reflect layout pass; notes in design-references/journaling-apps/README.md. No code changed; layout proposal awaiting user pick.
 ### 2026-11-11 15:48 PST
