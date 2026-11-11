@@ -19,3 +19,8 @@ No assets saved (copyrighted). Notes from web research, 2026-11-11; sources are 
 
 ## Finch
 - Gamified pet; heavy by design. Ebb already has the mascot, so skip streaks/pet-care loops (no guilt rule).
+
+## Google Health (ex-Fitbit app, 5.0, May 2026)
+- Source: https://blog.google/products-and-platforms/products/google-health/google-health-app/ , https://www.techrepublic.com/article/news-google-health-fitbit-app-ai-coach-widget/
+- Reported: four tabs (Today, Fitness, Sleep, Health), tap a metric to open its stats page, customizable dashboards, badges dropped. Searches gave little on chart styling, so only the structure is borrowed.
+- Ebb takes: one metric per card (title, one friendly line, small chart), tap-through detail, modular cards. Leaves: AI coach, raw numbers.

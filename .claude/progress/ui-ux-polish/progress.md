@@ -22,6 +22,8 @@ A cohesive refinement pass across Ebb’s primary iPhone flows, improving visual
 - references: `.claude/resources/references/design-references/clay/README.md`
 
 ## Session log
+### 2026-11-11 15:54 PST
+- Insight graphs (Swift Charts, built in): shared InsightCard frame + ResetsPerDayChart + CalmDropChart under Features/Reflect/Insights/, data shaped by DailyCount and CalmDropPoint (Core/Models, with a selfCheck for DailyCount). InsightsScreen lists them; add a graph = new view wrapping InsightCard + one line. No axis numbers (never raw stress numbers), empty days are quiet. Built sim + phone; not visually checked. Google Health styling details were not findable, structure only.
 ### 2026-11-11 15:51 PST
 - Reflect layout option 3 (journal-first): pill, past dumps, one WeekSummaryCard linking to new InsightsScreen (HelpedCard + PatternsSection, extracted). Dropped the .patterns tip; .helped tip now sits on the summary card. No horizontal carousel (would fight the tab swipe). If it doesn't land, fall back to option 1 (Journal|Insights picker, tap-only). Built sim + phone; not visually checked.
 ### 2026-11-11 15:50 PST

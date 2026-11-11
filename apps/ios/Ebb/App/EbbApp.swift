@@ -22,7 +22,7 @@ struct EbbApp: App {
                 .task { await session.start(); await store.load(); await dumps.load() }
                 .onChange(of: session.profile?.id) { Task { await dumps.load() } }  // sign in / out / delete swaps the note
                 #if DEBUG
-                .onAppear { Tip.selfCheck(); PanicGate.selfCheck(); Username.selfCheck() }
+                .onAppear { Tip.selfCheck(); PanicGate.selfCheck(); Username.selfCheck(); DailyCount.selfCheck() }
                 #endif
         }
     }
