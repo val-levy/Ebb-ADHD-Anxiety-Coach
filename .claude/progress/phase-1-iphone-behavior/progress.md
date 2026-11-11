@@ -22,6 +22,10 @@ Turns the Phase 1 iPhone nudge controls from prototype UI into persisted, enforc
 - references: `.claude/resources/references/design-references/clay/README.md`
 
 ## Session log
+### 2026-11-10 18:26 PST → 2026-11-10 18:30 PST
+- Fixed Preview a check-in silently doing nothing after several uses: previews had been counted toward the real daily cap. They now always open and do not change the cap; planned and future signal check-ins retain the cap/pause/snooze rules.
+- Verified: Simulator build/install/launch succeeded. Connected-iPhone build and install succeeded; automatic launch was denied because the phone was locked.
+
 ### 2026-11-10 18:01 PST → 2026-11-10 18:13 PST
 - Added migration `20261110000400_nudge_events.sql`: `nudge_events` stores origin and shown/accepted/dismissed/snoozed/false-alarm outcomes, with owner-only RLS. Extended `supabase/tests/rls.sh` to prove a second anonymous user cannot read nudge events.
 - Added `NudgeEvent`, `NudgeOrigin`, `NudgeOutcome`, `NudgeScheduler`, `NudgeStore`, and the AppDelegate notification bridge. The store owns the daily cap (default 3), today-only pause, one-hour snooze, planned notification reconciliation for the next 7 days, and race-safe response persistence.

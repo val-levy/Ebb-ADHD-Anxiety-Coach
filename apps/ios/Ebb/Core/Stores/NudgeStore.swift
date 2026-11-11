@@ -94,11 +94,12 @@ final class NudgeStore: ObservableObject {
 
     private func present(origin: NudgeOrigin) {
         refreshDay()
-        guard !isPausedToday, snoozedUntil.map({ $0 <= .now }) ?? true, dailyCount < nudgeCap else { return }
+        let isPreview = origin == .preview
+        guard isPreview || (!isPausedToday && (snoozedUntil.map({ $0 <= .now }) ?? true) && dailyCount < nudgeCap) else { return }
         let event = NudgeEvent(origin: origin, created_at: .now)
         activeEvent = event
         responseRecorded = false
-        dailyCount += 1
+        if !isPreview { dailyCount += 1 }
         isShowing = true
         insertTask = Task {
             try? await service.ensureSignedIn()

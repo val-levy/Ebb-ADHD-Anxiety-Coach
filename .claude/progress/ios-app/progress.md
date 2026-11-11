@@ -31,6 +31,9 @@ A native SwiftUI iPhone app with 4 tabs: Reset (hero + reset list + demo nudge),
 - docs: `.claude/docs/product-spec.md` (Interventions, Design principles)
 
 ## Session log
+### 2026-11-10 18:26 PST → 2026-11-10 18:30 PST
+- Made Preview a check-in a non-consuming test action, so repeated QA does not hit the real daily nudge cap. Simulator relaunch verified; iPhone installed but could not auto-launch while locked.
+
 ### 2026-11-10 18:18 PST → 2026-11-10 18:21 PST
 - Replaced Reflect's sample PatternRow copy with real seven-day insights from saved reset ratings and nudge responses, plus an honest empty state. See `.claude/progress/weekly-insights/progress.md`.
 - Verified: XcodeGen regeneration, Simulator build/install/launch, and connected-iPhone build/install/launch. Generated insight variants still need manual UI checks.
