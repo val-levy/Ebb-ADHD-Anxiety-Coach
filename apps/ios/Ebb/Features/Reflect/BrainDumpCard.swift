@@ -1,49 +1,25 @@
 import SwiftUI
 
-/// Brain dump: type (or dictate) everything spinning around, then get one small next step. That tap also saves the dump and clears the box.
+/// Compact entry point for a brain dump: one pill that opens the writing sheet.
 struct BrainDumpCard: View {
     @EnvironmentObject private var dumps: BrainDumpStore
-    @State private var nextStep: String?
+    @State private var writing = false
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 14) {
+        Button { writing = true } label: {
             HStack(spacing: 12) {
-                ClayIconTile(symbol: "cloud.fill")
-                VStack(alignment: .leading) {
-                    Text("Unload your head").font(ClayFont.headline)
-                    Text("Tap the mic on the keyboard to dictate.").font(ClayFont.footnote).foregroundStyle(.secondary)
+                ClayIconTile(symbol: "cloud.fill", size: 44)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(dumps.draft.isEmpty ? "What's on your mind?" : "Pick up where you left off").font(ClayFont.headline)
+                    Text(dumps.draft.isEmpty ? "Unload your head, then get one small step." : dumps.draft)
+                        .font(ClayFont.footnote).foregroundStyle(.secondary).lineLimit(1)
                 }
+                Spacer()
+                Image(systemName: "mic.fill").foregroundStyle(Theme.clayTeal)
             }
-            TextEditor(text: $dumps.draft)
-                .scrollContentBackground(.hidden)
-                .frame(minHeight: 140)
-                .padding(10)
-                .background(Theme.tile, in: .rect(cornerRadius: Theme.tileRadius, style: .continuous))
-                .overlay(alignment: .topLeading) {
-                    if dumps.draft.isEmpty {
-                        Text("Everything that's spinning around…").foregroundStyle(.tertiary).padding(18).allowsHitTesting(false)
-                    }
-                }
-            Button {
-                withAnimation(.spring) { nextStep = NextStepSuggester.suggest(from: dumps.draft) }  // step first: saving clears the draft
-                Task { await dumps.saveDraft() }
-            } label: {
-                Label("Give me one small step", systemImage: "sparkles")
-                    .font(ClayFont.headline).foregroundStyle(.white)
-                    .frame(maxWidth: .infinity).padding(.vertical, 14)
-                    .overlay { GrainOverlay().clipShape(.rect(cornerRadius: 22, style: .continuous)) }
-                    .clay(Theme.clayTeal, radius: 22)
-            }
-            if let nextStep {
-                Text(nextStep).font(ClayFont.headline)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding()
-                    .clay(Theme.clayButter, radius: Theme.tileRadius + 4)
-                    .foregroundStyle(.black.opacity(0.85))
-                    .transition(.scale(scale: 0.8).combined(with: .opacity))
-            }
+            .padding(14)
+            .clay()
         }
-        .padding()
-        .clay()
+        .sheet(isPresented: $writing) { BrainDumpSheet() }
     }
 }

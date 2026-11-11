@@ -22,6 +22,8 @@ A cohesive refinement pass across Ebb’s primary iPhone flows, improving visual
 - references: `.claude/resources/references/design-references/clay/README.md`
 
 ## Session log
+### 2026-11-11 15:47 PST
+- Brain dump is now a compact pill (BrainDumpCard) that opens BrainDumpSheet (full-height editor, keyboard up, one-button step+save, Close). Built sim + phone, installed and launched on phone; not visually checked yet.
 ### 2026-11-11 15:45 PST
 - BrainDumpCard header icon: tray.and.arrow.down.fill → cloud.fill (softer, comfier). Built sim + phone, installed on phone; launch refused (phone locked), not visually checked.
 ### 2026-11-10 23:48 PST
