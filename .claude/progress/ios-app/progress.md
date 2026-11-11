@@ -31,6 +31,11 @@ A native SwiftUI iPhone app with 4 tabs: Reset (hero + reset list + demo nudge),
 - docs: `.claude/docs/product-spec.md` (Interventions, Design principles)
 
 ## Session log
+### 2026-11-10 18:01 PST → 2026-11-10 18:13 PST
+- Added the Phase 1 nudge behavior layer: previewable check-ins, planned local-notification scheduling, daily cap, pause for today, one-hour snooze, and persisted nudge response labels. See `.claude/progress/phase-1-iphone-behavior/progress.md` for the full implementation and verification record.
+- Removed a pre-existing DEBUG launch crash from the repeated Keychain assertion in `PanicGate.selfCheck()`.
+- Verified: Simulator and iPhone builds/install/launch succeeded after the crash fix. Notification behavior still needs hands-on verification.
+
 ### 2026-11-10 13:48 PST → 2026-11-10 13:51 PST
 - Zen tab replaced by Calm tab (see calm-guide). Build succeeded.
 

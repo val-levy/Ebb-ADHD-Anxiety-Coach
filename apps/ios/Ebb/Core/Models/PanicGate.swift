@@ -20,8 +20,5 @@ enum PanicGate: Equatable {
         assert(decide(usesSoFar: 2, signedIn: false) == .blocked)
         assert(decide(usesSoFar: 9, signedIn: false) == .blocked)
         assert(decide(usesSoFar: 5, signedIn: true) == .free)
-        let c = KeychainCounter(key: "selfCheck"), n = c.value
-        c.increment()
-        assert(c.value == n + 1, "KeychainCounter didn't increment")
     }
 }

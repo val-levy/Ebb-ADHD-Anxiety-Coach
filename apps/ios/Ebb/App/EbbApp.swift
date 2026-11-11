@@ -3,7 +3,9 @@ import SwiftUI
 /// App entry point. Owns the single `ResetStore` and hands it to the view tree.
 @main
 struct EbbApp: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
     @StateObject private var store = ResetStore(service: SupabaseService.shared)
+    @StateObject private var nudges = NudgeStore(service: SupabaseService.shared)
     @StateObject private var session = SessionStore()
     @StateObject private var calm = CalmStore(service: SupabaseService.shared)
 
@@ -11,6 +13,7 @@ struct EbbApp: App {
         WindowGroup {
             RootView()
                 .environmentObject(store)
+                .environmentObject(nudges)
                 .environmentObject(calm)
                 .environmentObject(session)
                 .font(ClayFont.body)   // handwritten clay type by default; styled text uses ClayFont.*

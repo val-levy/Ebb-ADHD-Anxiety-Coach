@@ -3,6 +3,7 @@ import SwiftUI
 /// The one calm tab: a panic hero up top, then a Quick / Guided toggle over a grid of options, then proof it passes.
 struct HomeView: View {
     @EnvironmentObject private var store: ResetStore
+    @EnvironmentObject private var nudges: NudgeStore
     @EnvironmentObject private var calm: CalmStore
     @EnvironmentObject private var session: SessionStore
     /// The requested mode (picker taps and app-wide swipes write it); `shown` follows it with the right slide direction.
@@ -48,8 +49,7 @@ struct HomeView: View {
                     CalmProgressCard(before: drop.before, after: drop.after, sessions: calm.history.count)
                 }
 
-                // Demo: in the real app a stress detector (Watch/BT sensor, later) triggers this.
-                Button("Demo: simulate a stress nudge") { store.isNudgeShowing = true }
+                Button("Preview a check-in") { nudges.presentPreview() }
                     .font(ClayFont.footnote)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 24)

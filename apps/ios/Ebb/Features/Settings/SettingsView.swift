@@ -5,9 +5,8 @@ struct SettingsView: View {
     @AppStorage("guardWindows") private var guards = ScheduleItem.defaultGuards
     @AppStorage("nudgePlan") private var nudges = ScheduleItem.defaultNudges
     @AppStorage("medications") private var medications: [ScheduleItem] = []
-    @AppStorage("nudgeCap") private var nudgeCap = 3
-    @AppStorage("pausedToday") private var pausedToday = false
     @AppStorage("breathRate") private var breathRate = 8.0
+    @EnvironmentObject private var nudgesStore: NudgeStore
     @Environment(\.tabSwipeLocks) private var swipeLocks
 
     var body: some View {
@@ -27,8 +26,8 @@ struct SettingsView: View {
                 ScheduleSection(title: "Planned nudges", footer: "Times Ebb checks in with you.",
                                 newName: "Check-in", hasEnd: false, items: $nudges)
                 Section {
-                    Stepper("At most \(nudgeCap) a day", value: $nudgeCap, in: 1...6)
-                    Toggle("Pause for today", isOn: $pausedToday)
+                    Stepper("At most \(nudgesStore.nudgeCap) a day", value: nudgesStore.capBinding, in: 1...6)
+                    Toggle("Pause for today", isOn: nudgesStore.pauseBinding)
                 }
                 ScheduleSection(title: "Medication", footer: "Add what you take and when. Stimulants shift your baseline, so Ebb will learn your on- and off-medication patterns.",
                                 newName: "Medication", hasEnd: false, items: $medications)
@@ -37,5 +36,9 @@ struct SettingsView: View {
             }
             .clayCanvas()
             .navigationTitle("Settings")
+            .task { await nudgesStore.updatePlan(nudges) }
+            .onChange(of: nudges) { _, plan in
+                Task { await nudgesStore.updatePlan(plan) }
+            }
     }
 }

@@ -25,6 +25,10 @@ The cloud data store for Ebb. Its one table, `resets`, logs each reset and its r
 - docs: `.claude/docs/product-spec.md` (Platform, legal, and business risks)
 
 ## Session log
+### 2026-11-10 18:01 PST → 2026-11-10 18:13 PST
+- Added and locally applied `20261110000400_nudge_events.sql`: typed origins and outcomes, a user/time index, RLS, and an owner-only policy for nudge feedback.
+- Extended `supabase/tests/rls.sh` with a nudge-events isolation check. Verified: `supabase migration up` succeeded and `rls.sh` passed.
+
 ### 2026-11-10 13:48 PST → 2026-11-10 13:51 PST
 - Added 20261110000200_calm_sessions.sql (drops zen_gardens, adds calm_sessions + RLS). rls.sh PASS.
 

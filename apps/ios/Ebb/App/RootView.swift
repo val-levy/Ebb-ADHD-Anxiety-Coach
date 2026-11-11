@@ -3,7 +3,9 @@ import SwiftUI
 /// Tab bar shell plus the app-wide overlays (nudge sheet, full-screen reset player).
 struct RootView: View {
     @EnvironmentObject private var store: ResetStore
+    @EnvironmentObject private var nudges: NudgeStore
     @EnvironmentObject private var session: SessionStore
+    @AppStorage("nudgePlan") private var nudgePlan = ScheduleItem.defaultNudges
     @State private var tab: AppPage.Tab = .calm
     @State private var calmMode: CalmMode = .quick
     @State private var swipeLocks = 0
@@ -39,7 +41,7 @@ struct RootView: View {
         .sensoryFeedback(.selection, trigger: tab)
         .tint(Theme.accent)
         .buttonStyle(SquishyButtonStyle())
-        .sheet(isPresented: $store.isNudgeShowing) {
+        .sheet(isPresented: $nudges.isShowing) {
             NudgeSheet().presentationDetents([.height(280)])
         }
         .sheet(item: $session.sheet) { sheet in
@@ -51,5 +53,6 @@ struct RootView: View {
         .fullScreenCover(isPresented: $session.panicBlocked, onDismiss: session.showQueuedSheet) { PanicBlockedView().environmentObject(session) }
         .fullScreenCover(item: $store.activeReset) { ResetView(reset: $0) }
         .onAppear { KeyboardDismisser.shared.install() }
+        .task { await nudges.start(plan: nudgePlan) }
     }
 }

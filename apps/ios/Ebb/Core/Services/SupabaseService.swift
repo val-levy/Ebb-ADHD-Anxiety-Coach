@@ -35,6 +35,21 @@ final class SupabaseService {
         try await client.from("resets").insert(entry).execute()
     }
 
+    func nudgeEvents(since date: Date) async throws -> [NudgeEvent] {
+        try await client.from("nudge_events")
+            .select("id,origin,outcome,created_at")
+            .gte("created_at", value: date).execute().value
+    }
+
+    func insert(_ event: NudgeEvent) async throws -> NudgeEvent {
+        try await client.from("nudge_events").insert(event).select().single().execute().value
+    }
+
+    func setNudgeOutcome(id: UUID, outcome: NudgeOutcome) async throws {
+        try await client.from("nudge_events").update(["outcome": outcome.rawValue])
+            .eq("id", value: id.uuidString).execute()
+    }
+
     func recentCalmSessions(limit: Int = 30) async throws -> [CalmSession] {
         try await client.from("calm_sessions")
             .select("program,intensity_before,intensity_after,helped_technique,created_at")
