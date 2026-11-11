@@ -14,8 +14,8 @@ and what to build next. Each segment has its own doc.
 | Business and launch | not started | [business-launch.md](business-launch.md) |
 
 ## Suggested order
-1. **Phase 1, iPhone-only part:** compute the real weekly insight from reset and nudge history, then hand-test the
-   now-built cap / pause / snooze / false-alarm and planned-notification controls. Small, uses screens that already exist.
+1. **Phase 1, iPhone-only part:** hand-test the now-built weekly insight, cap / pause / snooze / false-alarm and
+   planned-notification controls. Small, uses screens that already exist.
 2. **Phase 0 prototype:** the cheapest test of the core bet (does stress show in Watch heart rate?). Runs for 14 days,
    so start it early and build other things while it runs.
 3. **Accounts:** once reviewed; on-device testing waits for the paid Apple account.

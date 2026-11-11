@@ -26,7 +26,7 @@ snooze and one-tap feedback, plus a real weekly insight on the iPhone.
 | Pause for today | Cancels planned notifications and resets automatically the next day | Apply to future detector events too |
 | Snooze / False alarm | Snooze cancels planned notifications for 1 h; false alarm persists as a label | Use false alarms to adjust the future detector threshold |
 | Feedback | rating after resets exists | Store helped / didn't help / false alarm per nudge for Phase 2 training |
-| Weekly insight | sample text in ReflectView | Compute from history, e.g. "Spikes cluster Tuesday afternoons; breathing helped 4 of 5 times" |
+| Weekly insight | Real, local summary from the last 7 days of reset and check-in history | Hand-test its empty state and each generated copy path |
 
 ## Design rules that apply (product-spec.md "Design principles")
 - Alerts follow [wording-and-safety.md](wording-and-safety.md) §4: describe the signal, not a condition ("Your heart
@@ -38,7 +38,7 @@ snooze and one-tap feedback, plus a real weekly insight on the iPhone.
 10 beta users keep it on for 3 weeks with **under 1 false alarm a day**.
 
 ## Suggested order
-1. iPhone-only wins (no Watch needed): compute a real weekly insight from reset and nudge history; hand-test the
-   notification permission, scheduled delivery, cap, pause and snooze on-device.
+1. iPhone-only wins (no Watch needed): hand-test the real weekly-insight, notification permission, scheduled delivery,
+   cap, pause and snooze on-device.
 2. watchOS target + complication + on-wrist resets (on-demand path works from day one).
 3. Guard-window sessions + rule-based detection (after Phase 0 passes).

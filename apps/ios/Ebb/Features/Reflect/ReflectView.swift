@@ -13,9 +13,21 @@ struct ReflectView: View {
                 HelpedCard().mascotTip(.helped).popIn(1)
 
                 SectionLabel("Patterns")
-                // Demo copy: shows what the weekly insight will look like once timing data exists.
-                PatternRow(symbol: "calendar", text: "Sample: Resets cluster on Tuesday afternoons").mascotTip(.patterns).popIn(2)
-                PatternRow(symbol: "clock.fill", text: "Sample: Breathing helped 4 of 5 times after 3pm").popIn(3)
+                if store.weeklyInsights.isEmpty {
+                    Text("A few resets this week will give Ebb something gentle to reflect back.")
+                        .font(ClayFont.subheadline)
+                        .foregroundStyle(.secondary)
+                        .padding()
+                        .clay()
+                        .mascotTip(.patterns)
+                        .popIn(2)
+                } else {
+                    ForEach(Array(store.weeklyInsights.enumerated()), id: \.element.id) { index, insight in
+                        PatternRow(symbol: insight.symbol, text: insight.text)
+                            .popIn(index + 2)
+                    }
+                    .mascotTip(.patterns)
+                }
             }
         }
     }

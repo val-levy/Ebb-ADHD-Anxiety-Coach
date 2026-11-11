@@ -8,7 +8,7 @@ Turns the Phase 1 iPhone nudge controls from prototype UI into persisted, enforc
 
 ## To do
 - [ ] Hand-test notification permission, delivery, cap, pause, snooze and all sheet responses on the Simulator and an iPhone.
-- [ ] Compute Reflect's weekly insight from reset and nudge history.
+- [ ] Hand-test Reflect's weekly-insight copy and empty state on the Simulator and an iPhone.
 - [ ] Apply the same controls to future signal-detector nudges.
 
 ## Background knowledge

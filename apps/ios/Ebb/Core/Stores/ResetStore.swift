@@ -4,6 +4,7 @@ import Foundation
 @MainActor
 final class ResetStore: ObservableObject {
     @Published private(set) var week: [ResetEntry] = []
+    @Published private(set) var weeklyInsights: [WeeklyInsight] = []
     @Published var activeReset: Reset?
     @Published var isNudgeShowing = false   // Demo: a real stress detector would set this
 
@@ -15,7 +16,10 @@ final class ResetStore: ObservableObject {
 
     func load() async {
         try? await service.ensureSignedIn()
-        week = (try? await service.resets(since: .now.addingTimeInterval(-7 * 86_400))) ?? week
+        let since = Date.now.addingTimeInterval(-7 * 86_400)
+        week = (try? await service.resets(since: since)) ?? week
+        let nudges = (try? await service.nudgeEvents(since: since)) ?? []
+        weeklyInsights = WeeklyInsightBuilder.make(resets: week, nudges: nudges)
     }
 
     func record(_ reset: Reset, helped: Bool?) async {
