@@ -12,30 +12,24 @@ The companion turns that kind of message into structured logs, and over time it 
 their own data ("on the 4 days you logged a missed dose this month, you also logged poor sleep the night before").
 The person decides what, if anything, to do about it.
 
-## 2. The one rule (the user's words, verbatim)
+## 2. The one rule
 
-> "it should never give medical advice or any advice for further action. the only thing it should do is log
-> information and provide insights that the user can then take and do with as they please. the ai should never
-> ever suggest the user do anything with any of the information it gathers. the only thing it can provide is
-> patterns and insights that will guide the user to creating their own solution"
+**Updated 2026-11-10.** The rules for what any Ebb text may say live in
+[wording-and-safety.md](wording-and-safety.md). Short version: Claude **may suggest wellness actions** (bedtime,
+wind-down, when to reset, caffeine cutoff), always as options and always grounded in the user's own precomputed
+patterns or `user_tuning` values. It **may not** make medical claims (condition names as claims, diagnoses,
+cardiac terms, accuracy claims), give **medication advice of any kind**, or state correlation as cause.
 
-And the clarification:
-
-> "the ai is not allowed to suggest things however normal app interfaces are"
-
-So:
+(This replaces the earlier "never suggest" rule. The original quote is in git history.)
 
 | Surface | May suggest an action? |
 |---|---|
-| Chat replies (anything Claude writes) | **Never.** No "try", "consider", "you should", "you might want to", "it could help to", "talk to your doctor", "take your meds", no questions that are suggestions in disguise ("have you thought about going to bed earlier?"). |
-| Normal app UI (buttons, nudges, reminders, the Calm tab, meditation reminders) | Yes, as today. |
-| Insight cards written by the AI | Never. Same rule as chat. |
-
-**What the AI may do:** acknowledge, restate what it logged, ask a *factual clarifying* question needed to log
-correctly ("Which medication — the morning or evening one?"), and state patterns with numbers and dates.
+| Chat replies (anything Claude writes) | Yes, wellness suggestions phrased as options, per [wording-and-safety.md](wording-and-safety.md). Never medical claims or medication advice. |
+| Normal app UI (buttons, nudges, reminders, the Calm tab, meditation reminders) | Yes, same rules. |
+| Insight cards written by the AI | Yes, same rules as chat. |
 
 **Crisis exception (my call, flagged for the user):** if a message signals self-harm or suicide risk, the reply
-does not follow the "patterns only" format. It shows a fixed, non-AI app message with the 988 line (call or
+does not follow the normal reply format. It shows a fixed, non-AI app message with the 988 line (call or
 text) — the same safety net the accounts spec already uses. This is app UI, not AI advice, so it fits the rule.
 The AI's text for that turn is replaced, not shown.
 
@@ -63,8 +57,10 @@ The AI's text for that turn is replaced, not shown.
 - Running any part of this on-device.
 
 **Anti-goals (it fails even if it "works" when):**
-- Any AI text tells the user to do something. One instance is a bug at the severity of a crash.
-- It sounds like a therapist, coach, or doctor. It's a calm, warm log-keeper that's good with numbers.
+- Any AI text makes a medical claim or gives medication advice ([wording-and-safety.md](wording-and-safety.md) §2).
+  One instance is a bug at the severity of a crash.
+- It sounds like a therapist or doctor. It's a calm, warm wellness coach that's good with numbers.
+- It suggests something not grounded in the user's own patterns or `user_tuning` (generic health tips).
 - It invents a pattern the data doesn't support, or states correlation as cause ("missing meds causes your bad
   sleep"). Patterns say "alongside", "on the same days", "more often when" — never "because" or "causes".
 - It logs something the user didn't say (hallucinated entries). When unsure, it asks or logs nothing.
@@ -245,7 +241,9 @@ A keyword pre-check (list in the function) also triggers it without the model, s
 ## 7. Patterns and insights
 
 The model never computes statistics. **SQL computes patterns; the model only phrases them.** That's how
-"never invent a pattern" is enforced.
+"never invent a pattern" is enforced. The same holds for suggestions: every suggestion Claude makes must come
+from a precomputed pattern (`cited_pattern_ids`) or a `user_tuning` value passed in the context pack, never from
+general knowledge.
 
 ### 7.1 Pattern library (Postgres function `compute_patterns(user_id, window_days)`)
 
@@ -274,25 +272,61 @@ rules + guard, and stores rows in `insights` with the raw numbers in `evidence`.
 reads `insights`. Each card has "How was this worked out?" showing the evidence numbers in plain words.
 Below the data minimum: "Ebb needs about two more weeks of logs to see patterns."
 
-## 8. The no-advice guard
+### 7.3 Daily plan and evening check-in
 
-Three layers, every one required:
+**Daily plan (morning).** When the user opens Reflect for the first time after their wake time (or taps the
+"Today" card), the Edge Function `daily-plan` asks Claude to phrase a short plan (≤ 4 lines) from:
+`user_tuning` (bedtime target, wake time, meditation/reset slot, quiet windows), last night's `health_daily` sleep,
+and caffeine patterns (`caffeine_after_14__sleep`). Items, each only when its source value exists:
 
-1. **System prompt:** the rule, verbatim, plus 12+ worked examples of forbidden vs. allowed phrasings (in the plan).
-2. **Deterministic filter** on the reply: case-insensitive regex list (`\byou (should|could|might|may want)\b`,
-   `\btry\b`, `\bconsider\b`, `\bmaybe (you|it'?s worth)\b`, `\bdoctor\b|\bprescriber\b|\btherapist\b`,
-   `\bmake sure\b`, `\bdon'?t forget\b`, `\bremember to\b`, `\bit (might|may|could) help\b`, `\brecommend\b`,
-   `\bsuggest\b`, `\bwhy not\b`, `\bhow about\b`, imperative verbs at sentence start from a list: take, go,
-   drink, eat, sleep, call, talk, set, schedule, stop, start, avoid, limit, cut).
-3. **Judge model:** `claude-haiku-5-5` with structured output `{advice: boolean, span: string|null}` given the
-   rule and the reply.
+- tonight's bedtime target and wind-down time (bedtime − 45 min),
+- best reset or meditation time today,
+- caffeine cutoff (only if the caffeine pattern passed its data minimum),
+- a lighter note after a short night ("you slept less than usual, so today's session is a bit longer").
 
-Any hit in 2 or 3 → one rewrite call (same model, "rewrite this reply removing anything that suggests an action;
-keep the logged facts and the pattern") → re-check. Still failing → **fallback**: a template built from the
-entries only ("Logged: missed dose (Adderall), rough night."). `guard_result` records which path ran. Rate of
-`rewritten`/`fallback` is a launch metric (target < 2% / < 0.2%).
+Claude gets the values as a JSON object and only phrases them; it may not add items. Stored once per day in
+`insights` (`kind='daily_plan'`, values in `evidence`). Same guard (§8). Example:
+"Morning. You slept 6h 10m, a bit under your usual. Want a reset around 2:45 when your dip usually starts? Bedtime
+target tonight: 11:15, wind-down at 10:30."
 
-Insight sentences go through layers 2 and 3 too.
+**Evening check-in.** A local notification (app UI, via `NudgeScheduler`) fires at wind-down time **only** if the
+user is heading toward a short night: no sleep yet and `now + their median sleep latency` would leave less than
+their estimated sleep need before the wake time. Copy: "Heading toward a short night. Want to start winding
+down?" Tap opens a wind-down calm session. Respects quiet hours, the nudge cap and the Personalize toggle.
+No check-in when no bedtime target exists yet.
+
+## 8. The medical-claim guard
+
+Rules: [wording-and-safety.md](wording-and-safety.md). Suggestions are allowed; the guard looks only for the
+forbidden list. Three layers, every one required:
+
+1. **System prompt:** the allowed/forbidden rules from wording-and-safety.md §1–§3, the "options, never orders"
+   framing, the grounding rule (§7), plus 12+ worked ✅/❌ examples (in the plan).
+2. **Deterministic filter** on the reply (case-insensitive), any hit fails:
+   - **Condition names as claims:** a condition term (`adhd`, `anxiety (disorder|attack)`, `panic (attack|disorder)`,
+     `insomnia`, `depression`, `arrhythmia`, `ptsd`, `bipolar`, …) near a claim verb (`detect`, `treat`, `manage`,
+     `monitor`, `diagnos`, `cure`, `worsen`, `symptom`, `looks like`, `sounds like`, `sign of`, `you have`).
+   - **Medication advice:** an advice verb (`take`, `skip`, `stop`, `start`, `increase`, `decrease`, `lower`,
+     `raise`, `double`, `move`, `switch`, `change`, `retime`, `remember to`, `don't forget`) within 6 words of a
+     medication word (`med(s|ication)?`, `dose`, `pill`, `prescription`, or any name from the user's `medications`).
+   - **Diagnosis phrasing:** `you('re| are) (sleep[- ]deprived|depressed|anxious disorder)`, `you (have|might have|
+     may have)`, `detected`, `diagnos`, `this (is|looks like|could be) (a|an) .*(attack|disorder|condition)`.
+   - **Cardiac terms:** `arrhythm`, `irregular (heart|rhythm|beat)`, `abnormal (rhythm|heart)`, `afib`, `a-fib`,
+     `palpitation`, `cardiac`, `heart (problem|condition|disease)`.
+   - **Accuracy claims:** `\d+ ?% (accura|precis|sensitiv)`, `clinically (proven|validated)`, `medical[- ]grade`.
+   - **Doctor mention** passes only when the turn's context pack flags an out-of-range metric
+     (wording-and-safety.md §3); otherwise `doctor|physician|cardiologist|psychiatrist` fails.
+3. **Judge model:** `claude-haiku-5-5` with structured output
+   `{medical_claim: boolean, medication_advice: boolean, span: string|null}` given wording-and-safety.md §2 and
+   the reply. Wellness suggestions ("want to try a 2-minute reset at 3?") are explicitly marked as passing.
+
+Any hit in 2, or `medical_claim`/`medication_advice` true in 3 → one rewrite call (same model, "rewrite this reply
+removing the medical claim or medication advice; keep the logged facts, the pattern and any wellness suggestion")
+→ re-check. Still failing → **fallback**: a template built from the entries only ("Logged: missed dose
+(Adderall), rough night."). `guard_result` records which path ran. Rate of `rewritten`/`fallback` is a launch
+metric (target < 2% / < 0.2%).
+
+Insight sentences and daily plans go through layers 2 and 3 too.
 
 ## 9. App (iOS)
 
@@ -322,8 +356,9 @@ Insight sentences go through layers 2 and 3 too.
 
 ## 11. Decided by the user vs. my calls
 
-**User decided:** cloud AI, smartest model; parse chat into logs; patterns and insights only, never advice, never
-suggest; app UI may suggest; the data list (meds and timing, nutrition and timing, sleep, stress, daily plans,
+**User decided:** cloud AI, smartest model; parse chat into logs; patterns and insights; (2026-11-10) wellness
+suggestions allowed under [wording-and-safety.md](wording-and-safety.md), no medical claims, no medication advice;
+character is a calm, warm wellness coach, not a therapist or doctor; daily plan + evening check-in; the data list (meds and timing, nutrition and timing, sleep, stress, daily plans,
 HRV, SpO₂, breathing rate, heart rate); it improves as more is given.
 
 **My calls (check these):**
@@ -334,9 +369,10 @@ HRV, SpO₂, breathing rate, heart rate); it improves as more is given.
 5. Opus 5.5 for chat, Haiku 5.5 for the crisis screen and the guard judge.
 6. 60 messages/day cap.
 7. Threads split after 6h of silence.
-8. Clarifying factual questions are allowed (they're not suggestions).
+8. Clarifying factual questions are allowed.
+9. Evening check-in is a local notification (app UI), not a chat message; daily plan shown on first Reflect open after wake.
 
 ## 12. Left to the builder
 
-Exact visual sizes, chip icons, the regex list's final wording beyond §8, pattern thresholds' exact numbers
+Exact visual sizes, chip icons, the regex term lists' final wording beyond §8, pattern thresholds' exact numbers
 (starting values in the plan), SQL query shapes.
