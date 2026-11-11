@@ -22,6 +22,10 @@ A cohesive refinement pass across Ebb’s primary iPhone flows, improving visual
 - references: `.claude/resources/references/design-references/clay/README.md`
 
 ## Session log
+### 2026-11-10 18:59 PST → 2026-11-10 19:00 PST
+- Began the Settings conversion: replaced its stock Form canvas with the shared SceneScreen and added `SettingsCard` for breathing and check-in controls. Existing schedule, account, and crisis controls retain their behavior while their row styling is the next refinement.
+- Verified: XcodeGen regeneration, Simulator build/install/launch. iPhone build/install succeeded; auto-launch was denied while locked.
+
 ### 2026-11-10 18:51 PST → 2026-11-10 18:56 PST
 - Audited the Calm screen in the Simulator. Fixed a global interaction/layout issue: iOS's floating tab bar overlaid the final scroll content, so `SceneScreen` now reserves 92pt below every tab’s content.
 - Identified Settings as the largest remaining visual inconsistency: it still uses stock Form sections. Its controls need a dedicated clay-card conversion next, retaining their existing scheduling behavior.

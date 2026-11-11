@@ -10,22 +10,21 @@ struct SettingsView: View {
     @Environment(\.tabSwipeLocks) private var swipeLocks
 
     var body: some View {
-        Form {
-                Section {
+        SceneScreen(title: "Settings", tips: .profile, mascotAt: 0.66) {
+                SettingsCard(title: "Breathing") {
                     VStack(alignment: .leading) {
-                        Text("Breathing pace: \(Int(breathRate))")
+                        Text("Breathing pace · \(Int(breathRate))").font(ClayFont.subheadline)
                         Slider(value: $breathRate, in: 1...10, step: 1) {
                             Text("Breathing pace")
                         } minimumValueLabel: { Text("Slow") } maximumValueLabel: { Text("Fast") } onEditingChanged: { swipeLocks.wrappedValue += $0 ? 1 : -1 }
                     }
-                } footer: {
-                    Text("How fast guided breathing goes, in sessions and the panic button. 8 is the standard pace.")
+                    Text("How fast guided breathing goes. 8 is the standard pace.").font(ClayFont.footnote).foregroundStyle(.secondary)
                 }
                 ScheduleSection(title: "Guard windows", footer: "Ebb watches more closely during these hours. Needs an Apple Watch or Bluetooth heart-rate sensor (coming later).",
                                 newName: "New window", hasEnd: true, items: $guards)
                 ScheduleSection(title: "Planned nudges", footer: "Times Ebb checks in with you.",
                                 newName: "Check-in", hasEnd: false, items: $nudges)
-                Section {
+                SettingsCard(title: "Check-ins") {
                     Stepper("At most \(nudgesStore.nudgeCap) a day", value: nudgesStore.capBinding, in: 1...6)
                     Toggle("Pause for today", isOn: nudgesStore.pauseBinding)
                 }
@@ -34,8 +33,7 @@ struct SettingsView: View {
                 AccountSection()
                 CrisisSection()
             }
-            .clayCanvas()
-            .navigationTitle("Settings")
+            .toolbar(.hidden, for: .navigationBar)
             .task { await nudgesStore.updatePlan(nudges) }
             .onChange(of: nudges) { _, plan in
                 Task { await nudgesStore.updatePlan(plan) }
