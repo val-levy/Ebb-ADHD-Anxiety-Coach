@@ -7,7 +7,7 @@ struct ReflectView: View {
     var body: some View {
         NavigationStack {
             SceneScreen(title: "Reflect", tips: .reflect, mascotAt: 0.78) {
-                BrainDumpCard().mascotTip(.brainDump).floating().popIn(0)
+                BrainDumpCard().lockedUntilSignIn("Sign in to save brain dumps").mascotTip(.brainDump).floating().popIn(0)
 
                 SectionLabel("What helped this week")
                 HelpedCard().mascotTip(.helped).popIn(1)

@@ -44,10 +44,11 @@ struct RootView: View {
         }
         .sheet(item: $session.sheet) { sheet in
             switch sheet {
-            case .signIn(let reason): SignInSheet(reason: reason).environmentObject(session)
+            case .signIn(let reason): SignInSheet(reason: reason, onSkip: session.skipAction).environmentObject(session)
             case .setup: ProfileSetupSheet(model: ProfileSetupModel(session: session, appleName: session.appleName))
             }
         }
+        .fullScreenCover(isPresented: $session.panicBlocked, onDismiss: session.showQueuedSheet) { PanicBlockedView().environmentObject(session) }
         .fullScreenCover(item: $store.activeReset) { ResetView(reset: $0) }
         .onAppear { KeyboardDismisser.shared.install() }
     }

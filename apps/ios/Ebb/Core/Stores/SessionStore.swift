@@ -15,6 +15,14 @@ final class SessionStore: ObservableObject {
     /// Apple only sends the name on first sign-in; kept for the setup sheet.
     private(set) var appleName: String?
     private var needsFresh = false
+    /// Shown instead of a panic session once the anonymous ladder is used up.
+    @Published var panicBlocked = false
+    /// A sheet to open once the blocked cover finishes closing (SwiftUI drops sheets presented mid-dismiss).
+    var queuedSheet: AuthSheet?
+    func showQueuedSheet() { sheet = queuedSheet; queuedSheet = nil }
+    /// "Not now" on the before-panic prompt: starts the session it interrupted.
+    private(set) var skipAction: (() -> Void)?
+    private var promptAfterPanic = false
     var isSignedIn: Bool { profile != nil }
 
     let auth: AuthService
@@ -34,12 +42,32 @@ final class SessionStore: ObservableObject {
         switch UserDefaults.standard.string(forKey: "authSheet") {
         case "signIn": sheet = .signIn(reason: "Save your progress and keep what helps you")
         case "setup": sheet = .setup
+        case "blocked": panicBlocked = true
         default: break
         }
         #endif
     }
 
     func panicGate() -> PanicGate { .decide(usesSoFar: panicUses.value, signedIn: isSignedIn) }
+
+    /// Runs the panic ladder for a tap on "I'm panicking". `start` actually opens the session.
+    func panicTapped(start: @escaping () -> Void) {
+        let begin = { [weak self] in self?.recordPanicStart(); start() }
+        switch panicGate() {
+        case .free: begin()
+        case .promptAfter: promptAfterPanic = true; begin()
+        case .promptBeforeSkippable:
+            skipAction = { [weak self] in self?.sheet = nil; self?.skipAction = nil; begin() }
+            sheet = .signIn(reason: "Sign in to keep using panic help anytime")
+        case .blocked: panicBlocked = true
+        }
+    }
+
+    func panicSessionEnded() {
+        guard promptAfterPanic else { return }
+        promptAfterPanic = false
+        if !isSignedIn { sheet = .signIn(reason: "Glad you got through it. Sign in to keep panic help ready next time") }
+    }
 
     func recordPanicStart() { if !isSignedIn { panicUses.increment() } }
 

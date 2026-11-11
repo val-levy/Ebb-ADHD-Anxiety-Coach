@@ -15,6 +15,7 @@ struct ProfileView: View {
             SceneScreen(title: "Profile", tips: .profile, mascotAt: 0.66) {
                 ProfileHeaderCard(resets: resets.week.count, sessions: calm.history.count,
                                   badges: achievements.filter(\.earned).count)
+                    .lockedUntilSignIn("Sign in to make your profile")   // gear stays tappable: crisis lines live in Settings
                     .overlay(alignment: .topTrailing) {
                         Button { showingSettings = true } label: {
                             Image(systemName: "gearshape.fill").font(ClayFont.title2).foregroundStyle(.secondary).padding(16)
@@ -25,7 +26,7 @@ struct ProfileView: View {
                     .floating().popIn(0)
 
                 SectionLabel("Friends")
-                FriendsCard().mascotTip(.friends).popIn(1)
+                FriendsCard().lockedUntilSignIn("Sign in to add friends").mascotTip(.friends).popIn(1)
 
                 SectionLabel("Achievements")
                 LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {

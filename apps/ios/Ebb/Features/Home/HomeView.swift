@@ -4,6 +4,7 @@ import SwiftUI
 struct HomeView: View {
     @EnvironmentObject private var store: ResetStore
     @EnvironmentObject private var calm: CalmStore
+    @EnvironmentObject private var session: SessionStore
     /// The requested mode (picker taps and app-wide swipes write it); `shown` follows it with the right slide direction.
     @Binding var mode: CalmMode
     @State private var shown: CalmMode = .quick
@@ -15,7 +16,7 @@ struct HomeView: View {
     var body: some View {
         NavigationStack {
             SceneScreen(title: "Ebb", tips: .calm, mascotAt: 0.62) {
-                PanicHeroCard { calm.activeProgram = .panic }.mascotTip(.panic).floating().popIn(0)
+                PanicHeroCard { session.panicTapped { calm.activeProgram = .panic } }.mascotTip(.panic).floating().popIn(0)
 
                 ModePicker(mode: Binding(get: { shown }, set: { mode = $0 })).mascotTip(.modePicker).popIn(1)   // tap a side, or swipe anywhere
                 Text(shown.caption).font(ClayFont.footnote).foregroundStyle(.secondary)
@@ -25,14 +26,14 @@ struct HomeView: View {
                     case .quick:
                         ForEach(Array(Reset.allCases.enumerated()), id: \.element) { i, reset in
                             OptionTile(symbol: reset.symbol, title: reset.title, detail: reset.blurb) {
-                                store.activeReset = reset
+                                if session.requireSignIn(reason: "Sign in to use quick resets") { store.activeReset = reset }
                             }.popIn(i + 2)
                         }
                     case .guided:
                         ForEach(Array(CalmProgram.allCases.filter { $0 != .panic }.enumerated()), id: \.element) { i, program in
                             OptionTile(symbol: program.techniques(favorite: nil).first!.symbol,
                                        title: program.title, detail: "\(program.minutes) min · \(program.subtitle)") {
-                                calm.activeProgram = program
+                                if session.requireSignIn(reason: "Sign in to use guided sessions") { calm.activeProgram = program }
                             }.popIn(i + 2)
                         }
                     }
@@ -55,7 +56,7 @@ struct HomeView: View {
             }
             .task { await calm.load() }
             .onChange(of: mode) { _, next in select(next) }
-            .fullScreenCover(item: $calm.activeProgram) { GuidedSessionFlow(program: $0) }
+            .fullScreenCover(item: $calm.activeProgram, onDismiss: session.panicSessionEnded) { GuidedSessionFlow(program: $0) }
         }
     }
 

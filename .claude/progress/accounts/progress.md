@@ -15,3 +15,7 @@
 ## 2026-11-10 17:18 — Task 4: sign-in + profile setup sheets
 - SignInSheet (clay card, Apple button, Not now), ProfileSetupSheet (400ms availability check, 23505 → taken), AppleNonce. DEBUG launch arg -authSheet signIn|setup.
 - Sim screenshots: both sheets render. Apple sign-in untestable without paid account.
+
+## 2026-11-10 17:20 — Task 5: gating
+- Panic ladder in SessionStore.panicTapped; PanicBlockedView (988 call/text + Sign in); LockedGate on resets, guided rows, brain dump, profile header, friends. Settings gear stays open.
+- Sim: builds, blocked screen screenshot OK.
