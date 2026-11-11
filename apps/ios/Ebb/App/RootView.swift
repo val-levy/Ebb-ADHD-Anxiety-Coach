@@ -3,6 +3,7 @@ import SwiftUI
 /// Tab bar shell plus the app-wide overlays (nudge sheet, full-screen reset player).
 struct RootView: View {
     @EnvironmentObject private var store: ResetStore
+    @EnvironmentObject private var session: SessionStore
     @State private var tab: AppPage.Tab = .calm
     @State private var calmMode: CalmMode = .quick
     @State private var swipeLocks = 0
@@ -40,6 +41,12 @@ struct RootView: View {
         .buttonStyle(SquishyButtonStyle())
         .sheet(isPresented: $store.isNudgeShowing) {
             NudgeSheet().presentationDetents([.height(280)])
+        }
+        .sheet(item: $session.sheet) { sheet in
+            switch sheet {
+            case .signIn(let reason): SignInSheet(reason: reason).environmentObject(session)
+            case .setup: ProfileSetupSheet(model: ProfileSetupModel(session: session, appleName: session.appleName))
+            }
         }
         .fullScreenCover(item: $store.activeReset) { ResetView(reset: $0) }
         .onAppear { KeyboardDismisser.shared.install() }
