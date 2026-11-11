@@ -22,6 +22,13 @@ A cohesive refinement pass across Ebb’s primary iPhone flows, improving visual
 - references: `.claude/resources/references/design-references/clay/README.md`
 
 ## Session log
+### 2026-11-10 23:48 PST
+- Settings "everything is a bubble" fix: Account/Crisis/Schedule used Section outside a List, so .padding().clay() applied to every child (titles, rows, footers each got a raised bubble). Converted all three to SettingsCard (one card per section). Swipe-to-delete never worked outside List; schedule rows now have a long-press Remove. Built + installed on iPhone and simulator; not visually checked by agent (Settings not screenshotted).
+### 2026-11-10 19:05 PST → 2026-11-10 19:07 PST
+- Increased SettingsCard padding and group spacing, and raised minimum row height to reduce the compressed feel.
+- Restored navigation with a clay back button in the Settings scene header.
+- Verified: Simulator build/install/launch and iPhone build/install succeeded. The phone was not relaunched after install.
+
 ### 2026-11-10 18:59 PST → 2026-11-10 19:00 PST
 - Began the Settings conversion: replaced its stock Form canvas with the shared SceneScreen and added `SettingsCard` for breathing and check-in controls. Existing schedule, account, and crisis controls retain their behavior while their row styling is the next refinement.
 - Verified: XcodeGen regeneration, Simulator build/install/launch. iPhone build/install succeeded; auto-launch was denied while locked.

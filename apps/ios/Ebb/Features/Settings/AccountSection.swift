@@ -8,7 +8,7 @@ struct AccountSection: View {
     @State private var deleteFailed = false
 
     var body: some View {
-        Section("Account") {
+        SettingsCard(title: "Account") {
             if let p = session.profile {
                 LabeledContent("Signed in as", value: "@\(p.username)")
                 Button("Sign out") { Task { await session.signOut() } }

@@ -6,11 +6,11 @@ struct SettingsCard<Content: View>: View {
     @ViewBuilder let content: Content
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: 18) {
             SectionLabel(title)
             content
         }
-        .padding(16)
+        .padding(22)
         .clay()
     }
 }

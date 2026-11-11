@@ -2,6 +2,7 @@ import SwiftUI
 
 /// Settings: breathing pace, guard windows, planned nudges, medications. Schedules are saved; nothing fires them yet.
 struct SettingsView: View {
+    @Environment(\.dismiss) private var dismiss
     @AppStorage("guardWindows") private var guards = ScheduleItem.defaultGuards
     @AppStorage("nudgePlan") private var nudges = ScheduleItem.defaultNudges
     @AppStorage("medications") private var medications: [ScheduleItem] = []
@@ -11,6 +12,15 @@ struct SettingsView: View {
 
     var body: some View {
         SceneScreen(title: "Settings", tips: .profile, mascotAt: 0.66) {
+                Button { dismiss() } label: {
+                    Label("Back to Profile", systemImage: "chevron.left")
+                        .font(ClayFont.subheadline)
+                        .foregroundStyle(Theme.accent)
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 11)
+                        .clay(Theme.surface, radius: 20)
+                }
+                .accessibilityLabel("Back to Profile")
                 SettingsCard(title: "Breathing") {
                     VStack(alignment: .leading) {
                         Text("Breathing pace · \(Int(breathRate))").font(ClayFont.subheadline)

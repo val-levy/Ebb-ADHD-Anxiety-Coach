@@ -9,23 +9,23 @@ struct ScheduleSection: View {
     @Binding var items: [ScheduleItem]
 
     var body: some View {
-        Section {
+        SettingsCard(title: title) {
             ForEach($items) { $item in
                 NavigationLink { ScheduleItemEditor(item: $item, hasEnd: hasEnd) } label: {
                     VStack(alignment: .leading, spacing: 2) {
                         Text(item.name).opacity(item.on ? 1 : 0.45)
                         Text(times(item)).font(ClayFont.caption).foregroundStyle(.secondary)
                     }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                .contextMenu {
+                    Button("Remove", systemImage: "trash", role: .destructive) { items.removeAll { $0.id == item.id } }
                 }
             }
-            .onDelete { items.remove(atOffsets: $0) }
             Button("Add", systemImage: "plus.circle.fill") {
                 items.append(ScheduleItem(name: newName, start: ScheduleItem.at(9), end: hasEnd ? ScheduleItem.at(10) : nil))
             }
-        } header: {
-            Text(title)
-        } footer: {
-            Text(footer)
+            Text(footer).font(ClayFont.footnote).foregroundStyle(.secondary)
         }
     }
 
