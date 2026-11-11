@@ -1,3 +1,5 @@
+> **Superseded in part (2026-11-10):** the model now runs nightly on the server, not on the device. See [personal-model-design.md](personal-model-design.md) and [chat-companion-design.md](chat-companion-design.md).
+
 # Phase 2: Personalization
 
 Status: **not started** · Source: product-spec.md, "MVP scope" · Master: [roadmap.md](roadmap.md)

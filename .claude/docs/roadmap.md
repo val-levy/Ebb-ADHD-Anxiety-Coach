@@ -27,12 +27,14 @@ and what to build next. Each segment has its own doc.
 - Phase 1 → 2: 10 beta users, 3 weeks, under 1 false alarm a day.
 - Phase 2 → launch: personalized nudges rated "helped" more than rule-based ones.
 
-## Privacy decision (open)
-The spec promises "no server, no account, nothing leaves your phone" and leads its marketing with it. The app now
-syncs resets and calm sessions to Supabase, and the accounts plan adds sign-in and server profiles. Decide on purpose:
-- **Keep the server:** needed for friends and multiple phones; update the positioning and privacy label, and keep
-  raw sensor data (heart rate, motion, detection) on the device only.
-- **Go back to local-only:** drop Supabase sync and accounts; friends become out of scope.
+## Privacy decision (resolved: cloud)
+Ebb keeps the Supabase server. The chat companion sends messages to Claude via an Edge Function, and the personal
+model reads daily Apple Health aggregates on the server. Raw HealthKit samples never leave the phone. The positioning
+and privacy label still need updating before launch.
+
+## Phase 2 project docs
+- Chat companion: [design](chat-companion-design.md) · [plan](chat-companion-plan.md)
+- Personal model: [design](personal-model-design.md) · [plan](personal-model-plan.md)
 
 ## How to keep this current
 When a segment changes status, update its row here and the segment doc. Progress logs stay in `.claude/progress/`.
