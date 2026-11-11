@@ -1,5 +1,9 @@
 # Accounts progress
 
+## 2026-11-10 18:50 — Settings account controls
+- Account section now remains visible when anonymous with a `Sign in with Apple` action; signed-in profiles retain their handle, Sign out, and Delete account controls.
+- Simulator build/install/launch OK. iPhone build/install OK; automatic launch blocked because device was locked.
+
 ## 2026-11-10 17:25 — Tasks 6–7, final review
 - Task 6 (cc7f129): header/settings read server profile; single-flight ensureSignedIn. Sim mascot = lion from profiles row.
 - Task 7 (f29ccf6): delete-account fn (curl 401 / 200+rows gone / 403 anon); entitlement behind EBB_ENTITLEMENTS; CLAUDE.md, spec, roadmap updated.

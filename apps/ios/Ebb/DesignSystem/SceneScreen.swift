@@ -33,6 +33,8 @@ struct SceneScreen<Content: View>: View {
                 .id("top")
                 VStack(alignment: .leading, spacing: 14) { content }
                     .padding(20)
+                    // iOS's floating tab bar overlays scroll content; reserve a calm, tappable exit runway below cards.
+                    .safeAreaPadding(.bottom, 92)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .background(Theme.canvas, in: UnevenRoundedRectangle(topLeadingRadius: 32, topTrailingRadius: 32))
                     // The mascot hides behind the panel's top edge and peeks up over it.
