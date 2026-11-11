@@ -29,6 +29,9 @@ App points at the remote Supabase project `ebb` (ref bmhzzwzbpakjuybthjis, user'
 - files: Core/Services/AuthService.swift, Core/Services/SupabaseService.swift, Core/Stores/{SessionStore,NoteStore}.swift, Core/Models/Note.swift, Features/Auth/{SignInSheet,EmailSignInFields}.swift, Features/Reflect/BrainDumpCard.swift, supabase/migrations/20261110000500_notes.sql, apps/ios/Config.xcconfig (gitignored)
 
 ## Session log
+### 2026-11-11 15:39 PST
+- Merged "Save for later" into the one "Give me one small step" button: it computes the step, saves the dump, clears the draft. Built + launched on phone and simulator; not yet tapped by the user.
+- User asked for chatbot advice that learns from past chats/info. No chatbot exists (NextStepSuggester is a rule-based demo). Needs decisions: where it lives, LLM provider/key via Edge Function, consent for sending history. Not started.
 ### 2026-11-11 15:36 PST
 - Brain dump history: migration 0700 renames notes -> brain_dumps (many rows per user, id pk, created_at). NoteStore -> BrainDumpStore (local draft + saved dumps; draft clears only after a successful save). New "Save for later" button, "Past brain dumps" card (BrainDumpHistoryCard + BrainDumpRow: 2-line preview, tap to expand, trash to delete), new Tip .pastDumps. Verified on remote with curl: owner-only read, forged insert 403, other user's delete removes nothing. Simulator + phone built; phone launch refused (locked), UI not yet seen by agent or user.
 ### 2026-11-11 15:29 PST

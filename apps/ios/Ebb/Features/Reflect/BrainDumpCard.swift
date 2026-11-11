@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Brain dump: type (or dictate) everything spinning around, then get one small next step.
+/// Brain dump: type (or dictate) everything spinning around, then get one small next step. That tap also saves the dump and clears the box.
 struct BrainDumpCard: View {
     @EnvironmentObject private var dumps: BrainDumpStore
     @State private var nextStep: String?
@@ -24,17 +24,16 @@ struct BrainDumpCard: View {
                         Text("Everything that's spinning around…").foregroundStyle(.tertiary).padding(18).allowsHitTesting(false)
                     }
                 }
-            Button { withAnimation(.spring) { nextStep = NextStepSuggester.suggest(from: dumps.draft) } } label: {
+            Button {
+                withAnimation(.spring) { nextStep = NextStepSuggester.suggest(from: dumps.draft) }  // step first: saving clears the draft
+                Task { await dumps.saveDraft() }
+            } label: {
                 Label("Give me one small step", systemImage: "sparkles")
                     .font(ClayFont.headline).foregroundStyle(.white)
                     .frame(maxWidth: .infinity).padding(.vertical, 14)
                     .overlay { GrainOverlay().clipShape(.rect(cornerRadius: 22, style: .continuous)) }
                     .clay(Theme.clayTeal, radius: 22)
             }
-            Button("Save for later") { Task { await dumps.saveDraft() } }
-                .font(ClayFont.subheadline).foregroundStyle(.secondary)
-                .disabled(dumps.draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
-                .frame(maxWidth: .infinity)
             if let nextStep {
                 Text(nextStep).font(ClayFont.headline)
                     .frame(maxWidth: .infinity, alignment: .leading)

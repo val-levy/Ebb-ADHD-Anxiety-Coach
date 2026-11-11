@@ -7,7 +7,7 @@ struct BrainDumpHistoryCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             if dumps.dumps.isEmpty {
-                Text("Brain dumps you save for later show up here.")
+                Text("Your brain dumps show up here after you ask for a small step.")
                     .font(ClayFont.subheadline).foregroundStyle(.secondary)
             } else {
                 ForEach(dumps.dumps) { dump in
