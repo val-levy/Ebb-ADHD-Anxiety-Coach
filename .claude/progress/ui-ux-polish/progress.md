@@ -22,6 +22,8 @@ A cohesive refinement pass across Ebb’s primary iPhone flows, improving visual
 - references: `.claude/resources/references/design-references/clay/README.md`
 
 ## Session log
+### 2026-11-11 15:50 PST
+- Researched journaling/mood apps for a Reflect layout pass; notes in design-references/journaling-apps/README.md. No code changed; layout proposal awaiting user pick.
 ### 2026-11-11 15:48 PST
 - Brain dump pill trailing icon: mic.fill → bubble.left.and.bubble.right.fill (chat). Rebuilt sim + phone.
 ### 2026-11-11 15:47 PST
