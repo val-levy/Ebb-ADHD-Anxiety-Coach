@@ -4,6 +4,7 @@ import SwiftUI
 @main
 struct EbbApp: App {
     @StateObject private var store = ResetStore(service: SupabaseService.shared)
+    @StateObject private var session = SessionStore()
     @StateObject private var calm = CalmStore(service: SupabaseService.shared)
 
     var body: some Scene {
@@ -11,10 +12,11 @@ struct EbbApp: App {
             RootView()
                 .environmentObject(store)
                 .environmentObject(calm)
+                .environmentObject(session)
                 .font(ClayFont.body)   // handwritten clay type by default; styled text uses ClayFont.*
-                .task { await store.load() }
+                .task { await session.start(); await store.load() }
                 #if DEBUG
-                .onAppear { Tip.selfCheck(); PanicGate.selfCheck() }
+                .onAppear { Tip.selfCheck(); PanicGate.selfCheck(); Username.selfCheck() }
                 #endif
         }
     }

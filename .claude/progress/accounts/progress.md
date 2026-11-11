@@ -7,3 +7,7 @@
 ## 2026-11-10 17:16 — Task 2: PanicGate + KeychainCounter
 - Ladder 0→promptAfter, 1→promptBeforeSkippable, 2+→blocked; signed in→free. Counter in Keychain (survives reinstall).
 - selfCheck failed on stub, passes now (sim). iPhone install OK; launch refused because phone was locked.
+
+## 2026-11-10 17:17 — Task 3: AuthService + SessionStore
+- Profile/Username models, AuthService (Apple link → identity_already_exists → fresh sign-in), SessionStore (offline-safe start, panic gate, requireSignIn).
+- Sim: app opens to home, no asserts.

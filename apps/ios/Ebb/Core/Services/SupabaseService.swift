@@ -5,7 +5,7 @@ import Supabase
 final class SupabaseService {
     static let shared = SupabaseService()
 
-    private let client: SupabaseClient
+    let client: SupabaseClient  // internal: AuthService needs auth + functions
 
     private init() {
         let info = Bundle.main.infoDictionary!
