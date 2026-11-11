@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Per-user personalization of reset length, breathing pace, daily meditation reminder time, nudge quiet windows and reset order, learned nightly from the user's own app, chat and Apple Health data.
+**Goal:** Per-user personalization of reset length, breathing pace, daily meditation reminder time, nudge quiet windows, reset order and sleep targets (sleep need, wake time, bedtime), learned nightly from the user's own app, chat and Apple Health data.
 
 **Architecture:** iOS `HealthSyncService` uploads daily HealthKit aggregates to `health_daily`. A nightly Edge Function `personalize` (pg_cron, 03:30 user-local) runs pure TypeScript estimators (robust baselines, med-phase labels, Beta/Thompson bandits, slot scoring) and writes one `user_tuning` row. iOS `TuningStore` reads it (UserDefaults cache) and existing stores and `NudgeScheduler` ask it instead of constants.
 
@@ -14,7 +14,9 @@
 
 ## Global Constraints
 
-- No AI/LLM in this project. No chat text. Never remind anyone to take medication; med times are context only.
+- No AI/LLM in this project: the model computes numbers, the chat phrases them. Never remind anyone to take medication; med times are context only.
+- UI copy follows `.claude/docs/wording-and-safety.md`. Personalized UI may explain a reason in wellness terms ("You slept less than usual, so today's session is a bit longer."); never a condition name, diagnosis or cardiac term.
+- Sleep targets: need = median sleep of nights before best-rated days (min 14 nights + 5 best days, default 480, bounds 360–600); wake = 28-day median `sleep_end` (min 10 nights; weekday/weekend split if > 60 min apart); bedtime = wake − need − latency (default 15). Move ≤ 15 min (times) / 10 min (need) per night. User-set values always win.
 - Defaults until data minimums: baselines need 10 days of a metric; bandits need 8 rated sessions per context; per-phase baselines need 8 points per phase; slot scoring needs 14 days of app use.
 - Grids: guided length {60,120,180,240,300,420} s; quick {60,90,120} s; pace {4.5,5,5.5,6,6.5} bpm, inhale:exhale 4:6.
 - Bounds: length 60–600 s; pace 4–7 bpm; reminders 07:00–22:00 unless user-set; move at most one grid step and 45 min per night; elevated state never shortens a session.
@@ -73,6 +75,24 @@
 - [ ] **Step 2:** `deno test supabase/functions/personalize` → FAIL. **Step 3: Implement.** **Step 4:** → PASS.
 - [ ] **Step 5: Commit** (one per estimator). Log progress.
 
+### Task 2b: Sleep-target estimator
+
+**Files:**
+- Create: `supabase/functions/personalize/sleep.ts`
+- Test: `supabase/functions/personalize/sleep_test.ts`
+
+**Interfaces:**
+- `type Night = {day: string, sleepMin: number, start: string, end: string, latencyMin?: number, weekend: boolean}`; `type DayScore = {day: string, score: number}` (mood/focus − anxiety + helped-rate, from `load.ts`).
+- `sleepNeed(nights: Night[], scores: DayScore[], prev: number | null): number` — default 480 below minimums; bounds 360–600; ≤ 10 min move from `prev`.
+- `wakeTime(nights: Night[], prev: {weekday: string, weekend: string} | null): {weekday: string, weekend: string}` — same value for both unless medians differ > 60 min; ≤ 15 min move.
+- `bedtime(wake: string, needMin: number, latencyMin = 15): string` (wraps past midnight).
+- `sleepTargets(nights, scores, prev, userSet: {wake?: string, bedtime?: string} | null): UserTuning["sleep"]` — user-set wins.
+- Produces: `user_tuning.sleep` (design §9), consumed by chat `daily-plan` and `EveningCheckIn`.
+
+- [ ] **Step 1: Tests:** 13 nights → need 480 (default); 20 nights where the best-day nights average 470 → 470 when `prev` 470, and from `prev` 480 → 470 (within 10), from `prev` 420 → 430 (clamped); need never < 360 or > 600; weekday wake 07:00 / weekend 08:30 → split; 10 weekday nights at 07:00 + 4 weekend at 07:30 → both `"07:00"` (overall median), no split; `bedtime("07:00", 480)` === `"22:45"`; `bedtime("06:00", 540, 30)` === `"20:30"`; night-shift wake 15:00 → bedtime 06:45, no crash; `userSet.wake = "06:30"` → returned wake is `"06:30"` regardless of data; no sleep data at all → `{need_min: 480, wake: null, bedtime: null}`.
+- [ ] **Step 2:** `deno test supabase/functions/personalize/sleep_test.ts` → FAIL. **Step 3: Implement.** **Step 4:** → PASS.
+- [ ] **Step 5: Commit.** Log progress.
+
 ### Task 3: Edge Function `personalize`
 
 **Files:**
@@ -81,7 +101,7 @@
 
 **Interfaces:**
 - `load.ts`: `loadUser(sb, userId): Promise<UserData>` — 60 days of `health_daily`, `log_entries`, `resets`, `calm_sessions`, `session_metrics`, `nudge_events`, active `medications`, previous `user_tuning`, `profiles.timezone`.
-- `compute.ts`: `computeTuning(d: UserData, now: Date): UserTuning` — pure; uses Task 2 modules; fills `evidence` per target with the exact numbers ("guided 240s: helped 9/11; 120s: 3/7"); `arms` carried forward.
+- `compute.ts`: `computeTuning(d: UserData, now: Date): UserTuning` — pure; uses Task 2 and 2b modules; fills `evidence` per target with the exact numbers ("guided 240s: helped 9/11; 120s: 3/7"); `arms` carried forward.
 - `index.ts`: POST, service key required; `{local_hour}` → users whose tz local hour == 3 now; for each: load → compute → upsert `user_tuning`; per-user try/catch so one failure doesn't stop the batch; logs ids + durations only (no health values).
 
 - [ ] **Step 1: Tests with fixtures:** zero-data user → all defaults, `evidence` empty; 20 rated guided sessions favouring 300 s with prior default 180 → tuning moves to 240 (one step) not 300; elevated-state data never yields shorter length than calm; personalization_enabled false in previous row → row written with defaults and flag preserved; short-sleep night → reminder earlier but ≤ 45 min move… (note: short-sleep may move up to 2h per spec §6.3 — implement as: short-sleep override bypasses the 45-min daily rail but stays in bounds; test both).
@@ -145,6 +165,7 @@
 
 **Copy:** section footer "Ebb adjusts session length, breathing pace and reminder time to what works for you. Uses only your own data." Reset button "Reset to defaults" (`.confirmationDialog`). Empty evidence: "Using defaults until Ebb learns more." Connect card: "Connect Apple Health so sessions fit your sleep and heart rate."
 
+- [ ] **Step 0:** `PersonalizeSection` lists the sleep targets with an editable wake time and bedtime (user-set wins, stored server-side as `userSet`). Copy follows wording-and-safety.md.
 - [ ] **Step 1:** Implement (views read stores only). **Step 2:** sim + iPhone; check toggle off → defaults immediately, toggle on → last tuning back; Why-this shows evidence lines; Reduce Motion respected.
 - [ ] **Step 3: Commit.** Log progress.
 

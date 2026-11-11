@@ -22,18 +22,21 @@ when the daily meditation reminder fires, when nudges are allowed, and which res
 
 The personal model changes **app behaviour and normal app UI**, which the user said may suggest things
 ("bringing people into the app to do their daily meditation" is fine). It never writes chat text and never
-talks about medication as an instruction. Concretely:
+talks about medication as an instruction. Wording rules: [wording-and-safety.md](wording-and-safety.md).
+Concretely:
 
 - ✅ "Time for your 2-minute reset" reminder at 3:40pm because that's when the user's afternoon dip shows up.
 - ✅ Breathing session defaults to 4 minutes at 5.5 breaths/min for this user.
 - ❌ Any reminder about taking medication. Ebb does not remind people to take meds (that's medical territory;
   the user has phone reminders for that). The model only *uses* dose times as context.
-- ❌ Any text that explains a health reason ("your HRV is low, so…"). Personalized UI just *is* personalized;
-  the "Why this time?" sheet (§8) shows facts only, phrased as patterns.
+- ✅ (updated 2026-11-10) Personalized UI text may give the reason in wellness terms: "You slept less than usual,
+  so today's session is a bit longer." "Your afternoon dip usually starts around 3."
+- ❌ A reason phrased as a condition or diagnosis ("your HRV is low, which means anxiety", "because of your
+  ADHD…"), or anything cardiac-sounding. See wording-and-safety.md §2.
 
 ## 3. Goals
 
-1. Personalize five things, each with a safe default that's used until there's enough data:
+1. Personalize six things, each with a safe default that's used until there's enough data:
 
    | Target | Default today | Personalized from |
    |---|---|---|
@@ -42,6 +45,7 @@ talks about medication as an instruction. Concretely:
    | **Daily meditation reminder time** | none / user-set | sleep end time, sleep quality, when sessions were done and helped, med timing |
    | **Nudge windows** (when detection nudges may fire — detection itself is Phase 1's Watch work) | always on, capped | anxiety/panic times of day, med timing, sleep debt, snoozes/dismissals |
    | **First reset offered** | fixed order | helped-rate per kind × time of day × state |
+| **Sleep targets** (sleep need, wake time, bedtime) | none / user-set | nights followed by the best-rated days, sleep end times (§6.5) |
 
 2. Learn **per user**, from their own data only. No pooled model across users in v1.
 3. Get better as more data types are given; work with any subset (only app usage, or + Health, or + meds, etc.).
@@ -152,10 +156,23 @@ panic/reset rate are computed **per phase** when each phase has ≥ 8 points; ot
 - **Reset ordering:** helped-rate per reset kind with Beta(1,1), per (time-of-day bucket × state); sort by
   posterior mean, keep the user's favourite (if set) first.
 
+### 6.5 Sleep targets
+
+- **Estimated sleep need:** median sleep minutes of nights followed by the user's best-rated days (top third by
+  mean of logged mood/focus, minus anxiety, plus reset helped-rate that day). Minimum: 14 nights with sleep data
+  and ≥ 5 "best" days; until then default 480 min. Bounds 360–600 min.
+- **Consistent wake time:** median `sleep_end` over the last 28 days, weekdays and weekends tracked separately
+  when they differ by > 60 min. Minimum 10 nights.
+- **Bedtime target** = wake time − sleep need − median sleep latency (inBed → asleep, default 15 min).
+- Bounded: each target moves at most 15 min (time) or 10 min (need) per night. User-set values always win.
+- Feeds: the chat's daily plan and evening check-in (chat spec §7.3), and wind-down timing. This project only
+  computes the numbers; the chat phrases them.
+
 ## 7. Safety rails (all targets)
 
-- Hard bounds: lengths 1–10 min, pace 4–7 bpm, reminders 07:00–22:00 unless the user sets otherwise.
-- Max change per night per target (one grid step / 45 min).
+- Hard bounds: lengths 1–10 min, pace 4–7 bpm, reminders 07:00–22:00 unless the user sets otherwise, sleep need
+  360–600 min.
+- Max change per night per target (one grid step / 45 min; sleep times 15 min, sleep need 10 min).
 - If data for a target goes stale (> 14 days without new points) revert to default over 7 days.
 - Anything flagged `elevated` never *shortens* a session.
 - Kill switch: Settings toggle; plus a server flag `personalization_enabled` in `user_tuning` to disable remotely.
@@ -183,6 +200,7 @@ user_tuning (one row per user)
   meditation_reminder time null, reminder_reason jsonb,
   quiet_windows jsonb  -- [{start:"23:00", end:"07:30"}...]
   reset_order jsonb    -- { "morning": ["sigh","breathe",...], ... }
+  sleep       jsonb    -- { "need_min": 470, "wake": {"weekday":"07:00","weekend":"08:30"}, "bedtime": {...}, "latency_min": 15 }
   evidence jsonb       -- per target: the numbers shown in "Why this?"
   arms jsonb           -- bandit posteriors (α,β per arm per context), for the next night
 
@@ -193,7 +211,8 @@ nudge_events, session_metrics  (new, own-row RLS)
 
 **User decided:** a per-user model that personalizes breathing length from heart rate, meditation timing from
 sleep, adjusts around medication timing, uses the full metric list, improves with more data; normal app UI may
-suggest (reminders), AI may not.
+suggest (reminders); (2026-11-10) personalized UI may explain a reason in wellness terms; sleep targets added.
+Medication reminders stay banned.
 
 **My calls (check these):**
 1. Runs server-side nightly in an Edge Function (user said local vs remote was open; server keeps one data home
