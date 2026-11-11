@@ -7,6 +7,10 @@ final class BrainDumpStore: ObservableObject {
         didSet { UserDefaults.standard.set(draft, forKey: "dump") }
     }
     @Published private(set) var dumps: [BrainDump] = []
+    /// False once a page comes back short: nothing older is left to fetch.
+    @Published private(set) var hasMore = true
+    private var loadingMore = false
+    private let pageSize = 20
     private let service: SupabaseService
 
     init(service: SupabaseService) {
@@ -18,9 +22,21 @@ final class BrainDumpStore: ObservableObject {
     func load() async {
         let me = service.currentUserId?.uuidString
         let owner = UserDefaults.standard.string(forKey: "dumpOwner")
-        if let owner, owner != me { draft = ""; dumps = [] }
+        if let owner, owner != me { draft = ""; dumps = []; hasMore = true }
         if let me { UserDefaults.standard.set(me, forKey: "dumpOwner") }
-        if let loaded = try? await service.brainDumps() { dumps = loaded }
+        if let page = try? await service.brainDumps(limit: pageSize) {
+            dumps = page; hasMore = page.count == pageSize
+        }
+    }
+
+    /// Next older page. Called when the last row scrolls into view.
+    func loadMore() async {
+        guard hasMore, !loadingMore, let cursor = dumps.last?.createdAt else { return }
+        loadingMore = true; defer { loadingMore = false }
+        guard let page = try? await service.brainDumps(before: cursor, limit: pageSize) else { return }
+        let known = Set(dumps.map(\.id))
+        dumps += page.filter { !known.contains($0.id) }
+        hasMore = page.count == pageSize
     }
 
     /// Files the draft as a past dump and clears it. A failed save keeps the draft so nothing is lost.

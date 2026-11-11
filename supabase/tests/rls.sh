@@ -9,6 +9,11 @@ curl -sf "$API/rest/v1/calm_sessions" -H "apikey: $KEY" -H "Authorization: Beare
 curl -sf "$API/rest/v1/nudge_events" -H "apikey: $KEY" -H "Authorization: Bearer $A" -H 'Content-Type: application/json' -d '{"origin":"planned","outcome":"shown"}'
 [ "$(curl -s "$API/rest/v1/calm_sessions?select=id" -H "apikey: $KEY" -H "Authorization: Bearer $B")" = "[]" ] || { echo "FAIL: B sees A's calm session"; exit 1; }
 [ "$(curl -s "$API/rest/v1/nudge_events?select=id" -H "apikey: $KEY" -H "Authorization: Bearer $B")" = "[]" ] || { echo "FAIL: B sees A's nudge event"; exit 1; }
+curl -sf "$API/rest/v1/brain_dumps" -H "apikey: $KEY" -H "Authorization: Bearer $A" -H 'Content-Type: application/json' -d '{"body":"secret"}'
+curl -sf "$API/rest/v1/chat_messages" -H "apikey: $KEY" -H "Authorization: Bearer $A" -H 'Content-Type: application/json' -d '{"role":"user","body":"secret"}'
+for t in brain_dumps chat_messages; do
+  [ "$(curl -s "$API/rest/v1/$t?select=id" -H "apikey: $KEY" -H "Authorization: Bearer $B")" = "[]" ] || { echo "FAIL: B sees A's $t"; exit 1; }
+done
 SEEN_A=$(curl -s "$API/rest/v1/resets?select=id" -H "apikey: $KEY" -H "Authorization: Bearer $A")
 SEEN_B=$(curl -s "$API/rest/v1/resets?select=id" -H "apikey: $KEY" -H "Authorization: Bearer $B")
 [ "$SEEN_A" != "[]" ] || { echo "FAIL: A can't read own row"; exit 1; }

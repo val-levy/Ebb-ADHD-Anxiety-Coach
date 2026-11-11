@@ -1,8 +1,9 @@
 import SwiftUI
 
-/// Saved brain dumps, newest first, as short previews.
+/// The three newest saved brain dumps as short previews, with a link to the full list.
 struct BrainDumpHistoryCard: View {
     @EnvironmentObject private var dumps: BrainDumpStore
+    private let previewCount = 3
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
@@ -10,8 +11,14 @@ struct BrainDumpHistoryCard: View {
                 Text("Your brain dumps show up here after you ask for a small step.")
                     .font(ClayFont.subheadline).foregroundStyle(.secondary)
             } else {
-                ForEach(dumps.dumps) { dump in
+                ForEach(dumps.dumps.prefix(previewCount)) { dump in
                     BrainDumpRow(dump: dump) { Task { await dumps.delete(dump) } }
+                }
+                if dumps.dumps.count > previewCount || dumps.hasMore {
+                    NavigationLink { BrainDumpsScreen() } label: {
+                        Label("See all", systemImage: "chevron.right")
+                            .font(ClayFont.subheadline).foregroundStyle(Theme.accent)
+                    }
                 }
             }
         }

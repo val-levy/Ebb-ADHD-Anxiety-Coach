@@ -33,8 +33,10 @@ final class SupabaseService {
 
     var currentUserId: UUID? { client.auth.currentUser?.id }
 
-    func brainDumps(limit: Int = 50) async throws -> [BrainDump] {
-        try await client.from("brain_dumps").select("id,body,created_at")
+    /// One page, newest first. `before` is the keyset cursor (created_at of the last row seen), so deep pages stay on the index.
+    func brainDumps(before: Date? = nil, limit: Int = 20) async throws -> [BrainDump] {
+        let query = client.from("brain_dumps").select("id,body,created_at")
+        return try await (before.map { query.lt("created_at", value: $0) } ?? query)
             .order("created_at", ascending: false).limit(limit).execute().value
     }
 
