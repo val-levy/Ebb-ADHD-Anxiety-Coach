@@ -24,6 +24,31 @@ final class AuthService {
         }
     }
 
+    /// Email + password. Anonymous users are upgraded in place (keeps history); an existing email signs in instead.
+    func signInWithEmail(_ email: String, password: String) async throws {
+        if isAnonymous, client.auth.currentSession != nil {
+            do {
+                _ = try await client.auth.update(user: UserAttributes(email: email, password: password))
+                _ = try await client.auth.refreshSession()  // old JWT still says is_anonymous; profile RLS rejects it
+                return
+            }
+            catch let e as Supabase.AuthError where e.errorCode == .emailExists {}
+        }
+        _ = try await client.auth.signIn(email: email, password: password)
+    }
+
+    /// Emails a reset link that reopens the app at ebb://reset.
+    func sendPasswordReset(email: String) async throws {
+        try await client.auth.resetPasswordForEmail(email, redirectTo: URL(string: "ebb://reset"))
+    }
+
+    /// Turns the reset link into a signed-in recovery session.
+    func openRecoveryLink(_ url: URL) async throws { _ = try await client.auth.session(from: url) }
+
+    func setPassword(_ password: String) async throws {
+        _ = try await client.auth.update(user: UserAttributes(password: password))
+    }
+
     func signInFresh(idToken: String, nonce: String) async throws {
         _ = try await client.auth.signInWithIdToken(credentials: .init(provider: .apple, idToken: idToken, nonce: nonce))
     }
@@ -34,7 +59,11 @@ final class AuthService {
         return rows.first
     }
 
-    func createProfile(_ p: Profile) async throws { try await client.from("profiles").insert(p).execute() }
+    /// Refreshes first: a JWT minted while anonymous keeps is_anonymous=true until it expires, and profiles RLS rejects it.
+    func createProfile(_ p: Profile) async throws {
+        _ = try await client.auth.refreshSession()
+        try await client.from("profiles").insert(p).execute()
+    }
 
     func updateProfile(_ p: Profile) async throws {
         try await client.from("profiles").update(p).eq("id", value: p.id).execute()

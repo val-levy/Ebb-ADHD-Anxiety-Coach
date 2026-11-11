@@ -31,6 +31,17 @@ final class SupabaseService {
             .gte("created_at", value: date).execute().value
     }
 
+    /// nil when the user has no note yet (or is anonymous: RLS returns nothing).
+    func note() async throws -> Note? {
+        let rows: [Note] = try await client.from("notes").select("body,updated_at").limit(1).execute().value
+        return rows.first
+    }
+
+    func save(_ note: Note) async throws {
+        guard client.auth.currentUser?.isAnonymous == false else { return }
+        try await client.from("notes").upsert(note, onConflict: "user_id").execute()
+    }
+
     func insert(_ entry: ResetEntry) async throws {
         try await client.from("resets").insert(entry).execute()
     }

@@ -2,8 +2,10 @@ import AuthenticationServices
 import Foundation
 
 enum AuthSheet: Identifiable {
-    case signIn(reason: String), setup
-    var id: String { if case .signIn(let r) = self { return "signIn:\(r)" }; return "setup" }
+    case signIn(reason: String), setup, newPassword
+    var id: String {
+        switch self { case .signIn(let r): "signIn:\(r)"; case .setup: "setup"; case .newPassword: "newPassword" }
+    }
 }
 
 /// Who is signed in, which auth sheet is up, and the panic-ladder decision.
@@ -102,6 +104,42 @@ final class SessionStore: ObservableObject {
         } catch {
             signInMessage = "Sign in didn't work. Check your connection and try again."
         }
+    }
+
+    func completeEmail(_ email: String, password: String) async {
+        do {
+            try await auth.signInWithEmail(email.trimmingCharacters(in: .whitespaces), password: password)
+            signInMessage = nil
+            profile = try await auth.fetchProfile()
+            sheet = profile == nil ? .setup : nil
+        } catch {
+            signInMessage = "That didn't work. Check your email and password (6+ characters) and try again."
+        }
+    }
+
+    func sendPasswordReset(email: String) async {
+        let e = email.trimmingCharacters(in: .whitespaces)
+        guard !e.isEmpty else { signInMessage = "Type your email above first, then tap Forgot password."; return }
+        do {
+            try await auth.sendPasswordReset(email: e)
+            signInMessage = "If that email has an account, a reset link is on its way. Open it on this phone."
+        } catch { signInMessage = "Couldn't send the email. Wait a minute and try again." }
+    }
+
+    /// The reset link reopens Ebb at ebb://reset; sign in with it, then ask for a new password.
+    func handleURL(_ url: URL) async {
+        guard url.scheme == "ebb" else { return }
+        do { try await auth.openRecoveryLink(url); sheet = .newPassword }
+        catch { signInMessage = "That reset link expired. Ask for a new one."; sheet = auth.isAnonymous ? .signIn(reason: "Sign in to Ebb") : nil }
+    }
+
+    func setNewPassword(_ password: String) async -> Bool {
+        do {
+            try await auth.setPassword(password)
+            profile = try? await auth.fetchProfile()
+            sheet = profile == nil ? .setup : nil
+            return true
+        } catch { return false }
     }
 
     /// Optimistic edit: shows at once, rolls back if the save fails.

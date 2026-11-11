@@ -50,11 +50,13 @@ struct RootView: View {
             switch sheet {
             case .signIn(let reason): SignInSheet(reason: reason, onSkip: session.skipAction).environmentObject(session)
             case .setup: ProfileSetupSheet(model: ProfileSetupModel(session: session, appleName: session.appleName))
+            case .newPassword: NewPasswordSheet().environmentObject(session)
             }
         }
         .fullScreenCover(isPresented: $session.panicBlocked, onDismiss: session.showQueuedSheet) { PanicBlockedView().environmentObject(session) }
         .fullScreenCover(item: $store.activeReset) { ResetView(reset: $0) }
         .onAppear { KeyboardDismisser.shared.install() }
+        .onOpenURL { url in Task { await session.handleURL(url) } }
         .task { await nudges.start(plan: nudgePlan) }
     }
 }

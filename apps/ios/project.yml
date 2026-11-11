@@ -20,6 +20,7 @@ targets:
       path: Ebb/Info.plist
       properties:
         UILaunchScreen: {}
+        CFBundleURLTypes: [{CFBundleURLSchemes: [ebb]}]
         UIAppFonts: [Grandstander-SemiBold.ttf, Grandstander-Bold.ttf, Grandstander-ExtraBold.ttf, Grandstander-Black.ttf]
         SUPABASE_URL: $(SUPABASE_URL)
         SUPABASE_ANON_KEY: $(SUPABASE_ANON_KEY)

@@ -5,3 +5,6 @@ SUPABASE_ANON_KEY = paste-anon-key-here
 
 // Sign in with Apple entitlement. Leave empty on a free team; set to Ebb/Ebb.entitlements on a paid account.
 EBB_ENTITLEMENTS =
+
+// Your Apple team ID (Xcode > Settings > Accounts), needed to build onto a phone.
+DEVELOPMENT_TEAM =

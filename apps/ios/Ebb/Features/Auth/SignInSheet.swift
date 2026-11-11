@@ -27,6 +27,7 @@ struct SignInSheet: View {
             .signInWithAppleButtonStyle(.black)
             .frame(height: 52)
             .clipShape(Capsule())
+            EmailSignInFields()
             if let onSkip {
                 Button("Not now", action: onSkip).font(ClayFont.headline).foregroundStyle(.secondary)
             }

@@ -1,0 +1,37 @@
+# Remote Supabase + email auth + synced notes
+
+## Status
+in progress (prototype on simulator; phone install pending, device was unavailable)
+
+## Summary
+App points at the remote Supabase project `ebb` (ref bmhzzwzbpakjuybthjis, user's personal account, not Lōkahi). Email+password sign-in added alongside Apple; brain dump synced to a `notes` table under RLS.
+
+## To do
+- [ ] Install latest build on the iPhone (it was unavailable at last attempt) and test: profile Save, brain-dump restore after reinstall, forgot-password link
+- [ ] Sign in with Apple: needs a PAID Apple developer account (free team can't enable the capability, so the phone can't produce a token). Then follow AGENTS.md "Paid Apple account flip". Apple secret is believed unnecessary for the native ID-token flow (unverified)
+- [ ] Chat UI (table chat_messages exists with RLS; no service/model code yet)
+- [ ] Phone-number sign-in: dropped by user (most will use Apple)
+- [ ] Custom SMTP: Supabase free tier + default email can't customise templates and rate-limits reset emails
+
+## Background knowledge
+- Anonymous→email upgrade uses auth.update(user:) then MUST refreshSession(): the old JWT keeps is_anonymous=true and profiles insert RLS returns 403 (verified with curl).
+- Email confirmations off (config.toml, pushed with `supabase config push`).
+- NoteStore keeps UserDefaults "dump" as offline cache; debounced 1s upsert; anonymous users don't upload.
+- Agent permissions deny any .env* file.
+
+- Password reset: default email link -> ebb:// URL scheme (project.yml CFBundleURLTypes, redirect allowed in config.toml) -> SessionStore.handleURL -> NewPasswordSheet. Code-based reset was impossible: email templates can't be edited on the free tier with default SMTP.
+- DEVELOPMENT_TEAM lives in Config.xcconfig (gitignored, personal team F2DD8TWKAQ); xcconfig comments are // not #.
+- supabase/migrations 0500 notes, 0600 chat_messages; both verified via curl against remote (other user sees [], forged insert 403).
+
+## Resources
+- files: Core/Services/AuthService.swift, Core/Services/SupabaseService.swift, Core/Stores/{SessionStore,NoteStore}.swift, Core/Models/Note.swift, Features/Auth/{SignInSheet,EmailSignInFields}.swift, Features/Reflect/BrainDumpCard.swift, supabase/migrations/20261110000500_notes.sql, apps/ios/Config.xcconfig (gitignored)
+
+## Session log
+### 2026-11-11 15:26 PST
+- Added forgot password (link flow), chat_messages table, DEVELOPMENT_TEAM in Config.xcconfig. Builds clean; simulator updated; phone not installed (unavailable). Reset email request returns 200 but the full link round trip was not tested (needs a real inbox on the phone).
+### 2026-11-10 23:46 PST
+- "Couldn't save" again: the email user existed (not anonymous) with no profile. A replayed insert as that user in SQL (rolled back) succeeded, so it was the client. The persisted session held a JWT minted while anonymous; on relaunch the app went straight to setup with it, and RLS returned 403. Fix: createProfile refreshes the session first. Rebuilt for iPhone + simulator; not yet confirmed by the user.
+### 2026-11-10 23:44 PST
+- Linked remote project, pushed 6 migrations, config, delete-account function.
+- Verified remotely with curl: auth settings, anon upgrade + profile insert (403 old token / 201 refreshed), notes RLS (other user sees [], forged insert 403).
+- Built and launched on iPhone + simulator. Email sign-in on device not yet confirmed by user. Remote rls.sh not run (curl checks instead).
