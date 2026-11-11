@@ -9,7 +9,10 @@ enum AuthSheet: Identifiable {
 /// Who is signed in, which auth sheet is up, and the panic-ladder decision.
 @MainActor
 final class SessionStore: ObservableObject {
-    @Published var profile: Profile?
+    @Published var profile: Profile? {
+        // MascotPeek / TipCoach read this key; keep it in step with the account.
+        didSet { if let a = profile?.animal { UserDefaults.standard.set(a.rawValue, forKey: "profileAnimal") } }
+    }
     @Published var sheet: AuthSheet?
     @Published var signInMessage: String?
     /// Apple only sends the name on first sign-in; kept for the setup sheet.
@@ -96,6 +99,22 @@ final class SessionStore: ObservableObject {
         } catch {
             signInMessage = "Sign in didn't work. Check your connection and try again."
         }
+    }
+
+    /// Optimistic edit: shows at once, rolls back if the save fails.
+    func save(_ edited: Profile) async {
+        let old = profile
+        profile = edited
+        do { try await auth.updateProfile(edited) } catch { profile = old }
+    }
+
+    func signOut() async {
+        try? await auth.signOut()
+        profile = nil
+    }
+
+    func deleteAccount() async -> Bool {
+        do { try await auth.deleteAccount(); profile = nil; return true } catch { return false }
     }
 
     func refreshProfile() async { profile = try? await auth.fetchProfile() }

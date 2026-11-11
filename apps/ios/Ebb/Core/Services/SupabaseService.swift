@@ -14,9 +14,17 @@ final class SupabaseService {
     }
 
     /// Anonymous session = no signup screen, but RLS still scopes rows to this install.
-    func ensureSignedIn() async throws {
-        if client.auth.currentSession == nil { _ = try await client.auth.signInAnonymously() }
+    /// Single-flight: launch calls this from several stores at once; without sharing one task each
+    /// caller would create its own anonymous user.
+    @MainActor func ensureSignedIn() async throws {
+        if client.auth.currentSession != nil { return }
+        if let pending = signingIn { return try await pending.value }
+        let task = Task { _ = try await client.auth.signInAnonymously() }
+        signingIn = task
+        defer { signingIn = nil }
+        try await task.value
     }
+    @MainActor private var signingIn: Task<Void, Error>?
 
     func resets(since date: Date) async throws -> [ResetEntry] {
         try await client.from("resets").select("kind,helped,created_at")
