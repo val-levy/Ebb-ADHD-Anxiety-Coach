@@ -1,5 +1,10 @@
 # Accounts progress
 
+## 2026-11-10 17:25 — Tasks 6–7, final review
+- Task 6 (cc7f129): header/settings read server profile; single-flight ensureSignedIn. Sim mascot = lion from profiles row.
+- Task 7 (f29ccf6): delete-account fn (curl 401 / 200+rows gone / 403 anon); entitlement behind EBB_ENTITLEMENTS; CLAUDE.md, spec, roadmap updated.
+- Sim build OK; iPhone build+install OK, launch refused (phone locked). Not verified: Apple sign-in on device, 3 live panic taps.
+
 ## 2026-11-10 17:14 — Task 1: profiles migration
 - profiles table, RLS (anon insert blocked), username_available(), private.apple_tokens; Apple provider + manual linking in config.toml.
 - supabase test db → 9/9 PASS.
