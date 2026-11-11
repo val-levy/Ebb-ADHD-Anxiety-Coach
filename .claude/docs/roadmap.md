@@ -32,6 +32,9 @@ Ebb keeps the Supabase server. The chat companion sends messages to Claude via a
 model reads daily Apple Health aggregates on the server. Raw HealthKit samples never leave the phone. The positioning
 and privacy label still need updating before launch.
 
+## Wording decision
+- 2026-11-10: suggestions allowed under wellness wording; see [wording-and-safety.md](wording-and-safety.md).
+
 ## Phase 2 project docs
 - Chat companion: [design](chat-companion-design.md) · [plan](chat-companion-plan.md)
 - Personal model: [design](personal-model-design.md) · [plan](personal-model-plan.md)
