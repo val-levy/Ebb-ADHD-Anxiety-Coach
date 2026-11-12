@@ -22,7 +22,8 @@ A cohesive refinement pass across Ebb’s primary iPhone flows, improving visual
 - references: `.claude/resources/references/design-references/clay/README.md`
 
 ## Session log
-### 2026-11-11 21:05 PST
+### 2026-11-11 21:20 PST
+- Dark-mode duplicate tile colors: `claySea` is lavender in dark, which matched the 4th Guided tile. 4th Guided tile is now `clayPink`. Built; not yet installed or viewed in dark mode.### 2026-11-11 21:05 PST
 - Saved the tile look as the app design direction: `.claude/resources/design/clay-characters.md` plus a binding "Design direction" bullet in AGENTS.md (lists what is still to restyle).
 ### 2026-11-11 20:50 PST
 - Fun tile names: Reset (Slow Tide, Sigh Balloon, Pebble Hunt, Noodle Break) and CalmProgram (Soft Landing, Tiny Roots, Mind Playground, Cool Splash). Panic keeps its plain title; `CalmTechnique` names (real technique names inside a session) unchanged. Built; installed on phone.

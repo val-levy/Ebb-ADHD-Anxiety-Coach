@@ -33,7 +33,7 @@ enum Theme {
 
     /// Solid clay colors the option tiles cycle through, one set per page (white text stays readable on all of them).
     static let quickPalette = [clayTeal, clayOrange, clayBlue, clayPink]
-    static let guidedPalette = [claySea, Color(red: 0.84, green: 0.58, blue: 0.14), Color(red: 0.36, green: 0.65, blue: 0.40), clayLavender]
+    static let guidedPalette = [claySea, Color(red: 0.84, green: 0.58, blue: 0.14), Color(red: 0.36, green: 0.65, blue: 0.40), clayPink]   // not lavender: claySea is lavender in dark mode
 
     static let accent = clayTeal
     static let calmGradient = LinearGradient(colors: [skyTop, clayTeal], startPoint: .top, endPoint: .bottom)
