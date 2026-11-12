@@ -14,7 +14,7 @@ struct NudgeSheet: View {
                     .font(.system(size: 44, weight: .bold))
                     .foregroundStyle(.white)
                     .frame(width: 82, height: 82)
-                    .background(Circle().fill(Theme.clayLavender))
+                    .background(Circle().fill(Theme.claySea))
                     .overlay(GrainOverlay(opacity: 0.14).clipShape(Circle()))
 
                 Text("Want a small pause?")

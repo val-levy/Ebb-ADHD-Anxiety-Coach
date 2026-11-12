@@ -28,9 +28,12 @@ enum Theme {
     static let clayPink = Color(red: 0.93, green: 0.45, blue: 0.62)
     static let clayLavender = Color(red: 0.55, green: 0.47, blue: 0.86)   // panic: calm, never red
 
+    /// Panic / guided color: sea-glass blue by day (fits the sky and hills), lavender at night. Never red.
+    static let claySea = dynamic(light: (0.31, 0.61, 0.79), dark: (0.55, 0.47, 0.86))
+
     static let accent = clayTeal
     static let calmGradient = LinearGradient(colors: [skyTop, clayTeal], startPoint: .top, endPoint: .bottom)
-    static let panicGradient = LinearGradient(colors: [clayLavender, clayBlue], startPoint: .top, endPoint: .bottom)
+    static let panicGradient = LinearGradient(colors: [claySea, clayBlue], startPoint: .top, endPoint: .bottom)
 
     static let cardRadius: CGFloat = 24
     static let heroRadius: CGFloat = 32

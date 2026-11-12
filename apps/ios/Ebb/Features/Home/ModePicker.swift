@@ -17,7 +17,7 @@ struct ModePicker: View {
                         .background {
                             if mode == m {
                                 Color.clear
-                                    .clay(m == .quick ? Theme.clayTeal : Theme.clayLavender, radius: 24)
+                                    .clay(m == .quick ? Theme.clayTeal : Theme.claySea, radius: 24)
                                     .overlay { GrainOverlay().clipShape(.rect(cornerRadius: 24, style: .continuous)) }
                                     .matchedGeometryEffect(id: "blob", in: blob)
                             }

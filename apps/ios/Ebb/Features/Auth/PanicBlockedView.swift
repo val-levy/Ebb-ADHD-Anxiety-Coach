@@ -34,7 +34,7 @@ struct PanicBlockedView: View {
     private func link(_ title: String, _ symbol: String, _ url: String) -> some View {
         Link(destination: URL(string: url)!) {
             Label(title, systemImage: symbol).font(ClayFont.headline).foregroundStyle(.white)
-                .frame(maxWidth: .infinity).padding(14).clay(Theme.clayLavender, radius: 26)
+                .frame(maxWidth: .infinity).padding(14).clay(Theme.claySea, radius: 26)
         }
     }
 }

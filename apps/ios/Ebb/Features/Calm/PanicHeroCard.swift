@@ -9,7 +9,7 @@ struct PanicHeroCard: View {
             HStack(spacing: 14) {
                 Image(systemName: "hand.raised.fill")
                     .font(ClayFont.system(size: 24, weight: .bold))
-                    .foregroundStyle(Theme.clayLavender)
+                    .foregroundStyle(Theme.claySea)
                     .frame(width: 54, height: 54)
                     .background(.white.opacity(0.92), in: .circle)
                     .shadow(color: .black.opacity(0.12), radius: 3, y: 2)
@@ -25,7 +25,7 @@ struct PanicHeroCard: View {
             .padding(.vertical, 14)
             .padding(.horizontal, 16)
             .overlay { GrainOverlay().clipShape(.capsule) }
-            .clay(Theme.clayLavender, radius: 44)
+            .clay(Theme.claySea, radius: 44)
         }
         .accessibilityHint("Starts a guided session")
     }
