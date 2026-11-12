@@ -27,3 +27,11 @@ enum FaceMood {
         }
     }
 }
+
+extension FaceMood {
+    /// A stable mood for any content symbol name, so each item keeps its own face.
+    static func forSymbol(_ symbol: String) -> FaceMood {
+        let all: [FaceMood] = [.calm, .puff, .sigh, .alert, .cheer, .steady, .wink, .brr]
+        return all[symbol.unicodeScalars.reduce(0) { $0 + Int($1.value) } % all.count]
+    }
+}

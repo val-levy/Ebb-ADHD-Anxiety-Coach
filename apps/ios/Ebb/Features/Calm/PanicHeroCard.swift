@@ -15,7 +15,7 @@ struct PanicHeroCard: View {
                     Text("I'll walk you through it · \(CalmProgram.panic.minutes) min").font(ClayFont.footnote).opacity(0.9)
                 }
                 Spacer(minLength: 0)
-                Image(systemName: "chevron.right").clayGlyph().font(ClayFont.system(size: 16, weight: .bold)).opacity(0.8)
+                ClayIcon(kind: .chevronRight, size: 20).opacity(0.85)
             }
             .multilineTextAlignment(.leading)
             .foregroundStyle(.white)

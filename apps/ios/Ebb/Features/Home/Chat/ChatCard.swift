@@ -11,7 +11,7 @@ struct ChatCard: View {
                     Text("Say what's on your mind. I'll jot it down.").font(ClayFont.footnote).foregroundStyle(.secondary)
                 }
                 Spacer()
-                Image(systemName: "chevron.right").clayGlyph().foregroundStyle(.secondary)
+                ClayIcon(kind: .chevronRight, size: 18).foregroundStyle(.secondary)
             }
             .foregroundStyle(.primary)
             .padding().frame(maxWidth: .infinity).clay()

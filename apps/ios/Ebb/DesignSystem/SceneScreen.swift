@@ -53,10 +53,13 @@ struct SceneScreen<Content: View>: View {
                             .padding(.leading, 20)
                     }
                     .overlay(alignment: .topTrailing) {
-                        Button("Replay tips", systemImage: "questionmark.circle.fill") {
+                        Button {
                             withAnimation { seen.removeAll { Tip(rawValue: $0)?.screen == tips } }
+                        } label: {
+                            Text("?").font(ClayFont.system(size: 20, weight: .black)).foregroundStyle(Theme.claySea)
+                                .frame(width: 32, height: 32).background(.white, in: .circle)
                         }
-                        .labelStyle(.iconOnly).clayGlyph().font(ClayFont.system(size: 28)).foregroundStyle(.white)
+                        .accessibilityLabel("Replay tips")
                         .shadow(color: .black.opacity(0.15), radius: 4, y: 2)
                         .alignmentGuide(.top) { $0[.bottom] + 10 }
                         .padding(.trailing, 20)

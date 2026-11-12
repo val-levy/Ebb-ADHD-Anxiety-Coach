@@ -18,7 +18,7 @@ struct StressorChips: View {
         HStack(spacing: 8) {
             ForEach(items) { s in
                 Button { Task { await logs.logStressor(s) } } label: {
-                    Label(s.title, systemImage: s.symbol).font(ClayFont.footnote)
+                    Label { Text(s.title) } icon: { ClayFace(mood: .forSymbol(s.symbol), ink: .white.opacity(0.9), size: 26).frame(width: 30, height: 30).background(Theme.iconColors(for: s.symbol).0, in: .circle) }.font(ClayFont.footnote)
                         .padding(.horizontal, 10).padding(.vertical, 8).clay()
                 }
             }

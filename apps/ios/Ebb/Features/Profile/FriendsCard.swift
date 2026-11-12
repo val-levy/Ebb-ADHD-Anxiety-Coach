@@ -13,7 +13,7 @@ struct FriendsCard: View {
                 Spacer(minLength: 0)
             }
             ShareLink(item: "Come breathe with me on Ebb 🌿") {
-                Label("Invite a friend", systemImage: "plus")
+                ClayLabel("Invite a friend", .plus)
                     .font(ClayFont.headline).frame(maxWidth: .infinity).padding(.vertical, 12)
                     .foregroundStyle(.white).background(Theme.accent, in: Capsule())
             }

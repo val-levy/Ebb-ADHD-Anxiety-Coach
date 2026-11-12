@@ -10,10 +10,10 @@ struct SessionControls: View {
             Button {
                 voiceOn.toggle()
             } label: {
-                Label(voiceOn ? "Voice on" : "Voice off", systemImage: voiceOn ? "speaker.wave.2.fill" : "speaker.slash.fill")
+                ClayLabel(voiceOn ? "Voice on" : "Voice off", voiceOn ? .speakerOn : .speakerOff, size: 24)
             }
             Button(action: onSkip) {
-                Label("Next", systemImage: "forward.end.fill")
+                ClayLabel("Next", .next, size: 24)
             }
         }
         .font(ClayFont.headline)

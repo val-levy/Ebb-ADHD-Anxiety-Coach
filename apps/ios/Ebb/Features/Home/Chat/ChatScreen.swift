@@ -21,7 +21,7 @@ struct ChatScreen: View {
                 TextField("Say anything…", text: $draft, axis: .vertical).lineLimit(1...4)
                     .padding(12).clay(Theme.surface, radius: 20)
                 Button { let t = draft; draft = ""; Task { await chat.send(t) } } label: {
-                    Image(systemName: "arrow.up.circle.fill").clayGlyph().font(.system(size: 34)).foregroundStyle(Theme.accent)
+                    ClayIcon(kind: .arrowUp, size: 24).foregroundStyle(.white).frame(width: 44, height: 44).background(Theme.accent, in: .circle)
                 }
                 .disabled(draft.trimmingCharacters(in: .whitespaces).isEmpty || chat.isSending)
                 .accessibilityLabel("Send")

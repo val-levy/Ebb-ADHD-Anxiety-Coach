@@ -7,7 +7,7 @@ struct ClayBackButton: View {
 
     var body: some View {
         Button { dismiss() } label: {
-            Label("Back to \(label)", systemImage: "chevron.left")
+            ClayLabel("Back to \(label)", .chevronLeft, size: 18)
                 .font(ClayFont.subheadline)
                 .foregroundStyle(Theme.accent)
                 .padding(.horizontal, 16)

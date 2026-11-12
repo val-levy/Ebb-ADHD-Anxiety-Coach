@@ -18,7 +18,7 @@ struct ProfileView: View {
                     .lockedUntilSignIn("Sign in to make your profile")   // gear stays tappable: crisis lines live in Settings
                     .overlay(alignment: .topTrailing) {
                         Button { showingSettings = true } label: {
-                            Image(systemName: "gearshape.fill").clayGlyph().font(ClayFont.title2).foregroundStyle(.secondary).padding(16)
+                            ClayIcon(kind: .gear, size: 28).foregroundStyle(.secondary).padding(16)
                         }
                         .accessibilityLabel("Settings")
                     }

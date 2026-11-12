@@ -19,12 +19,12 @@ struct ScheduleSection: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                 }
                 .contextMenu {
-                    Button("Remove", systemImage: "trash", role: .destructive) { items.removeAll { $0.id == item.id } }
+                    Button(role: .destructive) { items.removeAll { $0.id == item.id } } label: { ClayLabel("Remove", .trash) }
                 }
             }
-            Button("Add", systemImage: "plus.circle.fill") {
+            Button {
                 items.append(ScheduleItem(name: newName, start: ScheduleItem.at(9), end: hasEnd ? ScheduleItem.at(10) : nil))
-            }
+            } label: { ClayLabel("Add", .plus) }
             Text(footer).font(ClayFont.footnote).foregroundStyle(.secondary)
         }
     }

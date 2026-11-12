@@ -20,9 +20,9 @@ struct ReflectBlocks: View {
                     Button("Reset order") { withAnimation { saved = "" } }.font(ClayFont.footnote)
                 }
                 Spacer()
-                Button(editing ? "Done" : "Edit layout", systemImage: editing ? "checkmark" : "arrow.up.arrow.down") {
+                Button {
                     withAnimation { editing.toggle() }
-                }
+                } label: { ClayLabel(editing ? "Done" : "Edit layout", editing ? .check : .swap, size: 18) }
                 .font(ClayFont.subheadline).foregroundStyle(Theme.accent)
             }
             VStack(alignment: .leading, spacing: 14) {
@@ -75,7 +75,7 @@ struct ReflectBlocks: View {
 
     /// The only draggable spot, so the rest of the page scrolls like normal. Drag it; the block follows.
     private func grip(_ module: ReflectModule, in order: [ReflectModule]) -> some View {
-        Image(systemName: "line.3.horizontal").clayGlyph()
+        ClayIcon(kind: .grip, size: 22)
             .font(ClayFont.system(size: 18)).foregroundStyle(.secondary)
             .frame(width: 44, height: 44)
             .contentShape(Rectangle())

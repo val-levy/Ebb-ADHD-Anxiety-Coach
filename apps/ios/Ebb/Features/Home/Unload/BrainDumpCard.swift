@@ -15,7 +15,7 @@ struct BrainDumpCard: View {
                         .font(ClayFont.footnote).foregroundStyle(.secondary).lineLimit(1)
                 }
                 Spacer()
-                Image(systemName: "bubble.left.and.bubble.right.fill").clayGlyph().foregroundStyle(Theme.clayTeal)
+                ClayIcon(kind: .chat, size: 26).foregroundStyle(Theme.clayTeal)
             }
             .padding(14)
             .clay()

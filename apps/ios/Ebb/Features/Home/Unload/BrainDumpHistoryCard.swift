@@ -16,7 +16,7 @@ struct BrainDumpHistoryCard: View {
                 }
                 if dumps.dumps.count > previewCount || dumps.hasMore {
                     NavigationLink { BrainDumpsScreen() } label: {
-                        Label("See all", systemImage: "chevron.right")
+                        ClayLabel("See all", .chevronRight, size: 16)
                             .font(ClayFont.subheadline).foregroundStyle(Theme.accent)
                     }
                 }

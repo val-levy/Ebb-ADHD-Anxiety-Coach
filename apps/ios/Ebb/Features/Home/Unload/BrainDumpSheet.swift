@@ -38,7 +38,7 @@ struct BrainDumpSheet: View {
                 focused = false
                 Task { await dumps.saveDraft() }
             } label: {
-                Label("Give me one small step", systemImage: "sparkles")
+                ClayLabel("Give me one small step", .sparkle)
                     .font(ClayFont.headline).foregroundStyle(.white)
                     .frame(maxWidth: .infinity).padding(.vertical, 14)
                     .overlay { GrainOverlay().clipShape(.rect(cornerRadius: 22, style: .continuous)) }

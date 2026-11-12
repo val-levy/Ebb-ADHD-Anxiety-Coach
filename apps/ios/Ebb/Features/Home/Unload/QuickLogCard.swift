@@ -11,7 +11,7 @@ struct QuickLogCard: View {
                 Text("Log something").font(ClayFont.headline)
             }
             Button { Task { await logs.logDose() } } label: {
-                Label("Log a dose", systemImage: "pills.fill").font(ClayFont.body)
+                ClayLabel("Log a dose", .pill, tint: Theme.clayOrange).font(ClayFont.body)
                     .frame(maxWidth: .infinity).padding(.vertical, 12).background(Theme.tile, in: .capsule)
             }
             Text("Something weighing on you?").font(ClayFont.footnote).foregroundStyle(.secondary)

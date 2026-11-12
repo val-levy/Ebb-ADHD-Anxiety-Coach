@@ -6,7 +6,7 @@ struct TechniqueHeader: View {
 
     var body: some View {
         VStack(spacing: 6) {
-            Label(technique.title, systemImage: technique.symbol).font(ClayFont.headline)
+            Label { Text(technique.title) } icon: { ClayFace(mood: .forSymbol(technique.symbol), ink: .white.opacity(0.85), size: 30) }.font(ClayFont.headline)
             Text(technique.why)
                 .font(ClayFont.footnote)
                 .multilineTextAlignment(.center)

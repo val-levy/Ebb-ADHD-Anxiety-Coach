@@ -9,7 +9,7 @@ struct ModePicker: View {
         HStack(spacing: 6) {
             ForEach(CalmMode.allCases) { m in
                 Button { withAnimation(.spring(response: 0.4, dampingFraction: 0.7)) { mode = m } } label: {
-                    Label(m.title, systemImage: m.symbol)
+                    HStack(spacing: 6) { ClayFace(mood: m == .quick ? .puff : .calm, ink: mode == m ? .white.opacity(0.85) : .black.opacity(0.45), size: 26); Text(m.title) }
                         .font(ClayFont.subheadline.bold())
                         .foregroundStyle(mode == m ? .white : .secondary)
                         .frame(maxWidth: .infinity)

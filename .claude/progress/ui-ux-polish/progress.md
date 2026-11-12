@@ -22,7 +22,8 @@ A cohesive refinement pass across Ebb’s primary iPhone flows, improving visual
 - references: `.claude/resources/references/design-references/clay/README.md`
 
 ## Session log
-### 2026-11-11 21:45 PST
+### 2026-11-11 22:20 PST
+- Custom icons replace SF Symbols for controls: `ClayIconKind` (Core/Models), `ClayIconShape` (drawn paths), `ClayIcon` (round-ended noodle strokes + emboss), `ClayLabel`. Content icons (tiles, stressor chips, technique headers, panic-blocked links, nudge header) now wear `ClayFace` via `FaceMood.forSymbol`; `ClayIconTile` is a clay lump with a face. The ? button is a white chunky "?" disc. Kept native: tab bar icons, apple.logo (brand). Old `ClayGlyph`/`ClayLabelStyle` stay only for those. Built, installed on phone; Calm viewed on simulator, rest not viewed.### 2026-11-11 21:45 PST
 - SF icons now match the clay theme: new `ClayGlyph` (`.clayGlyph()` heavy weight + highlight/shadow) and `ClayLabelStyle` applied app-wide in EbbApp; direct `Image(systemName:)` spots and icon-only labels use `.clayGlyph()`; `ClayIconTile` is now a solid clay lump with a white symbol. Tab bar icons stay native.
 - Tip bubble no longer hops when the page scrolls: `TipCoach` places the bubble against `anchor` (where the spot will rest after the reveal scroll, latched in SceneScreen per tip). Built, installed on phone; not viewed on device.### 2026-11-11 21:20 PST
 - Dark-mode duplicate tile colors: `claySea` is lavender in dark, which matched the 4th Guided tile. 4th Guided tile is now `clayPink`. Built; not yet installed or viewed in dark mode.### 2026-11-11 21:05 PST
