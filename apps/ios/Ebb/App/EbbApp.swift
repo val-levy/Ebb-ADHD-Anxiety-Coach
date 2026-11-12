@@ -11,6 +11,7 @@ struct EbbApp: App {
     @StateObject private var logs: LogStore
     @StateObject private var chat: ChatStore
     @StateObject private var memory = MemoryStore(service: SupabaseService.shared)
+    @StateObject private var chatStyle = ChatStyleStore(service: SupabaseService.shared)
     @StateObject private var calm = CalmStore(service: SupabaseService.shared)
 
     init() {
@@ -32,9 +33,10 @@ struct EbbApp: App {
                 .environmentObject(logs)
                 .environmentObject(chat)
                 .environmentObject(memory)
+                .environmentObject(chatStyle)
                 .font(ClayFont.body)   // handwritten clay type by default; styled text uses ClayFont.*
                 .task { await session.start(); await store.load(); await dumps.load(); await logs.load() }
-                .onChange(of: session.profile?.id) { Task { await dumps.load(); await logs.load(); await memory.load() } }  // sign in / out / delete swaps the note
+                .onChange(of: session.profile?.id) { Task { await dumps.load(); await logs.load(); await memory.load(); await chatStyle.load() } }  // sign in / out / delete swaps the note
                 #if DEBUG
                 .onAppear { Tip.selfCheck(); PanicGate.selfCheck(); Username.selfCheck(); DailyCount.selfCheck(); LogInsights.selfCheck() }
                 #endif

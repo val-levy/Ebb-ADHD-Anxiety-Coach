@@ -22,6 +22,10 @@ A cohesive refinement pass across Ebb’s primary iPhone flows, improving visual
 - references: `.claude/resources/references/design-references/clay/README.md`
 
 ## Session log
+### 2026-11-11 17:15 PST → 17:35 PST
+- Built (committed, NOT yet deployed): model routing in `chat/index.ts` (`isHard`: 30+ words or 2+ distress words -> `OPENROUTER_MODEL_HARD`, else `OPENROUTER_MODEL`; unset = same model) and an optional "How the chat talks" style note (`chat_style` table + RLS, `ChatStyleStore`, `ChatStyleSection` in Settings). The note is appended last as lowest-priority DATA; the prompt says it can only change tone/wording, and the function drops any note that mentions scope, rules, medication, prompts, tools etc. (`STYLE_BAD`, mirrored in `ChatStyleStore.willBeIgnored` so the UI says so). Output guards (`safeReply`) still run, so refusals can't be bypassed.
+- Verified: simulator build succeeds. NOT verified: migration push, function deploy, rls.sh, live routing/style behavior, phone build (auto-mode classifier blocked `supabase db push` / `functions deploy`; user must run them).
+- Decision: on-device (Apple Intelligence) chat dropped; ~4k-token context and a small model can't hold the scope-locked prompt, tools and memory. Recorded in AGENTS.md.
 ### 2026-11-11 17:00 PST → 17:10 PST
 - Chat now gets private pacing cues (`signalsLine` in `supabase/functions/chat/index.ts`): local time of day (client sends `tz`), gap since their last message (>2h = treat earlier feelings as past, ask how they are now), reply latency (slow = thinking hard, give space), message length, hedging words (unsure = easier questions, "no rush"). Cues only steer tone; the prompt forbids mentioning them or turning them into labels, numbers or conclusions (wording-and-safety rules).
 - `SupabaseService.chat` sends `tz`. Deployed the function; tested live with a throwaway account (deleted): replies stay warm and short for hedged/terse input. Phone + simulator builds succeeded, app installed and launched on the phone.

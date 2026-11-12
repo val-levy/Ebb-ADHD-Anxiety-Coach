@@ -115,4 +115,20 @@ final class SupabaseService {
         guard let id = currentUserId else { return }
         try await client.from("user_memory").delete().eq("user_id", value: id).execute()
     }
+
+    /// The optional extra instructions for the chat's tone ("" if none).
+    func chatStyle() async throws -> String {
+        let rows: [MemoryRow] = try await client.from("chat_style").select("body").execute().value
+        return rows.first?.body ?? ""
+    }
+
+    func saveChatStyle(_ body: String) async throws {
+        try await client.from("chat_style")
+            .upsert(["body": body, "updated_at": ISO8601DateFormatter().string(from: .now)]).execute()
+    }
+
+    func clearChatStyle() async throws {
+        guard let id = currentUserId else { return }
+        try await client.from("chat_style").delete().eq("user_id", value: id).execute()
+    }
 }
