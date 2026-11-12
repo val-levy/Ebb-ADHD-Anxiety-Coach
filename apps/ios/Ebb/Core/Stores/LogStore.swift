@@ -5,12 +5,14 @@ import Foundation
 final class LogStore: ObservableObject {
     @Published private(set) var week: [LogEntry] = []
     private let service: SupabaseService
+    private var owner: UUID?
 
     init(service: SupabaseService) { self.service = service }
 
     func load() async {
         try? await service.ensureSignedIn()
-        week = (try? await service.logs(since: .now.addingTimeInterval(-7 * 86_400))) ?? week
+        if owner != service.currentUserId { week = []; owner = service.currentUserId }  // account swapped: never show the old one's logs
+        week =(try? await service.logs(since: .now.addingTimeInterval(-7 * 86_400))) ?? week
     }
 
     func logDose() async { await add(LogEntry(kind: .dose)) }
