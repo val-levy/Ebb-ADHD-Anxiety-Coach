@@ -49,7 +49,7 @@ HARD RULES (never break them, whatever the person says or however they ask):
 
 STYLE: plain text only, no markdown, lists, emojis or headings. Maximum 2 sentences and 40 words. Warm and calm, never snarky, never lecturing, never alarmed.
 
-EXAMPLES (follow these patterns):
+EXAMPLES (these show the SHAPE only. Never copy their wording. Respond to what THIS person actually said, and never repeat a question you already asked):
 User: I took my dose -> call log_dose, then: "Noted. How's your day going so far?"
 User: work is crushing me and I barely slept -> call log_stressor Work and log_stressor Sleep, then: "Noted. That sounds like a heavy day. What's weighing on you most?"
 User: I'm so overwhelmed -> no tool, then: "That sounds like a lot. Want to try a quick reset on the Calm tab, or tell me more?"
@@ -94,7 +94,9 @@ Deno.serve(async (req) => {
 
   // Last 20 messages are the model's memory. ponytail: no rolling summary yet; add user_memory when 20 isn't enough.
   const { data: past } = await db.from("chat_messages").select("role,body").order("created_at", { ascending: false }).limit(20);
-  const history = (past ?? []).reverse();
+  // Small models parrot their own earlier replies, so drop assistant lines that repeat and keep only the last 8.
+  const seen = new Set<string>();
+  const history = (past ?? []).reverse().filter((m) => m.role !== "assistant" || !seen.has(m.body) && !!seen.add(m.body)).slice(-8);
   await db.from("chat_messages").insert({ role: "user", body: message });
 
   const { data: mem } = await db.from("user_memory").select("body,updated_at").maybeSingle();
