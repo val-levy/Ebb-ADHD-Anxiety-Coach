@@ -15,6 +15,8 @@ curl -sf "$API/rest/v1/life_logs" -H "apikey: $KEY" -H "Authorization: Bearer $A
 for t in brain_dumps chat_messages life_logs; do
   [ "$(curl -s "$API/rest/v1/$t?select=id" -H "apikey: $KEY" -H "Authorization: Bearer $B")" = "[]" ] || { echo "FAIL: B sees A's $t"; exit 1; }
 done
+curl -sf "$API/rest/v1/user_memory" -H "apikey: $KEY" -H "Authorization: Bearer $A" -H 'Content-Type: application/json' -d '{"body":"likes quiet"}'
+[ "$(curl -s "$API/rest/v1/user_memory?select=user_id" -H "apikey: $KEY" -H "Authorization: Bearer $B")" = "[]" ] || { echo "FAIL: B sees A's user_memory"; exit 1; }
 SEEN_A=$(curl -s "$API/rest/v1/resets?select=id" -H "apikey: $KEY" -H "Authorization: Bearer $A")
 SEEN_B=$(curl -s "$API/rest/v1/resets?select=id" -H "apikey: $KEY" -H "Authorization: Bearer $B")
 [ "$SEEN_A" != "[]" ] || { echo "FAIL: A can't read own row"; exit 1; }

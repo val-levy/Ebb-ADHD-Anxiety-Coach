@@ -22,6 +22,11 @@ A cohesive refinement pass across Ebb’s primary iPhone flows, improving visual
 - references: `.claude/resources/references/design-references/clay/README.md`
 
 ## Session log
+### 2026-11-11 16:45 PST
+- Chat memory. Migration `20261111000200_user_memory.sql` (one row per user, body <= 1000 chars, RLS). `chat` function: injects the memory (<= 900 chars) plus a computed line of the user's own patterns (best helped reset this month, top stressor this week) into the system prompt; every 10 new exchanges (20 rows) it rewrites the memory with one extra cheap call (replace, never append; run via EdgeRuntime.waitUntil). iOS: `MemoryStore`, `MemorySection` in Settings ("What Ebb remembers": edit/save/clear), service methods, account-swap guard.
+- Verified: sim + phone builds; `rls.sh` now PASSES locally (local DB had been missing migrations; `supabase migration up` fixed it), including user_memory.
+- NOT done: migration NOT pushed to remote and function NOT redeployed (waiting for user OK); memory rewrite and Settings card untested live; `deno check` of the function not possible locally (supabase-js npm resolution), so the new function code is type-unchecked.
+
 ### 2026-11-11 16:25 PST
 - Chat deployed and working. Free models failed (llama :free removed; gemma 429 upstream; nemotron blocked by data policy), so `OPENROUTER_MODEL=mistralai/mistral-nemo` (~$0.03/M tokens, secret on the remote). Verified with a throwaway account (deleted after): dose + Work tag logged, medication-advice question declined. Function returns only fixed error codes (`busy`, `model unavailable`); detail goes to server logs.
 - Not verified on the phone UI.

@@ -97,4 +97,22 @@ final class SupabaseService {
     func chat(_ message: String) async throws -> ChatReply {
         try await client.functions.invoke("chat", options: .init(body: ["message": message]))
     }
+
+    private struct MemoryRow: Codable { let body: String }
+
+    /// What the chat remembers about this person ("" if nothing yet).
+    func memory() async throws -> String {
+        let rows: [MemoryRow] = try await client.from("user_memory").select("body").execute().value
+        return rows.first?.body ?? ""
+    }
+
+    func saveMemory(_ body: String) async throws {
+        try await client.from("user_memory")
+            .upsert(["body": body, "updated_at": ISO8601DateFormatter().string(from: .now)]).execute()
+    }
+
+    func clearMemory() async throws {
+        guard let id = currentUserId else { return }
+        try await client.from("user_memory").delete().eq("user_id", value: id).execute()
+    }
 }

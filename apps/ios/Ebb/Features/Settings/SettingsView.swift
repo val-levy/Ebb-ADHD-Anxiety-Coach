@@ -31,6 +31,7 @@ struct SettingsView: View {
                 }
                 ScheduleSection(title: "Medication", footer: "Add what you take and when. Stimulants shift your baseline, so Ebb will learn your on- and off-medication patterns.",
                                 newName: "Medication", hasEnd: false, items: $medications)
+                MemorySection()
                 AccountSection()
                 CrisisSection()
             }

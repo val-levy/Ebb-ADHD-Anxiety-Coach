@@ -26,6 +26,14 @@ const TOOLS = [
   { type: "function", function: { name: "save_brain_dump", description: "Save the user's unloaded thoughts, in their own words.", parameters: { type: "object", properties: { body: { type: "string" } }, required: ["body"] } } },
 ];
 
+const RESET_NAMES: Record<string, string> = { breathe: "paced breathing", sigh: "physiological sigh", ground: "grounding", body: "body break" };
+const MEMORY_EVERY = 10;   // rewrite the memory after this many new messages
+const SUMMARIZER = `You keep a short memory about one person for their wellness chat. You get the current memory and recent messages.
+Rewrite the memory as plain short lines, 800 characters max, replacing (never just appending to) the old one.
+Keep only lasting things THEY said: preferred name, what they like or find helpful, recurring worries, how they like to be talked to.
+Drop one-off events and anything stale. Never store diagnoses or condition labels, medication details or advice, or guesses. Do not invent.
+Reply with the memory text only.`;
+
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json" } });
 
@@ -45,7 +53,10 @@ Deno.serve(async (req) => {
   const history = (past ?? []).reverse();
   await db.from("chat_messages").insert({ role: "user", body: message });
 
-  const messages: any[] = [{ role: "system", content: SYSTEM }, ...history.map((m) => ({ role: m.role, content: m.body })), { role: "user", content: message }];
+  const { data: mem } = await db.from("user_memory").select("body,updated_at").maybeSingle();
+  const system = SYSTEM + (mem?.body ? `\nWhat you remember about this person:\n${mem.body}` : "") + await statsLine(db);
+
+  const messages: any[] = [{ role: "system", content: system }, ...history.map((m) => ({ role: m.role, content: m.body })), { role: "user", content: message }];
   const actions: string[] = [];
   let reply = "";
 
@@ -72,6 +83,9 @@ Deno.serve(async (req) => {
   }
   reply = reply.trim() || "I'm here. Tell me more?";
   await db.from("chat_messages").insert({ role: "assistant", body: reply });
+  const job = maybeUpdateMemory(db, mem);
+  const rt = (globalThis as any).EdgeRuntime;
+  if (rt?.waitUntil) rt.waitUntil(job); else await job;   // don't make the user wait for it
   return json({ reply, actions });
 });
 
@@ -89,4 +103,45 @@ async function runTool(db: ReturnType<typeof createClient>, name: string, args: 
     if (!error) actions.push("Saved a brain dump");
   } else return "error: unknown tool or bad arguments";
   return error ? "error: could not save" : "ok";
+}
+
+/// One line of the person's own logged patterns, from tables the app already fills. Costs no stored tokens.
+async function statsLine(db: ReturnType<typeof createClient>): Promise<string> {
+  const month = new Date(Date.now() - 30 * 86400_000).toISOString();
+  const week = new Date(Date.now() - 7 * 86400_000).toISOString();
+  const [{ data: resets }, { data: logs }] = await Promise.all([
+    db.from("resets").select("kind").eq("helped", true).gte("created_at", month),
+    db.from("life_logs").select("tag").eq("kind", "stressor").gte("created_at", week),
+  ]);
+  const top = (xs: (string | null)[]) => {
+    const n: Record<string, number> = {};
+    for (const x of xs) if (x) n[x] = (n[x] ?? 0) + 1;
+    return Object.entries(n).sort((a, b) => b[1] - a[1])[0]?.[0];
+  };
+  const best = top((resets ?? []).map((r) => RESET_NAMES[r.kind] ?? null));
+  const stress = top((logs ?? []).map((l) => l.tag));
+  const parts = [best && `reset that helped most this month: ${best}`, stress && `stressor tagged most this week: ${stress}`].filter(Boolean);
+  return parts.length ? `\nTheir own logged patterns (mention only if relevant, never as cause): ${parts.join("; ")}.` : "";
+}
+
+/// Every MEMORY_EVERY new messages, rewrite the memory from the old one plus the new messages (capped, so it never grows).
+async function maybeUpdateMemory(db: ReturnType<typeof createClient>, mem: { body: string; updated_at: string } | null) {
+  try {
+    let q = db.from("chat_messages").select("role,body", { count: "exact" }).order("created_at", { ascending: false }).limit(MEMORY_EVERY * 2);
+    if (mem) q = q.gt("created_at", mem.updated_at);
+    const { data: recent, count } = await q;
+    if ((count ?? 0) < MEMORY_EVERY * 2) return;   // a message and its reply are two rows
+    const transcript = (recent ?? []).reverse().map((m) => `${m.role}: ${m.body}`).join("\n");
+    const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${Deno.env.get("OPENROUTER_API_KEY")}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ model: MODEL, provider: { data_collection: "deny" }, messages: [
+        { role: "system", content: SUMMARIZER },
+        { role: "user", content: `Current memory:\n${mem?.body || "(empty)"}\n\nRecent messages:\n${transcript}` },
+      ] }),
+    });
+    if (!res.ok) return;
+    const body = ((await res.json()).choices?.[0]?.message?.content ?? "").trim().slice(0, 900);
+    if (body) await db.from("user_memory").upsert({ body, updated_at: new Date().toISOString() });
+  } catch (e) { console.error("memory update failed", e); }
 }
