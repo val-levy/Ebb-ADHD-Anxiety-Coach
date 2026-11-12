@@ -95,7 +95,7 @@ final class SupabaseService {
 
     /// Sends one message to the `chat` Edge Function (model + logging tools run there).
     func chat(_ message: String) async throws -> ChatReply {
-        try await client.functions.invoke("chat", options: .init(body: ["message": message]))
+        try await client.functions.invoke("chat", options: .init(body: ["message": message, "tz": TimeZone.current.identifier]))
     }
 
     private struct MemoryRow: Codable { let body: String }

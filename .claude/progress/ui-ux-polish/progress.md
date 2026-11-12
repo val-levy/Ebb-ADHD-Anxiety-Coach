@@ -22,6 +22,10 @@ A cohesive refinement pass across Ebb’s primary iPhone flows, improving visual
 - references: `.claude/resources/references/design-references/clay/README.md`
 
 ## Session log
+### 2026-11-11 17:00 PST → 17:10 PST
+- Chat now gets private pacing cues (`signalsLine` in `supabase/functions/chat/index.ts`): local time of day (client sends `tz`), gap since their last message (>2h = treat earlier feelings as past, ask how they are now), reply latency (slow = thinking hard, give space), message length, hedging words (unsure = easier questions, "no rush"). Cues only steer tone; the prompt forbids mentioning them or turning them into labels, numbers or conclusions (wording-and-safety rules).
+- `SupabaseService.chat` sends `tz`. Deployed the function; tested live with a throwaway account (deleted): replies stay warm and short for hedged/terse input. Phone + simulator builds succeeded, app installed and launched on the phone.
+- Not verified: the >2h gap and slow-reply branches (need real waits); the heuristics are crude (ponytail: regex hedge count, median latency).
 ### 2026-11-11 17:50 PST
 - Chat made supportive: SUPPORT step (validate with soothing words + ONE specific follow-up question, 2-3 sentences / 60 words), no narrating of logging, one "Noted." only. Server strips narration, collapses repeated "Noted.", and parses/hides tool calls the model prints as text in either wrapper form (skips guessed "Other"). Extra stressor trigger words (can't switch off, piling, nobody gets me, lonely). Live-tested with throwaway accounts (deleted). Medication/off-topic still refuse.
 ### 2026-11-11 17:20 PST
