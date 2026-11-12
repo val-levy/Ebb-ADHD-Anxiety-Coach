@@ -22,6 +22,8 @@ A cohesive refinement pass across Ebb’s primary iPhone flows, improving visual
 - references: `.claude/resources/references/design-references/clay/README.md`
 
 ## Session log
+### 2026-11-11 20:30 PST
+- Tips now scroll their section into view: `SceneScreen` runs `ScrollControl.reveal` when a tip appears (spot must sit between 130pt from top and 130pt from bottom, else the page scrolls to center it; tall spots align to the top). `revealDelta` has a DEBUG self-check. Built and installed on phone; NOT yet tried on device (needs a tip below the fold, e.g. brain dump on Calm via the ? button).
 ### 2026-11-11 20:05 PST
 - Tiles now wear little clay faces (`FaceMood` model + `ClayFace` view) instead of SF Symbols; the panic pill wears a calm face too. Copy rewritten in plain words (no "60s ·" shorthand), length moved to a chip. Quick and Guided pages have separate palettes (`Theme.quickPalette` / `guidedPalette`). Checked on the simulator (light mode, Quick page); Guided page and dark mode not viewed. Still SF Symbols: Quick/Guided picker labels, tab bar.
 ### 2026-11-11 19:35 PST

@@ -80,6 +80,10 @@ struct SceneScreen<Content: View>: View {
             if let spot {
                 GeometryReader { geo in
                     TipCoach(tip: spot.tip, spot: geo[spot.bounds], screen: geo.size)
+                        .task(id: spot.tip) {   // bring an off-screen section into view first
+                            try? await Task.sleep(for: .milliseconds(150))
+                            control.reveal(geo[spot.bounds], screenHeight: geo.size.height)
+                        }
                 }
                 .ignoresSafeArea()
             }
