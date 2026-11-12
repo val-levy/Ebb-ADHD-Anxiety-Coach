@@ -28,6 +28,7 @@ struct ChatScreen: View {
             }
         }
         .toolbar(.hidden, for: .navigationBar)
-        .task { await chat.load() }
+        .onAppear { chat.reset() }
+        .onDisappear { chat.reset() }
     }
 }

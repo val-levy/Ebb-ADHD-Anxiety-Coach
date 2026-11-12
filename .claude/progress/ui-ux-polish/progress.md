@@ -22,6 +22,9 @@ A cohesive refinement pass across Ebb’s primary iPhone flows, improving visual
 - references: `.claude/resources/references/design-references/clay/README.md`
 
 ## Session log
+### 2026-11-11 16:20 PST
+- Chat prompt rewritten as a scope-locked spec in `supabase/functions/chat/index.ts`: fixed REFUSAL and CRISIS texts, crisis regex pre-check (no model call), post-reply guard (`safeReply`: med-advice, condition-claim, leak, markup, length), temperature 0.2, max_tokens 220. NOT deployed, NOT tested live (needs user go-ahead; memory migration also not pushed).
+- Chat window now blank on every enter/exit (`ChatStore.reset()`, `ChatScreen` onAppear/onDisappear); server still keeps last 20 messages + memory for the model. Built and installed on phone; sim build passes.
 ### 2026-11-11 16:45 PST
 - Chat memory. Migration `20261111000200_user_memory.sql` (one row per user, body <= 1000 chars, RLS). `chat` function: injects the memory (<= 900 chars) plus a computed line of the user's own patterns (best helped reset this month, top stressor this week) into the system prompt; every 10 new exchanges (20 rows) it rewrites the memory with one extra cheap call (replace, never append; run via EdgeRuntime.waitUntil). iOS: `MemoryStore`, `MemorySection` in Settings ("What Ebb remembers": edit/save/clear), service methods, account-swap guard.
 - Verified: sim + phone builds; `rls.sh` now PASSES locally (local DB had been missing migrations; `supabase migration up` fixed it), including user_memory.

@@ -8,18 +8,14 @@ final class ChatStore: ObservableObject {
     @Published private(set) var failed = false
     private let service: SupabaseService
     private let afterActions: () async -> Void   // refresh the stores the chat just wrote to
-    private var owner: UUID?
 
     init(service: SupabaseService, afterActions: @escaping () async -> Void) {
         self.service = service
         self.afterActions = afterActions
     }
 
-    func load() async {
-        try? await service.ensureSignedIn()
-        if owner != service.currentUserId { messages = []; owner = service.currentUserId }  // account swapped: never show the old chat
-        messages = (try? await service.chatMessages()) ?? messages
-    }
+    /// Blank window on every enter/exit. The model still has the last 20 messages and its memory server-side.
+    func reset() { messages = []; failed = false }
 
     func send(_ text: String) async {
         let text = text.trimmingCharacters(in: .whitespacesAndNewlines)
