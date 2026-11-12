@@ -10,7 +10,8 @@ struct ReflectView: View {
                 SectionLabel("Past brain dumps")
                 BrainDumpHistoryCard().lockedUntilSignIn("Sign in to save brain dumps").mascotTip(.pastDumps).popIn(1)
 
-                WeekSummaryCard().mascotTip(.helped).popIn(2)
+                QuickLogCard().lockedUntilSignIn("Sign in to keep your log").popIn(2)
+        WeekSummaryCard().mascotTip(.helped).popIn(3)
             }
         }
     }

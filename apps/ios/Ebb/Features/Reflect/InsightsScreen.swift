@@ -7,8 +7,12 @@ struct InsightsScreen: View {
             ClayBackButton(label: "Reflect")
             ResetsPerDayChart().popIn(0)
             CalmDropChart().popIn(1)
+            TimeOfDayChart().popIn(2)
+            StressorsChart().popIn(3)
+            MedicationLogChart().popIn(4)
+            MedVsStressorsCard().popIn(5)
             SectionLabel("What helped")
-            HelpedCard().popIn(2)
+            HelpedCard().popIn(6)
             SectionLabel("Patterns")
             PatternsSection()
         }

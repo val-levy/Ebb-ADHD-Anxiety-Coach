@@ -8,6 +8,7 @@ struct EbbApp: App {
     @StateObject private var nudges = NudgeStore(service: SupabaseService.shared)
     @StateObject private var session = SessionStore()
     @StateObject private var dumps = BrainDumpStore(service: SupabaseService.shared)
+    @StateObject private var logs = LogStore(service: SupabaseService.shared)
     @StateObject private var calm = CalmStore(service: SupabaseService.shared)
 
     var body: some Scene {
@@ -18,11 +19,12 @@ struct EbbApp: App {
                 .environmentObject(calm)
                 .environmentObject(session)
                 .environmentObject(dumps)
+                .environmentObject(logs)
                 .font(ClayFont.body)   // handwritten clay type by default; styled text uses ClayFont.*
-                .task { await session.start(); await store.load(); await dumps.load() }
-                .onChange(of: session.profile?.id) { Task { await dumps.load() } }  // sign in / out / delete swaps the note
+                .task { await session.start(); await store.load(); await dumps.load(); await logs.load() }
+                .onChange(of: session.profile?.id) { Task { await dumps.load(); await logs.load() } }  // sign in / out / delete swaps the note
                 #if DEBUG
-                .onAppear { Tip.selfCheck(); PanicGate.selfCheck(); Username.selfCheck(); DailyCount.selfCheck() }
+                .onAppear { Tip.selfCheck(); PanicGate.selfCheck(); Username.selfCheck(); DailyCount.selfCheck(); LogInsights.selfCheck() }
                 #endif
         }
     }

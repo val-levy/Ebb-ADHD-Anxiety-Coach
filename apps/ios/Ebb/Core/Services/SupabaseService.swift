@@ -76,4 +76,13 @@ final class SupabaseService {
     func insert(_ session: CalmSession) async throws {
         try await client.from("calm_sessions").insert(session).execute()
     }
+
+    func logs(since date: Date) async throws -> [LogEntry] {
+        try await client.from("life_logs").select("kind,tag,source,created_at")
+            .gte("created_at", value: date).execute().value
+    }
+
+    func insert(_ log: LogEntry) async throws {
+        try await client.from("life_logs").insert(log).execute()
+    }
 }

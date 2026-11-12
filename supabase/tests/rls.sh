@@ -11,7 +11,8 @@ curl -sf "$API/rest/v1/nudge_events" -H "apikey: $KEY" -H "Authorization: Bearer
 [ "$(curl -s "$API/rest/v1/nudge_events?select=id" -H "apikey: $KEY" -H "Authorization: Bearer $B")" = "[]" ] || { echo "FAIL: B sees A's nudge event"; exit 1; }
 curl -sf "$API/rest/v1/brain_dumps" -H "apikey: $KEY" -H "Authorization: Bearer $A" -H 'Content-Type: application/json' -d '{"body":"secret"}'
 curl -sf "$API/rest/v1/chat_messages" -H "apikey: $KEY" -H "Authorization: Bearer $A" -H 'Content-Type: application/json' -d '{"role":"user","body":"secret"}'
-for t in brain_dumps chat_messages; do
+curl -sf "$API/rest/v1/life_logs" -H "apikey: $KEY" -H "Authorization: Bearer $A" -H 'Content-Type: application/json' -d '{"kind":"dose"}'
+for t in brain_dumps chat_messages life_logs; do
   [ "$(curl -s "$API/rest/v1/$t?select=id" -H "apikey: $KEY" -H "Authorization: Bearer $B")" = "[]" ] || { echo "FAIL: B sees A's $t"; exit 1; }
 done
 SEEN_A=$(curl -s "$API/rest/v1/resets?select=id" -H "apikey: $KEY" -H "Authorization: Bearer $A")

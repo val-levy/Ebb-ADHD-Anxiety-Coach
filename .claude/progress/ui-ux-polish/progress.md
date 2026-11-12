@@ -22,6 +22,10 @@ A cohesive refinement pass across Ebb’s primary iPhone flows, improving visual
 - references: `.claude/resources/references/design-references/clay/README.md`
 
 ## Session log
+### 2026-11-11 16:00 PST
+- Four new insight boxes on the This week screen: Time of day (from resets), Stressors this week, Medication log (7-day dots), Doses and stressors (avg stressors/day with vs without a logged dose; worded as the user's own days side by side, never cause). Manual capture via QuickLogCard on Reflect (dose button + stressor chips). New `life_logs` table (migration 20261111000100, RLS owner policy, rls.sh extended), LogStore, LogEntry, LogInsights (selfCheck). `source` column already allows 'chat' for later.
+- NOT done: migration NOT pushed to remote (logging silently fails until `supabase db push`); rls.sh not run; chat parsing (no chat exists yet); not visually checked. Phone install worked, launch refused (locked).
+- Flag: `ScheduleItem.swift` doc comment mentions a "medication reminder", which conflicts with the no-reminders rule.
 ### 2026-11-11 15:54 PST
 - Insight graphs (Swift Charts, built in): shared InsightCard frame + ResetsPerDayChart + CalmDropChart under Features/Reflect/Insights/, data shaped by DailyCount and CalmDropPoint (Core/Models, with a selfCheck for DailyCount). InsightsScreen lists them; add a graph = new view wrapping InsightCard + one line. No axis numbers (never raw stress numbers), empty days are quiet. Built sim + phone; not visually checked. Google Health styling details were not findable, structure only.
 ### 2026-11-11 15:51 PST
