@@ -22,6 +22,8 @@ A cohesive refinement pass across Ebb’s primary iPhone flows, improving visual
 - references: `.claude/resources/references/design-references/clay/README.md`
 
 ## Session log
+### 2026-11-11 17:20 PST
+- Chat: per-user rate limit (30/hr, 150/day, 429 "busy"), summarizer max_tokens. OpenRouter key has a $1 limit (user set). Flat-reply cause found: llama sometimes prints a tool call as text in `content`; my leak guard then replaced the whole reply. Now such blobs are parsed, run through `runTool` and stripped. Verified live (throwaway account deleted).
 ### 2026-11-11 17:00 PST
 - Chat model switched to `meta-llama/llama-3.3-70b-instruct` (secret set by user; code default updated). History deduped/last 8, examples marked shape-only. Guard trips now return a neutral "I'm here" line instead of the refusal; removed `add` from the condition regex (false positives). Live-tested with throwaway account (deleted). Known: "I'm so tired of everything" / "my friend and I had a fight" fall back to "I'm here. Want to tell me a bit more?" (guard or empty reply, cause not isolated; no log access).
 ### 2026-11-11 16:40 PST

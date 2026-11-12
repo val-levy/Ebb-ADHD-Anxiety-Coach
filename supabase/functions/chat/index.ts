@@ -135,6 +135,11 @@ Deno.serve(async (req) => {
       messages.push({ role: "tool", tool_call_id: call.id, content: await runTool(db, call.function.name, args, actions) });
     }
   }
+  // Some models print a tool call as text instead of calling it. Run it (same validation) and hide the text.
+  for (const blob of reply.match(/\{\s*"type"\s*:\s*"function"[\s\S]*?\}\s*\}/g) ?? []) {
+    reply = reply.replace(blob, "");
+    try { const f = JSON.parse(blob).function; await runTool(db, f.name, f.parameters ?? f.arguments ?? {}, actions); } catch { /* malformed: just hide it */ }
+  }
   // Small models skip tool calls, so a fixed pattern backs them up. Only when the model logged nothing.
   if (!actions.length) for (const [tool, args] of detectLogs(message)) await runTool(db, tool, args, actions);
   reply = safeReply(reply, actions.length > 0);
