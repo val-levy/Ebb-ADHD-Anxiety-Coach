@@ -56,7 +56,10 @@ Deno.serve(async (req) => {
       // data_collection "deny": only route to providers that don't store or train on prompts.
       body: JSON.stringify({ model: MODEL, messages, tools: TOOLS, provider: { data_collection: "deny" } }),
     });
-    if (!res.ok) return json({ error: "model unavailable", status: res.status, detail: (await res.text()).slice(0, 300) }, 502);
+    if (!res.ok) {
+      console.error("openrouter", res.status, (await res.text()).slice(0, 300));   // server logs only, never the client
+      return json({ error: res.status === 429 ? "busy" : "model unavailable" }, 502);
+    }
     const msg = (await res.json()).choices?.[0]?.message;
     if (!msg) return json({ error: "model unavailable" }, 502);
     if (!msg.tool_calls?.length) { reply = msg.content ?? ""; break; }
