@@ -3,7 +3,7 @@
 // Secrets: OPENROUTER_API_KEY (required), OPENROUTER_MODEL (optional, defaults below).
 import { createClient } from "jsr:@supabase/supabase-js@2";
 
-const MODEL = Deno.env.get("OPENROUTER_MODEL") ?? "meta-llama/llama-3.3-70b-instruct:free";
+const MODEL = Deno.env.get("OPENROUTER_MODEL") ?? "meta-llama/llama-3.3-70b-instruct";
 const STRESSORS = ["Work", "Sleep", "Social", "Health", "Other"];
 
 // Fixed texts. The model never writes these; the app does, so they can't drift.
