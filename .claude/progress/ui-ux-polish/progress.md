@@ -22,6 +22,9 @@ A cohesive refinement pass across Ebb’s primary iPhone flows, improving visual
 - references: `.claude/resources/references/design-references/clay/README.md`
 
 ## Session log
+### 2026-11-11 17:08 → 17:12 PST
+- Reflect is modular: `Core/Models/ReflectModule.swift` (enum of 8 blocks, order saved in `@AppStorage("reflectOrder")`, repair + move logic + `selfCheck()` run in DEBUG). `ReflectView` renders blocks in saved order; press-and-hold a block, drag onto another to move it (`.draggable` + `.dropDestination`, system drag so it does not fight scroll or the tab swipe). VoiceOver "Move up/down" actions, "Reset order" button.
+- Verified: simulator + phone builds succeed, installed and launched on phone. NOT verified: drag feel on device, drop highlight, tip spotlight after reorder.
 ### 2026-11-11 17:50 PST → 18:05 PST
 - Reflect is now only the old "This week" screen (charts, What helped, Patterns); `WeekSummaryCard` and `InsightsScreen` deleted. Brain dump, past dumps, quick log and chat moved to the bottom of the Calm tab (`HomeView`); files moved to `Features/Home/Unload` and `Features/Home/Chat`, back buttons now say "Calm". Tips `brainDump`, `pastDumps`, `chat` belong to the Calm screen, `helped` to Reflect (anchored on the first chart); `Tip.selfCheck` updated.
 - Verified: simulator build succeeds. Not verified: layout on a device/simulator screenshot, tip order on screen.

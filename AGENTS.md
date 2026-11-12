@@ -50,7 +50,7 @@ apps/ios/Ebb/
     Reset/        ResetView (player), BreathingCircle, ResetRatingView
     Calm/         PanicHeroCard, CalmProgressCard, GuidedSessionFlow,
                   IntensityCheckView, GuidedSessionPlayer, SessionProgressBar, TechniqueHeader, SessionControls, HelpedPickerView
-    Reflect/      ReflectView (this week's graphs + what helped + patterns, nothing else), HelpedCard, PatternRow, Insights/ (charts)
+    Reflect/      ReflectView (this week's graphs + what helped + patterns, nothing else; blocks are reorderable by press-and-hold drag, order saved via ReflectModule + @AppStorage), HelpedCard, PatternRow, Insights/ (charts)
     Settings/     SettingsView, MedicationSection, CrisisSection
 ```
 Anything labeled **"Demo"** in code is placeholder behavior in the clickable prototype (simulated nudge, sample patterns, rule-based next step, settings nobody reads yet). Replace it with real behavior; don't build on it.

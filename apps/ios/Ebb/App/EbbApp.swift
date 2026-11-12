@@ -38,7 +38,7 @@ struct EbbApp: App {
                 .task { await session.start(); await store.load(); await dumps.load(); await logs.load() }
                 .onChange(of: session.profile?.id) { Task { await dumps.load(); await logs.load(); await memory.load(); await chatStyle.load() } }  // sign in / out / delete swaps the note
                 #if DEBUG
-                .onAppear { Tip.selfCheck(); PanicGate.selfCheck(); Username.selfCheck(); DailyCount.selfCheck(); LogInsights.selfCheck() }
+                .onAppear { Tip.selfCheck(); PanicGate.selfCheck(); Username.selfCheck(); DailyCount.selfCheck(); LogInsights.selfCheck(); ReflectModule.selfCheck() }
                 #endif
         }
     }
