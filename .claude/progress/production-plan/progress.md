@@ -17,6 +17,9 @@ What it takes to ship Ebb to the App Store. Plan: [../../docs/production-plan.md
 - files: .claude/docs/production-plan.md, .claude/docs/roadmap.md
 
 ## Session log
+### 2026-11-11 18:17 PST
+- Val decided: friends in v1, detection in v1 (iPhone/HealthKit, added Phase F), free for now, minimal analytics, paid Apple account coming (TestFlight). Updated plan + AGENTS.md decisions table.
+
 ### 2026-11-11 17:55 PST
 - Surveyed roadmap, built-so-far, phase-1, business-launch docs and the migration/function list; wrote production-plan.md.
 - Nothing built or verified; plan is from docs and prior session knowledge, not a fresh code audit.

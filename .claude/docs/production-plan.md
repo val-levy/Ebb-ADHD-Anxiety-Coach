@@ -3,9 +3,12 @@
 Written 2026-11-11. Goal: take Ebb from the clickable, cloud-backed prototype to an App Store release for real users.
 Master roadmap: [roadmap.md](roadmap.md). Rules: [wording-and-safety.md](wording-and-safety.md), AGENTS.md.
 
-**Scope note.** AGENTS.md says iPhone only, no Watch app. So the spec's Watch detection is *not* on this plan; the
-launch product is on-demand resets, guided calm, brain dump, chat, logging, Reflect insights and friends.
-Passive detection is listed under "After launch" and needs a decision from Val (see Open decisions).
+**Decisions (Val, 2026-11-11):** friends are in v1; stress detection is in v1; the app is free for now (business model
+later); minimal anonymous analytics; Val will buy the paid Apple account and ship through TestFlight.
+**Detection without a Watch app:** AGENTS.md says iPhone only. So detection reads the Apple Watch's heart rate through
+HealthKit on the iPhone (background delivery, samples arrive every few minutes) plus iPhone motion. It is slower than the
+spec's on-wrist detector (minutes, not about a minute), so it needs the Phase 0 test first and honest copy. If that
+proves too slow, the Watch app question comes back to Val.
 
 ## Where we are
 Done: all UI and the clay design, resets + guided sessions, brain dump, quick log, chat (OpenRouter Edge Function, memory,
@@ -23,8 +26,9 @@ Stand-ins ("Demo" code): friends, achievements rules on local data, patterns/ins
    Function guardrails, scope-locked prompt, no medical advice). Fallback to the rule-based step offline.
 4. **Real Reflect.** Patterns and insights computed from real resets, doses, stressors and sessions; remove sample text.
    Empty states for a new user. No streaks, no guilt.
-5. **Friends.** Decide scope (see Open decisions). If kept: `friendships` table + RLS, invite link, breathe-together is
-   cut for v1. If not: remove the card and its tip.
+5. **Friends (v1).** `friendships` table + RLS (users see only accepted friends' shared fields), invite link / code,
+   accept/decline/remove, block and report, no location, no raw health data shared. Decide what a friend sees (avatar,
+   name, "resets that helped" count; never mood or logs). Breathe-together stays out of v1 unless cheap.
 6. **Achievements.** Compute from synced data (not on-device only) so they survive reinstall; no streak-based rules.
 7. **Offline and error states.** Resets and panic sessions must work with no network and sync later (queue writes).
    Every network call has a calm failure message; chat degrades gracefully.
@@ -74,26 +78,44 @@ Stand-ins ("Demo" code): friends, achievements rules on local data, patterns/ins
 ## Phase E: Release
 1. **App assets:** final icon, screenshots (light + dark), preview video, listing copy (wellness wording), keywords,
    support URL, marketing URL.
-2. **Business model.** Decide free vs paid. If paid: StoreKit 2, free tier = panic + resets, unlock = chat/personalization
-   (chat costs real money per user, so it likely needs to be paid or capped). Restore purchases, receipt validation.
+2. **Business model.** Free for v1 (decided); StoreKit later. Keep chat capped.
 3. **TestFlight beta:** 10–20 people from ADHD communities, 3 weeks, in-app feedback link. Gate: helped rate and
    no-crash rate (targets in business-launch.md).
 4. **App Review prep:** demo account, notes on chat model use and crisis handling, 1.4.1 and 5.1.1 compliance.
 5. **Launch ops:** support email, status/incident plan for Supabase or OpenRouter outages, release checklist, versioning,
    staged rollout.
 
+## Phase F: Stress detection on iPhone (v1, runs alongside A–D)
+1. **Phase 0 test first (cheapest, run 14 days):** log on-demand "I'm spiraling" taps next to HealthKit heart rate and
+   iPhone motion; check whether taps line up with a rise while still at least half the time (roadmap gate).
+2. **HealthKit permission + background delivery:** `HKObserverQuery` + background delivery for heart rate; read resting
+   baseline; request permission with a plain-language reason at a good moment.
+3. **Rule detector:** heart rate well above rolling baseline while motion is low, sustained across available samples;
+   conservative start, cap 3 a day, quiet hours, pause/snooze/false-alarm already built.
+4. **Delivery:** local notification (iPhone cannot haptic-tap a Watch app that doesn't exist; the Watch mirrors iPhone
+   notifications). Copy describes the signal, never a condition (wording §4).
+5. **Feedback loop:** helped / didn't / false alarm stored per nudge; false alarms raise the threshold.
+6. **Honest limits in-app and in App Review notes:** samples can lag several minutes; works best with a worn Watch;
+   without one, detection is off and everything else works.
+7. **Battery and privacy:** no continuous polling; health data stays on device (only the nudge label syncs).
+
 ## After launch (not on this plan)
-Passive stress detection (needs Watch or HealthKit background and a Phase 0 test), personal model (Phase 2 docs),
-Bluetooth sensors, therapist export, Android.
+Personal model (Phase 2 docs), Watch app with on-wrist detection, Bluetooth sensors, therapist export, Android.
+
+## Analytics (decided: minimal, anonymous)
+Count-only events, no text, no health values, no user id (random per-install id at most, resettable). Candidates:
+app opened, reset started/completed, panic session started/completed, rating given (helped / not), nudge response,
+chat session started (not content), sign-up completed, crash. Use Apple's own App Analytics + MetricKit, or a
+self-hosted counter table; no ad or tracking SDKs. Must match the privacy label.
 
 ## Open decisions for Val
-1. **Friends in v1 or cut?** Biggest unbuilt feature that needs backend work.
-2. **Detection without a Watch app:** drop it for launch (recommended), or revisit Watch later?
-3. **Pricing:** free + one-time unlock, or subscription (chat has ongoing cost)?
-4. **Analytics:** none (matches privacy promise) or minimal anonymous events?
-5. **Paid Apple account timing:** it gates Apple sign-in, TestFlight and everything in Phase E.
+1. What exactly a friend can see (suggested above).
+2. Whether to ask for TestFlight testers' feedback in-app or by email.
+
+## Pricing
+Free for now. Chat has ongoing cost: keep the rate limit and a global spend cap until the business model is set.
 
 ## Suggested order
-A1–A4, A7, A8 (what users touch daily) → C1–C4 in parallel → B1–B5 once the paid account exists → D → E.
+F1 (start the 14-day test early) + A1–A4, A7, A8 (what users touch daily) → C1–C4 in parallel → B1–B5 once the paid account exists → D → E.
 Cheapest high-risk items first: notifications on device (A1), crisis handling (C1), RLS audit (B4), privacy/legal (C3, C5),
 since they can reshape other work.
