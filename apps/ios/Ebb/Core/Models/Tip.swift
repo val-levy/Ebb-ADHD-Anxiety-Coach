@@ -22,7 +22,7 @@ enum Tip: String, CaseIterable {
         case .brainDump: "Head too full? Dump it all here and get one small next step."
         case .pastDumps: "Brain dumps you save wait here. Tap one to read it again."
         case .chat: "Chat with me and I'll log doses, stressors and brain dumps for you."
-        case .helped: "This is your week at a glance. Drag the handle on a block to move it where you want."
+        case .helped: "This is your week at a glance. Tap Edit layout to move blocks where you want them."
         case .avatar: "Tap me to pick a different animal. I'll change too!"
         case .friends: "Invite friends so you can breathe together."
         case .achievements: "Little wins show up here as you go."

@@ -11,6 +11,7 @@ struct SceneScreen<Content: View>: View {
     @AppStorage("seenTips") private var seen: [String] = []
     /// When this screen was last left. Away longer than a quick mis-swipe → back to the top on return.
     @State private var leftAt: Date?
+    @State private var control = ScrollControl()
 
     var body: some View {
         ScrollViewReader { reader in
@@ -61,6 +62,11 @@ struct SceneScreen<Content: View>: View {
                     .padding(.top, -40)
             }
         }
+        .scrollPosition(Bindable(control).position)
+        .onScrollGeometryChange(for: CGPoint.self) { CGPoint(x: $0.containerSize.height, y: $0.contentOffset.y) } action: { _, new in
+            control.viewport = new.x; control.offset = new.y
+        }
+        .environment(\.scrollControl, control)
         .onDisappear { leftAt = .now }
         .onAppear {
             if let leftAt, Date.now.timeIntervalSince(leftAt) > 0.8 { reader.scrollTo("top", anchor: .top) }

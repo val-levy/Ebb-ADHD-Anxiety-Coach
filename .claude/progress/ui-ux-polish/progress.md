@@ -22,6 +22,11 @@ A cohesive refinement pass across Ebb’s primary iPhone flows, improving visual
 - references: `.claude/resources/references/design-references/clay/README.md`
 
 ## Session log
+### 2026-11-11 18:00 → 18:20 PST
+- Reflect layout is now an **Edit layout / Done** mode: handles (≡) and the drag only exist while editing, so normal use has no gestures on blocks. Hint + tip text updated.
+- Auto-scroll while dragging: `SceneScreen` owns a `ScrollControl` (App/ScrollControl.swift; `ScrollPosition` + offset/viewport, exposed via `\.scrollControl`); `ReflectBlocks` (new, holds the logic; `ReflectView` is just SceneScreen { ReflectBlocks() }) runs a 16 ms loop that scrolls when the finger is within ~130pt of the top or ~170pt of the bottom. `ReflectDrag` (Core/Models) keeps the block under the finger as the page scrolls; self-checks added.
+- **Deployment target raised 17 → 18** (project.yml) because `ScrollPosition.scrollTo(y:)` is iOS 18.
+- Verified: sim + phone builds, installed. NOT verified on device: scroll in normal mode, drag, auto-scroll speed/edge zones.
 ### 2026-11-11 17:50 → 17:58 PST
 - Scroll still dead with long-press arming + simultaneous drag on each block. Fallback: a ≡ grip (44pt) at each block's top-right is the ONLY draggable spot (immediate DragGesture); no gestures on the blocks themselves. Tip/hint text now says "drag the handle". NOT verified on device. If scroll is STILL dead, the cause is not the gestures (suspect the frames preference / overlay) and needs a bisect.
 ### 2026-11-11 17:35 → 17:45 PST
