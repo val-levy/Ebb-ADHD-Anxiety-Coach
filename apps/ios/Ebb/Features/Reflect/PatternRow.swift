@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// One weekly pattern, as a clay card with an icon tile.
+/// One weekly pattern, as an icon tile and text (PatternsSection puts them all in one card).
 struct PatternRow: View {
     let symbol: String
     let text: String
@@ -11,7 +11,5 @@ struct PatternRow: View {
             Text(text).font(ClayFont.subheadline)
             Spacer(minLength: 0)
         }
-        .padding()
-        .clay()
     }
 }

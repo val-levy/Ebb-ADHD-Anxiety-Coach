@@ -22,6 +22,8 @@ A cohesive refinement pass across Ebb’s primary iPhone flows, improving visual
 - references: `.claude/resources/references/design-references/clay/README.md`
 
 ## Session log
+### 2026-11-11 18:35 PST
+- Patterns was the only multi-card set: `PatternsSection` now draws all patterns inside ONE `.clay()` card (`PatternRow` is a plain row), so every Reflect block is a single item with one handle. NOT verified on device.
 ### 2026-11-11 18:25 PST
 - Fix: for "What helped" and "Patterns" the ≡ handle sat on the label row, outside the card. `ReflectModule.hasLabel`; those two now put the handle on the card (top-right of the card / first pattern card). NOT verified on device.
 ### 2026-11-11 18:00 → 18:20 PST

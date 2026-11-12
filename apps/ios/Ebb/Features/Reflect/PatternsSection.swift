@@ -12,9 +12,12 @@ struct PatternsSection: View {
                 .padding()
                 .clay()
         } else {
-            ForEach(Array(store.weeklyInsights.enumerated()), id: \.element.id) { index, insight in
-                PatternRow(symbol: insight.symbol, text: insight.text).popIn(index)
+            VStack(alignment: .leading, spacing: 14) {
+                ForEach(store.weeklyInsights) { PatternRow(symbol: $0.symbol, text: $0.text) }
             }
+            .padding()
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .clay()
         }
     }
 }
