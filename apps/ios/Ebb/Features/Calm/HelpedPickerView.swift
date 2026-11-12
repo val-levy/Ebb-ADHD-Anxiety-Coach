@@ -12,7 +12,7 @@ struct HelpedPickerView: View {
             Text("What helped most?").opacity(0.85)
             ForEach(techniques) { technique in
                 Button { onPick(technique) } label: {
-                    Label { Text(technique.title) } icon: { ClayFace(mood: .forSymbol(technique.symbol), ink: .white.opacity(0.85), size: 30) }
+                    Label { Text(technique.title) } icon: { ClayIcon(kind: .forSymbol(technique.symbol), size: 26).foregroundStyle(.white) }
                         .frame(maxWidth: .infinity, minHeight: 48)
                         .clay(.white.opacity(0.25), radius: 18)
                 }

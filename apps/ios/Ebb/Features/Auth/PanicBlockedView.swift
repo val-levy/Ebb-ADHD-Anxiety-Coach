@@ -33,7 +33,7 @@ struct PanicBlockedView: View {
 
     private func link(_ title: String, _ symbol: String, _ url: String) -> some View {
         Link(destination: URL(string: url)!) {
-            Label { Text(title) } icon: { ClayFace(mood: .forSymbol(symbol), ink: .white.opacity(0.85), size: 30) }.font(ClayFont.headline).foregroundStyle(.white)
+            Label { Text(title) } icon: { ClayIcon(kind: .forSymbol(symbol), size: 26).foregroundStyle(.white) }.font(ClayFont.headline).foregroundStyle(.white)
                 .frame(maxWidth: .infinity).padding(14).clay(Theme.claySea, radius: 26)
         }
     }
