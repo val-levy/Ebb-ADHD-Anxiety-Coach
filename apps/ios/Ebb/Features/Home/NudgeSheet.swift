@@ -10,7 +10,7 @@ struct NudgeSheet: View {
             Spacer(minLength: 12)
 
             VStack(spacing: 14) {
-                Image(systemName: "wind")
+                Image(systemName: "wind").clayGlyph()
                     .font(.system(size: 44, weight: .bold))
                     .foregroundStyle(.white)
                     .frame(width: 82, height: 82)
@@ -57,7 +57,7 @@ struct NudgeSheet: View {
     private func action(_ title: String, symbol: String, perform: @escaping () -> Void) -> some View {
         Button(action: perform) {
             VStack(spacing: 7) {
-                Image(systemName: symbol).font(.system(size: 17, weight: .bold))
+                Image(systemName: symbol).clayGlyph().font(.system(size: 17, weight: .bold))
                 Text(title).font(ClayFont.caption)
                     .lineLimit(1)
                     .minimumScaleFactor(0.75)

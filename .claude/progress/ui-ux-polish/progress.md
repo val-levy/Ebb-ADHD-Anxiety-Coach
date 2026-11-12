@@ -22,7 +22,9 @@ A cohesive refinement pass across Ebb’s primary iPhone flows, improving visual
 - references: `.claude/resources/references/design-references/clay/README.md`
 
 ## Session log
-### 2026-11-11 21:20 PST
+### 2026-11-11 21:45 PST
+- SF icons now match the clay theme: new `ClayGlyph` (`.clayGlyph()` heavy weight + highlight/shadow) and `ClayLabelStyle` applied app-wide in EbbApp; direct `Image(systemName:)` spots and icon-only labels use `.clayGlyph()`; `ClayIconTile` is now a solid clay lump with a white symbol. Tab bar icons stay native.
+- Tip bubble no longer hops when the page scrolls: `TipCoach` places the bubble against `anchor` (where the spot will rest after the reveal scroll, latched in SceneScreen per tip). Built, installed on phone; not viewed on device.### 2026-11-11 21:20 PST
 - Dark-mode duplicate tile colors: `claySea` is lavender in dark, which matched the 4th Guided tile. 4th Guided tile is now `clayPink`. Built; not yet installed or viewed in dark mode.### 2026-11-11 21:05 PST
 - Saved the tile look as the app design direction: `.claude/resources/design/clay-characters.md` plus a binding "Design direction" bullet in AGENTS.md (lists what is still to restyle).
 ### 2026-11-11 20:50 PST

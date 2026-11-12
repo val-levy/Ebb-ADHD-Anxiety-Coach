@@ -75,7 +75,7 @@ struct ReflectBlocks: View {
 
     /// The only draggable spot, so the rest of the page scrolls like normal. Drag it; the block follows.
     private func grip(_ module: ReflectModule, in order: [ReflectModule]) -> some View {
-        Image(systemName: "line.3.horizontal")
+        Image(systemName: "line.3.horizontal").clayGlyph()
             .font(ClayFont.system(size: 18)).foregroundStyle(.secondary)
             .frame(width: 44, height: 44)
             .contentShape(Rectangle())

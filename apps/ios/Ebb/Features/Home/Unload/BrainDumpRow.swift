@@ -20,7 +20,7 @@ struct BrainDumpRow: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
             .accessibilityHint(expanded ? "Collapse" : "Read all")
-            Button(role: .destructive, action: onDelete) { Image(systemName: "trash") }
+            Button(role: .destructive, action: onDelete) { Image(systemName: "trash").clayGlyph() }
                 .font(ClayFont.subheadline).foregroundStyle(.secondary)
                 .accessibilityLabel("Delete brain dump")
         }

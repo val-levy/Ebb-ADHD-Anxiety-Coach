@@ -14,7 +14,7 @@ struct ProfileHeaderCard: View {
             Button { picking = true } label: {
                 AnimalAvatar(animal: animal, size: 96)
                     .overlay(alignment: .bottomTrailing) {
-                        Image(systemName: "pencil.circle.fill").font(ClayFont.title2).foregroundStyle(.white, Theme.accent)
+                        Image(systemName: "pencil.circle.fill").clayGlyph().font(ClayFont.title2).foregroundStyle(.white, Theme.accent)
                     }
             }
             .accessibilityHint("Choose your animal")

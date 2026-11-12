@@ -5,12 +5,14 @@ import SwiftUI
 struct TipCoach: View {
     let tip: Tip
     let spot: CGRect
+    /// Where the spot will rest once the page has scrolled to it. The bubble is placed against this, so it never hops mid-scroll.
+    let anchor: CGRect
     let screen: CGSize
     @AppStorage("seenTips") private var seen: [String] = []
     @AppStorage("profileAnimal") private var animal = AvatarAnimal.panda
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
-    private var below: Bool { spot.midY < screen.height / 2 }
+    private var below: Bool { anchor.midY < screen.height / 2 }
     /// Alternate sides tip to tip so the mascot hops back and forth.
     private var mascotLeft: Bool { (Tip.allCases.firstIndex(of: tip) ?? 0).isMultiple(of: 2) }
 
@@ -40,7 +42,7 @@ struct TipCoach: View {
             .padding(.horizontal, 20)
             .frame(width: screen.width)
             .fixedSize(horizontal: false, vertical: true)
-            .alignmentGuide(.top) { d in below ? -(spot.maxY + 16) : -(spot.minY - 16 - d.height) }
+            .alignmentGuide(.top) { d in below ? -(anchor.maxY + 16) : -(anchor.minY - 16 - d.height) }
             // Each new tip blows in like a bubble: pops up from the mascot's side and wobbles to size.
             .id(tip)
             .transition(.asymmetric(

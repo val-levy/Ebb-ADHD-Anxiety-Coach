@@ -34,6 +34,7 @@ struct EbbApp: App {
                 .environmentObject(chat)
                 .environmentObject(memory)
                 .environmentObject(chatStyle)
+                .labelStyle(ClayLabelStyle())
                 .font(ClayFont.body)   // handwritten clay type by default; styled text uses ClayFont.*
                 .task { await session.start(); await store.load(); await dumps.load(); await logs.load() }
                 .onChange(of: session.profile?.id) { Task { await dumps.load(); await logs.load(); await memory.load(); await chatStyle.load() } }  // sign in / out / delete swaps the note

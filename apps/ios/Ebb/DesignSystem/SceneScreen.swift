@@ -12,6 +12,8 @@ struct SceneScreen<Content: View>: View {
     /// When this screen was last left. Away longer than a quick mis-swipe → back to the top on return.
     @State private var leftAt: Date?
     @State private var control = ScrollControl()
+    /// Final resting place of the current tip's spot, fixed when the tip appears.
+    @State private var latched: (tip: Tip, rect: CGRect)?
 
     var body: some View {
         ScrollViewReader { reader in
@@ -54,7 +56,7 @@ struct SceneScreen<Content: View>: View {
                         Button("Replay tips", systemImage: "questionmark.circle.fill") {
                             withAnimation { seen.removeAll { Tip(rawValue: $0)?.screen == tips } }
                         }
-                        .labelStyle(.iconOnly).font(ClayFont.system(size: 28)).foregroundStyle(.white)
+                        .labelStyle(.iconOnly).clayGlyph().font(ClayFont.system(size: 28)).foregroundStyle(.white)
                         .shadow(color: .black.opacity(0.15), radius: 4, y: 2)
                         .alignmentGuide(.top) { $0[.bottom] + 10 }
                         .padding(.trailing, 20)
@@ -79,8 +81,11 @@ struct SceneScreen<Content: View>: View {
         .overlayPreferenceValue(TipSpotKey.self) { spot in
             if let spot {
                 GeometryReader { geo in
-                    TipCoach(tip: spot.tip, spot: geo[spot.bounds], screen: geo.size)
+                    let rect = geo[spot.bounds]
+                    let resting = rect.offsetBy(dx: 0, dy: -ScrollControl.revealDelta(spot: rect, screenHeight: geo.size.height))
+                    TipCoach(tip: spot.tip, spot: rect, anchor: latched?.tip == spot.tip ? latched!.rect : resting, screen: geo.size)
                         .task(id: spot.tip) {   // bring an off-screen section into view first
+                            latched = (spot.tip, resting)
                             try? await Task.sleep(for: .milliseconds(150))
                             control.reveal(geo[spot.bounds], screenHeight: geo.size.height)
                         }

@@ -30,12 +30,12 @@ struct GuidedSessionFlow: View {
         }
         .overlay(alignment: .topTrailing) {
             Button("Close", systemImage: "xmark") { dismiss() }
-                .labelStyle(.iconOnly).font(ClayFont.title2).foregroundStyle(.white.opacity(0.8)).padding()
+                .labelStyle(.iconOnly).clayGlyph().font(ClayFont.title2).foregroundStyle(.white.opacity(0.8)).padding()
         }
         .overlay(alignment: .bottomTrailing) { MascotPeek(size: 64).clipped().padding(.trailing, 24) .ignoresSafeArea(edges: .bottom) }
         .overlay(alignment: .topLeading) {
             Button("Back", systemImage: "chevron.left", action: back)
-                .labelStyle(.iconOnly).font(ClayFont.title2).foregroundStyle(.white.opacity(0.8)).padding()
+                .labelStyle(.iconOnly).clayGlyph().font(ClayFont.title2).foregroundStyle(.white.opacity(0.8)).padding()
         }
         .onAppear { techniques = program.techniques(favorite: calm.favoriteTechnique) }
     }
