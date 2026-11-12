@@ -22,6 +22,9 @@ A cohesive refinement pass across Ebb’s primary iPhone flows, improving visual
 - references: `.claude/resources/references/design-references/clay/README.md`
 
 ## Session log
+### 2026-11-11 17:20 → 17:30 PST
+- Reflect reorder reworked: no system drag box. Custom long-press (0.35s) then drag gesture in `ReflectView`; the block stays as is, lifts with a shadow and follows the finger; a teal insertion line shows the gap it will land in; release snaps it there. Logic in `ReflectModule` (`gap`, `moving(toGap:)`, self-checks); block frames via `ModuleFramesKey`. Tab swipe locked while dragging (`tabSwipeLocks`).
+- NOT verified on device: drag feel, whether vertical scroll stays still during the drag. Known limit: no auto-scroll at screen edges, so moving far means several shorter moves.
 ### 2026-11-11 17:08 → 17:12 PST
 - Reflect is modular: `Core/Models/ReflectModule.swift` (enum of 8 blocks, order saved in `@AppStorage("reflectOrder")`, repair + move logic + `selfCheck()` run in DEBUG). `ReflectView` renders blocks in saved order; press-and-hold a block, drag onto another to move it (`.draggable` + `.dropDestination`, system drag so it does not fight scroll or the tab swipe). VoiceOver "Move up/down" actions, "Reset order" button.
 - Verified: simulator + phone builds succeed, installed and launched on phone. NOT verified: drag feel on device, drop highlight, tip spotlight after reorder.
