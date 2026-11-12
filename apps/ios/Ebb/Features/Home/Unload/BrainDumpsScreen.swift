@@ -6,7 +6,7 @@ struct BrainDumpsScreen: View {
 
     var body: some View {
         SceneScreen(title: "Brain dumps", tips: .reflect, mascotAt: 0.78) {
-            ClayBackButton(label: "Reflect")
+            ClayBackButton(label: "Calm")
             LazyVStack(alignment: .leading, spacing: 14) {
                 ForEach(dumps.dumps) { dump in
                     BrainDumpRow(dump: dump) { Task { await dumps.delete(dump) } }

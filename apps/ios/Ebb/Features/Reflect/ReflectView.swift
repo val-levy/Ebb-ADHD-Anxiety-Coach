@@ -1,19 +1,19 @@
 import SwiftUI
 
-/// Reflect tab: write a brain dump, reread past ones, and step into this week's insights.
+/// Reflect tab: this week's graphs, what helped, and patterns. To add a graph: make a view that wraps InsightCard and list it here.
 struct ReflectView: View {
     var body: some View {
-        NavigationStack {
-            SceneScreen(title: "Reflect", tips: .reflect, mascotAt: 0.78) {
-                BrainDumpCard().lockedUntilSignIn("Sign in to save brain dumps").mascotTip(.brainDump).floating().popIn(0)
-
-                SectionLabel("Past brain dumps")
-                BrainDumpHistoryCard().lockedUntilSignIn("Sign in to save brain dumps").mascotTip(.pastDumps).popIn(1)
-
-                QuickLogCard().lockedUntilSignIn("Sign in to keep your log").popIn(2)
-                ChatCard().lockedUntilSignIn("Sign in to chat").mascotTip(.chat).popIn(3)
-                WeekSummaryCard().mascotTip(.helped).popIn(4)
-            }
+        SceneScreen(title: "Reflect", tips: .reflect, mascotAt: 0.78) {
+            ResetsPerDayChart().mascotTip(.helped).popIn(0)
+            CalmDropChart().popIn(1)
+            TimeOfDayChart().popIn(2)
+            StressorsChart().popIn(3)
+            MedicationLogChart().popIn(4)
+            MedVsStressorsCard().popIn(5)
+            SectionLabel("What helped")
+            HelpedCard().popIn(6)
+            SectionLabel("Patterns")
+            PatternsSection()
         }
     }
 }

@@ -8,8 +8,8 @@ enum Tip: String, CaseIterable {
 
     var screen: Screen {
         switch self {
-        case .panic, .modePicker, .swipe: .calm
-        case .brainDump, .pastDumps, .chat, .helped: .reflect
+        case .panic, .modePicker, .swipe, .brainDump, .pastDumps, .chat: .calm
+        case .helped: .reflect
         case .avatar, .friends, .achievements: .profile
         }
     }
@@ -22,7 +22,7 @@ enum Tip: String, CaseIterable {
         case .brainDump: "Head too full? Dump it all here and get one small next step."
         case .pastDumps: "Brain dumps you save wait here. Tap one to read it again."
         case .chat: "Chat with me and I'll log doses, stressors and brain dumps for you."
-        case .helped: "Tap here to see what has been helping you."
+        case .helped: "These show what has been helping you this week."
         case .avatar: "Tap me to pick a different animal. I'll change too!"
         case .friends: "Invite friends so you can breathe together."
         case .achievements: "Little wins show up here as you go."
@@ -37,7 +37,8 @@ enum Tip: String, CaseIterable {
     static func selfCheck() {
         assert(current(on: .calm, seen: []) == .panic)
         assert(current(on: .calm, seen: ["panic"]) == .modePicker)
-        assert(current(on: .reflect, seen: ["panic"]) == .brainDump)
-        assert(current(on: .calm, seen: ["panic", "modePicker", "swipe"]) == nil)
+        assert(current(on: .reflect, seen: ["panic"]) == .helped)
+        assert(current(on: .calm, seen: ["panic", "modePicker", "swipe"]) == .brainDump)
+        assert(current(on: .calm, seen: ["panic", "modePicker", "swipe", "brainDump", "pastDumps", "chat"]) == nil)
     }
 }

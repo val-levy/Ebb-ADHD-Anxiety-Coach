@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// The one calm tab: a panic hero up top, then a Quick / Guided toggle over a grid of options, then proof it passes.
+/// The one calm tab: a panic hero up top, a Quick / Guided toggle over a grid of options, proof it passes, then brain dump, log and chat.
 struct HomeView: View {
     @EnvironmentObject private var store: ResetStore
     @EnvironmentObject private var nudges: NudgeStore
@@ -48,6 +48,14 @@ struct HomeView: View {
                 if let drop = calm.averageDrop {
                     CalmProgressCard(before: drop.before, after: drop.after, sessions: calm.history.count)
                 }
+
+                BrainDumpCard().lockedUntilSignIn("Sign in to save brain dumps").mascotTip(.brainDump).floating().popIn(0)
+
+                SectionLabel("Past brain dumps")
+                BrainDumpHistoryCard().lockedUntilSignIn("Sign in to save brain dumps").mascotTip(.pastDumps).popIn(1)
+
+                QuickLogCard().lockedUntilSignIn("Sign in to keep your log").popIn(2)
+                ChatCard().lockedUntilSignIn("Sign in to chat").mascotTip(.chat).popIn(3)
 
                 Button("Preview a check-in") { nudges.presentPreview() }
                     .font(ClayFont.footnote)

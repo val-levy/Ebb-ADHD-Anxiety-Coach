@@ -7,7 +7,7 @@ struct ChatScreen: View {
 
     var body: some View {
         SceneScreen(title: "Chat", tips: .reflect, mascotAt: 0.78) {
-            ClayBackButton(label: "Reflect")
+            ClayBackButton(label: "Calm")
             LazyVStack(spacing: 10) {
                 if chat.messages.isEmpty {
                     Text("Tell me how it's going. I'll keep a note of what you mention.")

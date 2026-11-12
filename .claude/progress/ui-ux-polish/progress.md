@@ -22,6 +22,9 @@ A cohesive refinement pass across Ebb’s primary iPhone flows, improving visual
 - references: `.claude/resources/references/design-references/clay/README.md`
 
 ## Session log
+### 2026-11-11 17:50 PST → 18:05 PST
+- Reflect is now only the old "This week" screen (charts, What helped, Patterns); `WeekSummaryCard` and `InsightsScreen` deleted. Brain dump, past dumps, quick log and chat moved to the bottom of the Calm tab (`HomeView`); files moved to `Features/Home/Unload` and `Features/Home/Chat`, back buttons now say "Calm". Tips `brainDump`, `pastDumps`, `chat` belong to the Calm screen, `helped` to Reflect (anchored on the first chart); `Tip.selfCheck` updated.
+- Verified: simulator build succeeds. Not verified: layout on a device/simulator screenshot, tip order on screen.
 ### 2026-11-11 17:15 PST → 17:35 PST
 - Built (committed, NOT yet deployed): model routing in `chat/index.ts` (`isHard`: 30+ words or 2+ distress words -> `OPENROUTER_MODEL_HARD`, else `OPENROUTER_MODEL`; unset = same model) and an optional "How the chat talks" style note (`chat_style` table + RLS, `ChatStyleStore`, `ChatStyleSection` in Settings). The note is appended last as lowest-priority DATA; the prompt says it can only change tone/wording, and the function drops any note that mentions scope, rules, medication, prompts, tools etc. (`STYLE_BAD`, mirrored in `ChatStyleStore.willBeIgnored` so the UI says so). Output guards (`safeReply`) still run, so refusals can't be bypassed.
 - Verified: simulator build succeeds. NOT verified: migration push, function deploy, rls.sh, live routing/style behavior, phone build (auto-mode classifier blocked `supabase db push` / `functions deploy`; user must run them).
