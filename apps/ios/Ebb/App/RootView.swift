@@ -6,6 +6,7 @@ struct RootView: View {
     @EnvironmentObject private var nudges: NudgeStore
     @EnvironmentObject private var session: SessionStore
     @AppStorage("nudgePlan") private var nudgePlan = ScheduleItem.defaultNudges
+    @AppStorage("profileAnimal") private var profileAnimal = AvatarAnimal.panda
     @State private var tab: AppPage.Tab = .calm
     @State private var calmMode: CalmMode = .quick
     @State private var swipeLocks = 0
@@ -15,9 +16,9 @@ struct RootView: View {
 
     var body: some View {
         TabView(selection: $tab) {
-            HomeView(mode: $calmMode).tabItem { Label("Calm", systemImage: "leaf") }.tag(AppPage.Tab.calm)
-            ReflectView().tabItem { Label("Reflect", image: "ReflectBubble") }.tag(AppPage.Tab.reflect)
-            ProfileView().tabItem { Label("Profile", systemImage: "person.crop.circle") }.tag(AppPage.Tab.profile)
+            HomeView(mode: $calmMode).tabItem { Label { Text("Calm") } icon: { AnimalTabIcon.image(.panda, selected: tab == .calm) } }.tag(AppPage.Tab.calm)
+            ReflectView().tabItem { Label { Text("Reflect") } icon: { AnimalTabIcon.image(.penguin, selected: tab == .reflect) } }.tag(AppPage.Tab.reflect)
+            ProfileView().tabItem { Label { Text("Profile") } icon: { AnimalTabIcon.image(profileAnimal, selected: tab == .profile) } }.tag(AppPage.Tab.profile)
         }
         // Swipe sideways anywhere to move along Quick ⇄ Guided ⇄ Reflect ⇄ Profile.
         // Only clearly horizontal swipes count, so vertical scrolling and taps are untouched.

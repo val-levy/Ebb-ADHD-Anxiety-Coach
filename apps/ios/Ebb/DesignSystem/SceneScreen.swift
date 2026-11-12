@@ -11,6 +11,7 @@ struct SceneScreen<Content: View>: View {
     @AppStorage("seenTips") private var seen: [String] = []
     /// When this screen was last left. Away longer than a quick mis-swipe → back to the top on return.
     @State private var leftAt: Date?
+    @AppStorage("profileAnimal") private var profileAnimal = AvatarAnimal.panda
     @State private var control = ScrollControl()
     /// Final resting place of the current tip's spot, fixed when the tip appears.
     @State private var latched: (tip: Tip, rect: CGRect)?
@@ -56,8 +57,7 @@ struct SceneScreen<Content: View>: View {
                         Button {
                             withAnimation { seen.removeAll { Tip(rawValue: $0)?.screen == tips } }
                         } label: {
-                            Text("?").font(ClayFont.system(size: 20, weight: .black)).foregroundStyle(Theme.claySea)
-                                .frame(width: 32, height: 32).background(.white, in: .circle)
+                            AnimalAvatar(animal: profileAnimal, size: 34)
                         }
                         .accessibilityLabel("Replay tips")
                         .shadow(color: .black.opacity(0.15), radius: 4, y: 2)
