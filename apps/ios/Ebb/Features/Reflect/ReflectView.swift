@@ -17,12 +17,14 @@ struct ReflectView: View {
                 ForEach(Array(order.enumerated()), id: \.element) { i, module in
                     let isDragged = dragging == module
                     content(module)
+                        .modifier(FirstBlockTip(isFirst: i == 0))
                         .background(GeometryReader { Color.clear.preference(key: ModuleFramesKey.self, value: [module: $0.frame(in: .named("reflectStack"))]) })
                         .scaleEffect(isDragged ? 1.03 : 1)
                         .shadow(color: .black.opacity(isDragged ? 0.28 : 0), radius: 18, y: 10)
                         .offset(y: isDragged ? lift : 0)
                         .zIndex(isDragged ? 1 : 0)
-                        .simultaneousGesture(reorder(module, in: order))
+                        .onLongPressGesture(minimumDuration: 0.35) { begin(module) }
+                        .simultaneousGesture(follow(module, in: order))
                         .accessibilityAction(named: "Move up") { move(module, to: i - 1, in: order) }
                         .accessibilityAction(named: "Move down") { move(module, to: i + 1, in: order) }
                         .popIn(i)
@@ -38,6 +40,7 @@ struct ReflectView: View {
                 Button("Reset order") { withAnimation { saved = "" } }.font(ClayFont.footnote).frame(maxWidth: .infinity)
             }
         }
+        .scrollDisabled(dragging != nil)   // only while a block is held; the press-and-hold itself never blocks scrolling
     }
 
     /// Where the dragged block would land.
@@ -60,18 +63,19 @@ struct ReflectView: View {
         }
     }
 
-    private func reorder(_ module: ReflectModule, in order: [ReflectModule]) -> some Gesture {
-        LongPressGesture(minimumDuration: 0.35)
-            .sequenced(before: DragGesture(coordinateSpace: .named("reflectStack")))
-            .onChanged { value in
-                guard case .second(true, let drag) = value else { return }
-                if dragging == nil {
-                    dragging = module
-                    startCenter = frames[module]?.midY ?? 0
-                    swipeLocks.wrappedValue += 1
-                }
-                if dragging == module { lift = drag?.translation.height ?? 0 }
-            }
+    /// Armed by the press-and-hold (which fails as soon as the finger moves, so scrolling stays normal).
+    private func begin(_ module: ReflectModule) {
+        guard dragging == nil else { return }
+        dragging = module
+        startCenter = frames[module]?.midY ?? 0
+        lift = 0
+        swipeLocks.wrappedValue += 1
+    }
+
+    /// Only moves a block that is armed; scrolling is switched off while one is held.
+    private func follow(_ module: ReflectModule, in order: [ReflectModule]) -> some Gesture {
+        DragGesture(minimumDistance: 1, coordinateSpace: .named("reflectStack"))
+            .onChanged { if dragging == module { lift = $0.translation.height } }
             .onEnded { _ in finish(module, in: order) }
     }
 
@@ -98,7 +102,7 @@ struct ReflectView: View {
             VStack(alignment: .leading, spacing: 10) {
                 SectionLabel("What helped")
                 HelpedCard()
-            }.mascotTip(.helped)
+            }
         case .patterns:
             VStack(alignment: .leading, spacing: 10) {
                 SectionLabel("Patterns")
@@ -110,5 +114,13 @@ struct ReflectView: View {
     private func move(_ module: ReflectModule, to index: Int, in order: [ReflectModule]) {
         guard order.indices.contains(index) else { return }
         withAnimation { saved = ReflectModule.encode(ReflectModule.moving(order, module, toGap: index)) }
+    }
+}
+
+/// The Reflect tip points at whichever block is on top, so it is always on screen (the ? replays it).
+private struct FirstBlockTip: ViewModifier {
+    let isFirst: Bool
+    func body(content: Content) -> some View {
+        if isFirst { content.mascotTip(.helped) } else { content }
     }
 }

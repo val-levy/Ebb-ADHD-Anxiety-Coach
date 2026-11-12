@@ -22,6 +22,10 @@ A cohesive refinement pass across Ebb’s primary iPhone flows, improving visual
 - references: `.claude/resources/references/design-references/clay/README.md`
 
 ## Session log
+### 2026-11-11 17:35 → 17:45 PST
+- Fix: Reflect would not scroll after the custom drag. Cause: `LongPress.sequenced(DragGesture)` on every block swallowed the scroll. Now `onLongPressGesture` arms a block (fails when the finger moves, so scroll is untouched), a simultaneous `DragGesture` moves only an armed block, and `.scrollDisabled(dragging != nil)` freezes scroll only while one is held.
+- Fix: the ? button seemed dead on Reflect because its tip (`.helped`) sat on the 7th block, off screen. The tip now attaches to whichever block is first (`FirstBlockTip`), text says to press and hold to move blocks.
+- NOT verified on device (scroll, drag, ? button); builds + install succeeded.
 ### 2026-11-11 17:20 → 17:30 PST
 - Reflect reorder reworked: no system drag box. Custom long-press (0.35s) then drag gesture in `ReflectView`; the block stays as is, lifts with a shadow and follows the finger; a teal insertion line shows the gap it will land in; release snaps it there. Logic in `ReflectModule` (`gap`, `moving(toGap:)`, self-checks); block frames via `ModuleFramesKey`. Tab swipe locked while dragging (`tabSwipeLocks`).
 - NOT verified on device: drag feel, whether vertical scroll stays still during the drag. Known limit: no auto-scroll at screen edges, so moving far means several shorter moves.
