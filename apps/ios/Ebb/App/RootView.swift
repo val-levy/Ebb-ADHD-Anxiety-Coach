@@ -16,8 +16,8 @@ struct RootView: View {
 
     var body: some View {
         TabView(selection: $tab) {
-            HomeView(mode: $calmMode).tabItem { Label { Text("Calm") } icon: { AnimalTabIcon.image(.panda, selected: tab == .calm) } }.tag(AppPage.Tab.calm)
-            ReflectView().tabItem { Label { Text("Reflect") } icon: { AnimalTabIcon.image(.penguin, selected: tab == .reflect) } }.tag(AppPage.Tab.reflect)
+            HomeView(mode: $calmMode).tabItem { Label("Calm", systemImage: "leaf") }.tag(AppPage.Tab.calm)
+            ReflectView().tabItem { Label("Reflect", image: "ReflectBubble") }.tag(AppPage.Tab.reflect)
             ProfileView().tabItem { Label { Text("Profile") } icon: { AnimalTabIcon.image(profileAnimal, selected: tab == .profile) } }.tag(AppPage.Tab.profile)
         }
         // Swipe sideways anywhere to move along Quick ⇄ Guided ⇄ Reflect ⇄ Profile.

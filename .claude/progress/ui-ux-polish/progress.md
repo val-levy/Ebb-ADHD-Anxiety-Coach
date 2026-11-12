@@ -23,6 +23,9 @@ A cohesive refinement pass across Ebb’s primary iPhone flows, improving visual
 
 ## Session log
 ### 2026-11-11 17:52 PST
+- Tab bar: Calm (leaf) and Reflect (ReflectBubble) back to regular icons; Profile keeps the animal avatar. Built + installed on phone.
+
+### 2026-11-11 17:52 PST
 - Too many faces: faces now only on the 8 Calm option tiles, panic hero, mode picker, nudge. Every other tile/chip/header uses a custom informational `ClayIcon` picked by `ClayIconKind.forSymbol` (new kinds: wind, sun, moon, mountain, leaf, flame, cloud, rain, chart, calendar, phone, lock, briefcase, bolt, dots, people, walker, calmPerson, hand). Built sim + phone; not viewed on screen.
 
 ### 2026-11-11 17:50 PST
