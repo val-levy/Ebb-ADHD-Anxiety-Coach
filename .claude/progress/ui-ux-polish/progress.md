@@ -22,6 +22,8 @@ A cohesive refinement pass across Ebb’s primary iPhone flows, improving visual
 - references: `.claude/resources/references/design-references/clay/README.md`
 
 ## Session log
+### 2026-11-11 19:00 PST
+- Calm tab declutter, nothing removed: panic is now a compact lavender clay pill (54pt round icon, title, one line, chevron) instead of the big hero; option tiles smaller (118pt, 44pt icon); sections labelled Reset now / Your progress / Unload / Track and talk; dropped the extra `.floating()` on brain dump (only panic floats); Log card dose button is a flat tile, not clay-in-clay. Built and launched on phone; not seen on device yet, simulator not checked.
 - OpenRouter activity (user screenshot, 18:40): routing confirmed live. Llama 3.3 70B handles routine turns ($0.06), Sonnet 5.5 the heavy ones ($0.04), Mistral Nemo ~$0. Key spend $0.10 of the $1 limit.
 ### 2026-11-11 18:35 PST
 - Patterns was the only multi-card set: `PatternsSection` now draws all patterns inside ONE `.clay()` card (`PatternRow` is a plain row), so every Reflect block is a single item with one handle. NOT verified on device.

@@ -9,13 +9,13 @@ struct OptionTile: View {
 
     var body: some View {
         Button(action: onTap) {
-            VStack(alignment: .leading, spacing: 10) {
-                ClayIconTile(symbol: symbol, size: 56)
+            VStack(alignment: .leading, spacing: 8) {
+                ClayIconTile(symbol: symbol, size: 44)
                 Spacer(minLength: 0)
                 Text(title).font(ClayFont.headline).lineLimit(2).multilineTextAlignment(.leading)
                 Text(detail).font(ClayFont.caption).foregroundStyle(.secondary).lineLimit(2)
             }
-            .frame(maxWidth: .infinity, minHeight: 150, alignment: .leading)
+            .frame(maxWidth: .infinity, minHeight: 118, alignment: .leading)
             .padding()
             .clay()
         }

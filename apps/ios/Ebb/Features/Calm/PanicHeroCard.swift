@@ -1,22 +1,31 @@
 import SwiftUI
 
-/// The one-tap entry for an active panic attack. Big, calm, no reading required.
+/// The one-tap entry for an active panic attack: a compact lavender clay pill with a soft round icon. Calm, no reading required.
 struct PanicHeroCard: View {
     let onTap: () -> Void
 
     var body: some View {
         Button(action: onTap) {
-            VStack(alignment: .leading, spacing: 8) {
-                Image(systemName: "hand.raised.fill").font(.system(size: 44))
-                Text(CalmProgram.panic.title).font(ClayFont.largeTitle.bold())
-                Text("I'll walk you through it, step by step. About \(CalmProgram.panic.minutes) minutes.").opacity(0.85)
+            HStack(spacing: 14) {
+                Image(systemName: "hand.raised.fill")
+                    .font(ClayFont.system(size: 24, weight: .bold))
+                    .foregroundStyle(Theme.clayLavender)
+                    .frame(width: 54, height: 54)
+                    .background(.white.opacity(0.92), in: .circle)
+                    .shadow(color: .black.opacity(0.12), radius: 3, y: 2)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(CalmProgram.panic.title).font(ClayFont.title3.bold())
+                    Text("I'll walk you through it · \(CalmProgram.panic.minutes) min").font(ClayFont.footnote).opacity(0.9)
+                }
+                Spacer(minLength: 0)
+                Image(systemName: "chevron.right").font(ClayFont.system(size: 16, weight: .bold)).opacity(0.8)
             }
             .multilineTextAlignment(.leading)
             .foregroundStyle(.white)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(24)
-            .overlay { GrainOverlay().clipShape(.rect(cornerRadius: Theme.heroRadius)) }
-            .clay(Theme.clayLavender, radius: Theme.heroRadius)
+            .padding(.vertical, 14)
+            .padding(.horizontal, 16)
+            .overlay { GrainOverlay().clipShape(.capsule) }
+            .clay(Theme.clayLavender, radius: 44)
         }
         .accessibilityHint("Starts a guided session")
     }

@@ -19,8 +19,9 @@ struct HomeView: View {
             SceneScreen(title: "Ebb", tips: .calm, mascotAt: 0.62) {
                 PanicHeroCard { session.panicTapped { calm.activeProgram = .panic } }.mascotTip(.panic).floating().popIn(0)
 
+                SectionLabel("Reset now")
                 ModePicker(mode: Binding(get: { shown }, set: { mode = $0 })).mascotTip(.modePicker).popIn(1)   // tap a side, or swipe anywhere
-                Text(shown.caption).font(ClayFont.footnote).foregroundStyle(.secondary)
+                Text(shown.caption).font(ClayFont.footnote).foregroundStyle(.secondary).padding(.horizontal, 4)
 
                 LazyVGrid(columns: columns, spacing: 14) {
                     switch shown {
@@ -46,14 +47,16 @@ struct HomeView: View {
                                         removal: .move(edge: slideFrom == .trailing ? .leading : .trailing)).combined(with: .opacity))
 
                 if let drop = calm.averageDrop {
+                    SectionLabel("Your progress")
                     CalmProgressCard(before: drop.before, after: drop.after, sessions: calm.history.count)
                 }
 
-                BrainDumpCard().lockedUntilSignIn("Sign in to save brain dumps").mascotTip(.brainDump).floating().popIn(0)
+                SectionLabel("Unload")
+                BrainDumpCard().lockedUntilSignIn("Sign in to save brain dumps").mascotTip(.brainDump).popIn(0)
 
-                SectionLabel("Past brain dumps")
                 BrainDumpHistoryCard().lockedUntilSignIn("Sign in to save brain dumps").mascotTip(.pastDumps).popIn(1)
 
+                SectionLabel("Track and talk")
                 QuickLogCard().lockedUntilSignIn("Sign in to keep your log").popIn(2)
                 ChatCard().lockedUntilSignIn("Sign in to chat").mascotTip(.chat).popIn(3)
 
