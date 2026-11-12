@@ -17,10 +17,28 @@ enum Reset: String, CaseIterable, Codable, Identifiable {
 
     var blurb: String {
         switch self {
-        case .breathe: "60s · slow taps, long exhale"
-        case .sigh: "30s · two inhales, one long exhale"
-        case .ground: "45s · notice what's around you"
-        case .body: "90s · stand, water, look away"
+        case .breathe: "Slow in, long out"
+        case .sigh: "Two sips in, one big sigh out"
+        case .ground: "Spot what's around you"
+        case .body: "Stand up, sip water, look away"
+        }
+    }
+
+    var length: String {
+        switch self {
+        case .breathe: "60 sec"
+        case .sigh: "30 sec"
+        case .ground: "45 sec"
+        case .body: "90 sec"
+        }
+    }
+
+    var mood: FaceMood {
+        switch self {
+        case .breathe: .puff
+        case .sigh: .sigh
+        case .ground: .alert
+        case .body: .cheer
         }
     }
 

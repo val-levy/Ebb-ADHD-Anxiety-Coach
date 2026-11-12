@@ -7,10 +7,7 @@ struct PanicHeroCard: View {
     var body: some View {
         Button(action: onTap) {
             HStack(spacing: 14) {
-                Image(systemName: "hand.raised.fill")
-                    .font(ClayFont.system(size: 24, weight: .bold))
-                    .foregroundStyle(Theme.claySea)
-                    .frame(width: 54, height: 54)
+                ClayFace(mood: CalmProgram.panic.mood, ink: Theme.claySea, size: 54)
                     .background(.white.opacity(0.92), in: .circle)
                     .shadow(color: .black.opacity(0.12), radius: 3, y: 2)
                 VStack(alignment: .leading, spacing: 2) {

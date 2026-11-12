@@ -1,27 +1,32 @@
 import SwiftUI
 
-/// One reset or guided session as a chunky lump of colored clay: a soft round icon bubble, bold white title, short detail.
+/// One reset or guided session as a chunky lump of colored clay: a little clay face, bold title, short line, length chip.
 struct OptionTile: View {
-    let symbol: String
+    let mood: FaceMood
     let title: String
     let detail: String
+    let length: String
     let color: Color
     let onTap: () -> Void
 
     var body: some View {
         Button(action: onTap) {
-            VStack(alignment: .leading, spacing: 10) {
-                Image(systemName: symbol)
-                    .font(ClayFont.system(size: 22, weight: .bold))
-                    .frame(width: 46, height: 46)
-                    .background(.white.opacity(0.28), in: .circle)
+            VStack(alignment: .leading, spacing: 6) {
+                HStack(alignment: .top) {
+                    ClayFace(mood: mood, ink: .black.opacity(0.5), size: 60)
+                        .background(.white.opacity(0.3), in: .circle)
+                    Spacer(minLength: 0)
+                    Text(length).font(ClayFont.caption.bold())
+                        .padding(.horizontal, 10).padding(.vertical, 5)
+                        .background(.white.opacity(0.28), in: .capsule)
+                }
                 Spacer(minLength: 0)
-                Text(title).font(ClayFont.headline).lineLimit(2).multilineTextAlignment(.leading)
-                Text(detail).font(ClayFont.caption).opacity(0.9).lineLimit(2).multilineTextAlignment(.leading)
+                Text(title).font(ClayFont.title3).lineLimit(2).multilineTextAlignment(.leading)
+                Text(detail).font(ClayFont.footnote).opacity(0.92).lineLimit(2).multilineTextAlignment(.leading)
             }
             .foregroundStyle(.white)
-            .frame(maxWidth: .infinity, minHeight: 132, alignment: .leading)
-            .padding(16)
+            .frame(maxWidth: .infinity, minHeight: 150, alignment: .leading)
+            .padding(14)
             .overlay { GrainOverlay().clipShape(.rect(cornerRadius: Theme.heroRadius, style: .continuous)) }
             .clay(color, radius: Theme.heroRadius)
         }

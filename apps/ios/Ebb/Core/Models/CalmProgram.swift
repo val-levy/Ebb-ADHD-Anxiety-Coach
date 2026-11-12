@@ -16,13 +16,23 @@ enum CalmProgram: String, CaseIterable, Codable, Identifiable {
         }
     }
 
+    var mood: FaceMood {
+        switch self {
+        case .panic: .calm
+        case .breathe: .calm
+        case .ground: .steady
+        case .distract: .wink
+        case .cold: .brr
+        }
+    }
+
     var subtitle: String {
         switch self {
         case .panic: "The full walk-through: body, senses, mind"
-        case .breathe: "Two breathing patterns that slow your heart"
-        case .ground: "Steady your body and surroundings"
-        case .distract: "Give your mind something else to chew on"
-        case .cold: "Use cold to hit the brakes fast"
+        case .breathe: "Two ways to slow your heart"
+        case .ground: "Settle your body and the room"
+        case .distract: "Give your mind something else"
+        case .cold: "A chilly trick to hit the brakes"
         }
     }
 

@@ -22,6 +22,8 @@ A cohesive refinement pass across Ebb’s primary iPhone flows, improving visual
 - references: `.claude/resources/references/design-references/clay/README.md`
 
 ## Session log
+### 2026-11-11 20:05 PST
+- Tiles now wear little clay faces (`FaceMood` model + `ClayFace` view) instead of SF Symbols; the panic pill wears a calm face too. Copy rewritten in plain words (no "60s ·" shorthand), length moved to a chip. Quick and Guided pages have separate palettes (`Theme.quickPalette` / `guidedPalette`). Checked on the simulator (light mode, Quick page); Guided page and dark mode not viewed. Still SF Symbols: Quick/Guided picker labels, tab bar.
 ### 2026-11-11 19:35 PST
 - OptionTile redesigned: solid colored clay lump (`Theme.tilePalette` teal/orange/blue/pink cycling), translucent white icon circle, bold white title + detail, grain, 32pt radius; replaces the pale-tile + gray caption look the user called "AI generated". Built and launched on phone; not seen yet.
 ### 2026-11-11 19:15 PST
