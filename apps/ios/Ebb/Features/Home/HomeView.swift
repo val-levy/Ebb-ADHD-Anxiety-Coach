@@ -27,14 +27,14 @@ struct HomeView: View {
                     switch shown {
                     case .quick:
                         ForEach(Array(Reset.allCases.enumerated()), id: \.element) { i, reset in
-                            OptionTile(symbol: reset.symbol, title: reset.title, detail: reset.blurb) {
+                            OptionTile(symbol: reset.symbol, title: reset.title, detail: reset.blurb, color: Theme.tilePalette[i % Theme.tilePalette.count]) {
                                 if session.requireSignIn(reason: "Sign in to use quick resets") { store.activeReset = reset }
                             }.popIn(i + 2)
                         }
                     case .guided:
                         ForEach(Array(CalmProgram.allCases.filter { $0 != .panic }.enumerated()), id: \.element) { i, program in
                             OptionTile(symbol: program.techniques(favorite: nil).first!.symbol,
-                                       title: program.title, detail: "\(program.minutes) min · \(program.subtitle)") {
+                                       title: program.title, detail: "\(program.minutes) min · \(program.subtitle)", color: Theme.tilePalette[i % Theme.tilePalette.count]) {
                                 if session.requireSignIn(reason: "Sign in to use guided sessions") { calm.activeProgram = program }
                             }.popIn(i + 2)
                         }

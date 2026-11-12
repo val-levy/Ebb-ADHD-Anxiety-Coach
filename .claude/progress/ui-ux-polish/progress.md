@@ -22,6 +22,8 @@ A cohesive refinement pass across Ebb’s primary iPhone flows, improving visual
 - references: `.claude/resources/references/design-references/clay/README.md`
 
 ## Session log
+### 2026-11-11 19:35 PST
+- OptionTile redesigned: solid colored clay lump (`Theme.tilePalette` teal/orange/blue/pink cycling), translucent white icon circle, bold white title + detail, grain, 32pt radius; replaces the pale-tile + gray caption look the user called "AI generated". Built and launched on phone; not seen yet.
 ### 2026-11-11 19:15 PST
 - New `Theme.claySea` (light #4F9BC9 sea-glass blue, dark keeps lavender) replaces `clayLavender` for the panic pill, Guided toggle, NudgeSheet dot, PanicBlockedView button and `panicGradient`. `clayLavender` stays for flowers and icon-tile pairs. Built and launched on phone; not viewed in light mode yet.
 ### 2026-11-11 19:00 PST

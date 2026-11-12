@@ -31,6 +31,9 @@ enum Theme {
     /// Panic / guided color: sea-glass blue by day (fits the sky and hills), lavender at night. Never red.
     static let claySea = dynamic(light: (0.31, 0.61, 0.79), dark: (0.55, 0.47, 0.86))
 
+    /// Solid clay colors the option tiles cycle through (white text stays readable on all of them).
+    static let tilePalette = [clayTeal, clayOrange, clayBlue, clayPink]
+
     static let accent = clayTeal
     static let calmGradient = LinearGradient(colors: [skyTop, clayTeal], startPoint: .top, endPoint: .bottom)
     static let panicGradient = LinearGradient(colors: [claySea, clayBlue], startPoint: .top, endPoint: .bottom)
