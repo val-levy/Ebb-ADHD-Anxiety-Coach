@@ -92,6 +92,14 @@ Deno.serve(async (req) => {
     return json({ reply: CRISIS, actions: [] });
   }
 
+  // Per-user cap so one account can't run up the OpenRouter bill. 2 rows per exchange: 30 an hour, 150 a day.
+  const ago = (ms: number) => new Date(Date.now() - ms).toISOString();
+  const [{ count: hr }, { count: day }] = await Promise.all([
+    db.from("chat_messages").select("id", { count: "exact", head: true }).eq("role", "user").gte("created_at", ago(3600_000)),
+    db.from("chat_messages").select("id", { count: "exact", head: true }).eq("role", "user").gte("created_at", ago(86400_000)),
+  ]);
+  if ((hr ?? 0) >= 30 || (day ?? 0) >= 150) return json({ error: "busy" }, 429);
+
   // Last 20 messages are the model's memory. ponytail: no rolling summary yet; add user_memory when 20 isn't enough.
   const { data: past } = await db.from("chat_messages").select("role,body").order("created_at", { ascending: false }).limit(20);
   // Small models parrot their own earlier replies, so drop assistant lines that repeat and keep only the last 8.
@@ -208,7 +216,7 @@ async function maybeUpdateMemory(db: ReturnType<typeof createClient>, mem: { bod
     const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: "POST",
       headers: { Authorization: `Bearer ${Deno.env.get("OPENROUTER_API_KEY")}`, "Content-Type": "application/json" },
-      body: JSON.stringify({ model: MODEL, provider: { data_collection: "deny" }, messages: [
+      body: JSON.stringify({ model: MODEL, provider: { data_collection: "deny" }, max_tokens: 300, temperature: 0.2, messages: [
         { role: "system", content: SUMMARIZER },
         { role: "user", content: `Current memory:\n${mem?.body || "(empty)"}\n\nRecent messages:\n${transcript}` },
       ] }),
