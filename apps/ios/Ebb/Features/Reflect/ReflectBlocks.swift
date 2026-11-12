@@ -28,14 +28,14 @@ struct ReflectBlocks: View {
             VStack(alignment: .leading, spacing: 14) {
                 ForEach(Array(order.enumerated()), id: \.element) { i, module in
                     let isDragged = dragging == module
-                    content(module)
+                    content(module, in: order)
                         .modifier(FirstBlockTip(isFirst: i == 0))
                         .background(GeometryReader { Color.clear.preference(key: ModuleFramesKey.self, value: [module: $0.frame(in: .named("reflectStack"))]) })
                         .scaleEffect(isDragged ? 1.03 : 1)
                         .shadow(color: .black.opacity(isDragged ? 0.28 : 0), radius: 18, y: 10)
                         .offset(y: isDragged ? lift : 0)
                         .zIndex(isDragged ? 1 : 0)
-                        .overlay(alignment: .topTrailing) { if editing { grip(module, in: order) } }
+                        .overlay(alignment: .topTrailing) { if editing && !module.hasLabel { grip(module, in: order) } }
                         .accessibilityAction(named: "Move up") { move(module, to: i - 1, in: order) }
                         .accessibilityAction(named: "Move down") { move(module, to: i + 1, in: order) }
                         .popIn(i)
@@ -117,7 +117,7 @@ struct ReflectBlocks: View {
         }
     }
 
-    @ViewBuilder private func content(_ module: ReflectModule) -> some View {
+    @ViewBuilder private func content(_ module: ReflectModule, in order: [ReflectModule]) -> some View {
         switch module {
         case .resetsPerDay: ResetsPerDayChart()
         case .calmDrop: CalmDropChart()
@@ -128,12 +128,12 @@ struct ReflectBlocks: View {
         case .helped:
             VStack(alignment: .leading, spacing: 10) {
                 SectionLabel("What helped")
-                HelpedCard()
+                HelpedCard().overlay(alignment: .topTrailing) { if editing { grip(module, in: order) } }
             }
         case .patterns:
             VStack(alignment: .leading, spacing: 10) {
                 SectionLabel("Patterns")
-                PatternsSection()
+                PatternsSection().overlay(alignment: .topTrailing) { if editing { grip(module, in: order) } }
             }
         }
     }

@@ -22,6 +22,8 @@ A cohesive refinement pass across Ebb’s primary iPhone flows, improving visual
 - references: `.claude/resources/references/design-references/clay/README.md`
 
 ## Session log
+### 2026-11-11 18:25 PST
+- Fix: for "What helped" and "Patterns" the ≡ handle sat on the label row, outside the card. `ReflectModule.hasLabel`; those two now put the handle on the card (top-right of the card / first pattern card). NOT verified on device.
 ### 2026-11-11 18:00 → 18:20 PST
 - Reflect layout is now an **Edit layout / Done** mode: handles (≡) and the drag only exist while editing, so normal use has no gestures on blocks. Hint + tip text updated.
 - Auto-scroll while dragging: `SceneScreen` owns a `ScrollControl` (App/ScrollControl.swift; `ScrollPosition` + offset/viewport, exposed via `\.scrollControl`); `ReflectBlocks` (new, holds the logic; `ReflectView` is just SceneScreen { ReflectBlocks() }) runs a 16 ms loop that scrolls when the finger is within ~130pt of the top or ~170pt of the bottom. `ReflectDrag` (Core/Models) keeps the block under the finger as the page scrolls; self-checks added.

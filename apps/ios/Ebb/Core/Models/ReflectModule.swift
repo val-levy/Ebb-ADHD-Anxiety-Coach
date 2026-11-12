@@ -5,6 +5,9 @@ import Foundation
 enum ReflectModule: String, CaseIterable, Hashable {
     case resetsPerDay, calmDrop, timeOfDay, stressors, medication, medVsStressors, helped, patterns
 
+    /// These blocks have a label above their card, so their handle sits on the card, not the block.
+    var hasLabel: Bool { self == .helped || self == .patterns }
+
     /// Saved order, repaired: unknown names dropped, duplicates ignored, new modules appended in default order.
     static func order(from raw: String) -> [ReflectModule] {
         var saved: [ReflectModule] = []
