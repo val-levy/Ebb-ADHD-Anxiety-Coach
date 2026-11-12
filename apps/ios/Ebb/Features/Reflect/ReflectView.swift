@@ -11,7 +11,8 @@ struct ReflectView: View {
                 BrainDumpHistoryCard().lockedUntilSignIn("Sign in to save brain dumps").mascotTip(.pastDumps).popIn(1)
 
                 QuickLogCard().lockedUntilSignIn("Sign in to keep your log").popIn(2)
-        WeekSummaryCard().mascotTip(.helped).popIn(3)
+                ChatCard().lockedUntilSignIn("Sign in to chat").mascotTip(.chat).popIn(3)
+                WeekSummaryCard().mascotTip(.helped).popIn(4)
             }
         }
     }

@@ -22,6 +22,12 @@ A cohesive refinement pass across Ebb’s primary iPhone flows, improving visual
 - references: `.claude/resources/references/design-references/clay/README.md`
 
 ## Session log
+### 2026-11-11 16:05 → 16:08 PST
+- Chat with OpenRouter (free model, `provider.data_collection: "deny"`, model in env `OPENROUTER_MODEL`). Edge Function `supabase/functions/chat/index.ts`: auth like delete-account, RLS-scoped client, tools `log_dose`, `log_stressor`, `save_brain_dump` (rows get `source: chat`), last 20 messages as memory, wording-and-safety system prompt. Anonymous users get 403.
+- iOS: `ChatMessage`, `ChatStore` (afterActions refreshes dumps + logs), `SupabaseService.chatMessages/chat`, `Features/Reflect/Chat/` (ChatScreen, ChatBubble, ChatCard on Reflect), `Tip.chat`. Sim and phone builds pass.
+- Also this stretch: life_logs migration pushed; LogStore account-swap fix.
+- NOT done: function NOT deployed, no OpenRouter key set (user must create account, disable free-model training, run `supabase secrets set OPENROUTER_API_KEY=...`, then OK `supabase functions deploy chat`). Free-model tool-calling and rate limits unverified. rls.sh still unverified. Chat UI untested on device. ScheduleItem "medication reminder" comment still stale.
+
 ### 2026-11-11 16:00 PST
 - Four new insight boxes on the This week screen: Time of day (from resets), Stressors this week, Medication log (7-day dots), Doses and stressors (avg stressors/day with vs without a logged dose; worded as the user's own days side by side, never cause). Manual capture via QuickLogCard on Reflect (dose button + stressor chips). New `life_logs` table (migration 20261111000100, RLS owner policy, rls.sh extended), LogStore, LogEntry, LogInsights (selfCheck). `source` column already allows 'chat' for later.
 - NOT done: migration NOT pushed to remote (logging silently fails until `supabase db push`); rls.sh not run; chat parsing (no chat exists yet); not visually checked. Phone install worked, launch refused (locked).

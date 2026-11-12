@@ -85,4 +85,16 @@ final class SupabaseService {
     func insert(_ log: LogEntry) async throws {
         try await client.from("life_logs").insert(log).execute()
     }
+
+    /// Newest 50 messages, oldest first.
+    func chatMessages(limit: Int = 50) async throws -> [ChatMessage] {
+        let rows: [ChatMessage] = try await client.from("chat_messages").select("role,body")
+            .order("created_at", ascending: false).limit(limit).execute().value
+        return rows.reversed()
+    }
+
+    /// Sends one message to the `chat` Edge Function (model + logging tools run there).
+    func chat(_ message: String) async throws -> ChatReply {
+        try await client.functions.invoke("chat", options: .init(body: ["message": message]))
+    }
 }
