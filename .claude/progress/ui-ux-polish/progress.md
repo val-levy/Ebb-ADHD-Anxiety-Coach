@@ -22,6 +22,8 @@ A cohesive refinement pass across Ebb’s primary iPhone flows, improving visual
 - references: `.claude/resources/references/design-references/clay/README.md`
 
 ## Session log
+### 2026-11-11 16:40 PST
+- Pushed `user_memory` migration and deployed `chat` (new strict prompt + guard). Tested live with a throwaway account (deleted): refusals, crisis 988, med/diagnosis/injection all correct. mistral-nemo skips tool calls, so added `detectLogs` regex backup (first-person past-tense dose; stressor only with a "weighing" phrase + tag keyword) and strip of unearned "Noted." and wrapping quotes. Memory rewrite itself still untested live (needs 20 messages).
 ### 2026-11-11 16:20 PST
 - Chat prompt rewritten as a scope-locked spec in `supabase/functions/chat/index.ts`: fixed REFUSAL and CRISIS texts, crisis regex pre-check (no model call), post-reply guard (`safeReply`: med-advice, condition-claim, leak, markup, length), temperature 0.2, max_tokens 220. NOT deployed, NOT tested live (needs user go-ahead; memory migration also not pushed).
 - Chat window now blank on every enter/exit (`ChatStore.reset()`, `ChatScreen` onAppear/onDisappear); server still keeps last 20 messages + memory for the model. Built and installed on phone; sim build passes.

@@ -125,7 +125,10 @@ Deno.serve(async (req) => {
       messages.push({ role: "tool", tool_call_id: call.id, content: await runTool(db, call.function.name, args, actions) });
     }
   }
+  // Small models skip tool calls, so a fixed pattern backs them up. Only when the model logged nothing.
+  if (!actions.length) for (const [tool, args] of detectLogs(message)) await runTool(db, tool, args, actions);
   reply = safeReply(reply, actions.length > 0);
+  if (!actions.length) reply = reply.replace(/^(noted|got it)[.,!]?\s*/i, "") || "I'm here. Tell me more?";   // never claim a log that didn't happen
   await db.from("chat_messages").insert({ role: "assistant", body: reply });
   const job = maybeUpdateMemory(db, mem);
   const rt = (globalThis as any).EdgeRuntime;
@@ -133,9 +136,24 @@ Deno.serve(async (req) => {
   return json({ reply, actions });
 });
 
+const STRESSOR_WORDS: [string, RegExp][] = [
+  ["Work", /\b(work|job|boss|deadline|deadlines|school|exam|exams|homework|coworker)\b/i],
+  ["Sleep", /\b(sleep|slept|insomnia|tired|exhausted|up all night)\b/i],
+  ["Social", /\b(friend|friends|partner|family|lonely|argument|argued|relationship|roommate)\b/i],
+  ["Health", /\b(pain|sick|ill|headache|migraine|injury|injured)\b/i],
+];
+/// Backup logging by pattern. Doses: first person, past tense only. Stressors: only with a "weighing on me" phrase.
+function detectLogs(message: string): [string, any][] {
+  const out: [string, any][] = [];
+  if (/\bi(?:'ve| have)?\s+(?:just\s+)?(?:took|taken)\s+(?:my|the|a)\s+(?:\w+\s+)?(?:dose|doses|meds?|medication|pills?)\b/i.test(message)) out.push(["log_dose", {}]);
+  if (/\b(stress\w*|overwhelm\w*|crushing|weighing|anxious|worried|worry|can'?t cope|too much)\b/i.test(message))
+    for (const [tag, re] of STRESSOR_WORDS) if (re.test(message)) out.push(["log_stressor", { tag }]);
+  return out;
+}
+
 /// Last line of defence: anything off-script becomes the fixed refusal. Logs which check tripped, never the text.
 function safeReply(raw: string, logged: boolean): string {
-  let r = raw.trim();
+  let r = raw.trim().replace(/^"([\s\S]*)"$/, "$1");
   if (!r) return logged ? "Noted." : "I'm here. Tell me more?";
   for (const [name, re] of BAD_REPLY) if (re.test(r)) { console.error("guard tripped:", name); return REFUSAL; }
   if (r.length > 400) { const cut = r.slice(0, 400); r = cut.slice(0, Math.max(cut.lastIndexOf(". "), cut.lastIndexOf("? "), cut.lastIndexOf("! ")) + 1) || cut; }
