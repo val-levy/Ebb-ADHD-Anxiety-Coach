@@ -22,6 +22,8 @@ A cohesive refinement pass across Ebb’s primary iPhone flows, improving visual
 - references: `.claude/resources/references/design-references/clay/README.md`
 
 ## Session log
+### 2026-11-11 17:50 → 17:58 PST
+- Scroll still dead with long-press arming + simultaneous drag on each block. Fallback: a ≡ grip (44pt) at each block's top-right is the ONLY draggable spot (immediate DragGesture); no gestures on the blocks themselves. Tip/hint text now says "drag the handle". NOT verified on device. If scroll is STILL dead, the cause is not the gestures (suspect the frames preference / overlay) and needs a bisect.
 ### 2026-11-11 17:35 → 17:45 PST
 - Fix: Reflect would not scroll after the custom drag. Cause: `LongPress.sequenced(DragGesture)` on every block swallowed the scroll. Now `onLongPressGesture` arms a block (fails when the finger moves, so scroll is untouched), a simultaneous `DragGesture` moves only an armed block, and `.scrollDisabled(dragging != nil)` freezes scroll only while one is held.
 - Fix: the ? button seemed dead on Reflect because its tip (`.helped`) sat on the 7th block, off screen. The tip now attaches to whichever block is first (`FirstBlockTip`), text says to press and hold to move blocks.

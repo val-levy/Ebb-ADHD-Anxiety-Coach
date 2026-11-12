@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Reflect tab: this week's graphs, what helped, and patterns. Press and hold a block, drag it, and let go:
+/// Reflect tab: this week's graphs, what helped, and patterns. Drag a block's handle and let go:
 /// it snaps into the gap marked by the line. To add a block: add a ReflectModule case and its view below.
 struct ReflectView: View {
     @AppStorage("reflectOrder") private var saved = ""
@@ -23,8 +23,7 @@ struct ReflectView: View {
                         .shadow(color: .black.opacity(isDragged ? 0.28 : 0), radius: 18, y: 10)
                         .offset(y: isDragged ? lift : 0)
                         .zIndex(isDragged ? 1 : 0)
-                        .onLongPressGesture(minimumDuration: 0.35) { begin(module) }
-                        .simultaneousGesture(follow(module, in: order))
+                        .overlay(alignment: .topTrailing) { grip(module, in: order) }
                         .accessibilityAction(named: "Move up") { move(module, to: i - 1, in: order) }
                         .accessibilityAction(named: "Move down") { move(module, to: i + 1, in: order) }
                         .popIn(i)
@@ -34,13 +33,13 @@ struct ReflectView: View {
             .onPreferenceChange(ModuleFramesKey.self) { frames = $0 }
             .overlay(alignment: .topLeading) { insertionLine(order) }
             .sensoryFeedback(.impact, trigger: dragging)
-            Text("Press and hold a block to move it.").font(ClayFont.footnote).foregroundStyle(.secondary)
+            Text("Drag the handle on a block to move it.").font(ClayFont.footnote).foregroundStyle(.secondary)
                 .frame(maxWidth: .infinity)
             if !saved.isEmpty {
                 Button("Reset order") { withAnimation { saved = "" } }.font(ClayFont.footnote).frame(maxWidth: .infinity)
             }
         }
-        .scrollDisabled(dragging != nil)   // only while a block is held; the press-and-hold itself never blocks scrolling
+        .scrollDisabled(dragging != nil)   // only while a block is held
     }
 
     /// Where the dragged block would land.
@@ -63,20 +62,23 @@ struct ReflectView: View {
         }
     }
 
-    /// Armed by the press-and-hold (which fails as soon as the finger moves, so scrolling stays normal).
-    private func begin(_ module: ReflectModule) {
-        guard dragging == nil else { return }
-        dragging = module
-        startCenter = frames[module]?.midY ?? 0
-        lift = 0
-        swipeLocks.wrappedValue += 1
-    }
-
-    /// Only moves a block that is armed; scrolling is switched off while one is held.
-    private func follow(_ module: ReflectModule, in order: [ReflectModule]) -> some Gesture {
-        DragGesture(minimumDistance: 1, coordinateSpace: .named("reflectStack"))
-            .onChanged { if dragging == module { lift = $0.translation.height } }
-            .onEnded { _ in finish(module, in: order) }
+    /// The only draggable spot, so the rest of the page scrolls like normal. Drag it; the block follows.
+    private func grip(_ module: ReflectModule, in order: [ReflectModule]) -> some View {
+        Image(systemName: "line.3.horizontal")
+            .font(ClayFont.system(size: 18)).foregroundStyle(.secondary)
+            .frame(width: 44, height: 44)
+            .contentShape(Rectangle())
+            .accessibilityHidden(true)
+            .gesture(DragGesture(minimumDistance: 0, coordinateSpace: .named("reflectStack"))
+                .onChanged {
+                    if dragging == nil {
+                        dragging = module
+                        startCenter = frames[module]?.midY ?? 0
+                        swipeLocks.wrappedValue += 1
+                    }
+                    if dragging == module { lift = $0.translation.height }
+                }
+                .onEnded { _ in finish(module, in: order) })
     }
 
     private func finish(_ module: ReflectModule, in order: [ReflectModule]) {
