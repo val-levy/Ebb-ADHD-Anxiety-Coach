@@ -22,6 +22,10 @@ A cohesive refinement pass across Ebb’s primary iPhone flows, improving visual
 - references: `.claude/resources/references/design-references/clay/README.md`
 
 ## Session log
+### 2026-11-11 16:25 PST
+- Chat deployed and working. Free models failed (llama :free removed; gemma 429 upstream; nemotron blocked by data policy), so `OPENROUTER_MODEL=mistralai/mistral-nemo` (~$0.03/M tokens, secret on the remote). Verified with a throwaway account (deleted after): dose + Work tag logged, medication-advice question declined. Function returns only fixed error codes (`busy`, `model unavailable`); detail goes to server logs.
+- Not verified on the phone UI.
+
 ### 2026-11-11 16:05 → 16:08 PST
 - Chat with OpenRouter (free model, `provider.data_collection: "deny"`, model in env `OPENROUTER_MODEL`). Edge Function `supabase/functions/chat/index.ts`: auth like delete-account, RLS-scoped client, tools `log_dose`, `log_stressor`, `save_brain_dump` (rows get `source: chat`), last 20 messages as memory, wording-and-safety system prompt. Anonymous users get 403.
 - iOS: `ChatMessage`, `ChatStore` (afterActions refreshes dumps + logs), `SupabaseService.chatMessages/chat`, `Features/Reflect/Chat/` (ChatScreen, ChatBubble, ChatCard on Reflect), `Tip.chat`. Sim and phone builds pass.
