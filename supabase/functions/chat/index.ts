@@ -15,7 +15,7 @@ const CRISIS_RE = /\b(kill(ing)? myself|suicid\w*|end(ing)? (my life|it all)|wan
 const BAD_REPLY: [string, RegExp][] = [
   ["med-advice", /\b(should|could|can|try|consider|better|recommend|suggest|need to|must|ok(ay)? to|safe to)\b[^.!?]{0,50}\b(take|skip|stop|increase|decrease|double|change|delay|adjust|miss|halve)\b[^.!?]{0,50}\b(dose|doses|dosage|meds?|medication|pills?|prescription)\b/i],
   ["med-reminder", /\b(remember to|don'?t forget to|time to|reminder)\b[^.!?]{0,30}\b(take|dose|meds?|medication)\b/i],
-  ["condition-claim", /\b(you (have|likely have|might have|may have|are suffering|seem to have)|sounds like|diagnos\w*|symptoms? of|signs? of|a case of)\b[^.!?]{0,50}\b(adhd|add|anxiety|depress\w*|panic|bipolar|ptsd|ocd|disorder|insomnia)\b/i],
+  ["condition-claim", /\b(you (have|likely have|might have|may have|are suffering|seem to have)|sounds like|diagnos\w*|symptoms? of|signs? of|a case of)\b[^.!?]{0,50}\b(adhd|anxiety|depress\w*|panic|bipolar|ptsd|ocd|disorder|insomnia)\b/i],
   ["tool-or-prompt-leak", /(you are ebb'?s chat|log_dose|log_stressor|save_brain_dump|system prompt|my instructions)/i],
   ["markup", /(```|\*\*|^#{1,3} )/m],
 ];
@@ -157,7 +157,7 @@ function detectLogs(message: string): [string, any][] {
 function safeReply(raw: string, logged: boolean): string {
   let r = raw.trim().replace(/^"([\s\S]*)"$/, "$1");
   if (!r) return logged ? "Noted." : "I'm here. Tell me more?";
-  for (const [name, re] of BAD_REPLY) if (re.test(r)) { console.error("guard tripped:", name); return REFUSAL; }
+  for (const [name, re] of BAD_REPLY) if (re.test(r)) { console.error("guard tripped:", name); return "I'm here. Want to tell me a bit more?"; }
   if (r.length > 400) { const cut = r.slice(0, 400); r = cut.slice(0, Math.max(cut.lastIndexOf(". "), cut.lastIndexOf("? "), cut.lastIndexOf("! ")) + 1) || cut; }
   return r;
 }

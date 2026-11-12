@@ -22,6 +22,8 @@ A cohesive refinement pass across Ebb’s primary iPhone flows, improving visual
 - references: `.claude/resources/references/design-references/clay/README.md`
 
 ## Session log
+### 2026-11-11 17:00 PST
+- Chat model switched to `meta-llama/llama-3.3-70b-instruct` (secret set by user; code default updated). History deduped/last 8, examples marked shape-only. Guard trips now return a neutral "I'm here" line instead of the refusal; removed `add` from the condition regex (false positives). Live-tested with throwaway account (deleted). Known: "I'm so tired of everything" / "my friend and I had a fight" fall back to "I'm here. Want to tell me a bit more?" (guard or empty reply, cause not isolated; no log access).
 ### 2026-11-11 16:40 PST
 - Pushed `user_memory` migration and deployed `chat` (new strict prompt + guard). Tested live with a throwaway account (deleted): refusals, crisis 988, med/diagnosis/injection all correct. mistral-nemo skips tool calls, so added `detectLogs` regex backup (first-person past-tense dose; stressor only with a "weighing" phrase + tag keyword) and strip of unearned "Noted." and wrapping quotes. Memory rewrite itself still untested live (needs 20 messages).
 ### 2026-11-11 16:20 PST
