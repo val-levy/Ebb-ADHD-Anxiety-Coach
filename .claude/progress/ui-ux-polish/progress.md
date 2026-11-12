@@ -22,6 +22,8 @@ A cohesive refinement pass across Ebb’s primary iPhone flows, improving visual
 - references: `.claude/resources/references/design-references/clay/README.md`
 
 ## Session log
+### 2026-11-11 20:50 PST
+- Fun tile names: Reset (Slow Tide, Sigh Balloon, Pebble Hunt, Noodle Break) and CalmProgram (Soft Landing, Tiny Roots, Mind Playground, Cool Splash). Panic keeps its plain title; `CalmTechnique` names (real technique names inside a session) unchanged. Built; installed on phone.
 ### 2026-11-11 20:30 PST
 - Tips now scroll their section into view: `SceneScreen` runs `ScrollControl.reveal` when a tip appears (spot must sit between 130pt from top and 130pt from bottom, else the page scrolls to center it; tall spots align to the top). `revealDelta` has a DEBUG self-check. Built and installed on phone; NOT yet tried on device (needs a tip below the fold, e.g. brain dump on Calm via the ? button).
 ### 2026-11-11 20:05 PST

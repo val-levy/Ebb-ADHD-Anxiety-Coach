@@ -9,10 +9,10 @@ enum CalmProgram: String, CaseIterable, Codable, Identifiable {
     var title: String {
         switch self {
         case .panic: "I'm panicking right now"
-        case .breathe: "Breathe it down"
-        case .ground: "Ground me"
-        case .distract: "Get out of my head"
-        case .cold: "Cold reset"
+        case .breathe: "Soft Landing"
+        case .ground: "Tiny Roots"
+        case .distract: "Mind Playground"
+        case .cold: "Cool Splash"
         }
     }
 

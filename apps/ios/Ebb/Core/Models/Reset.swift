@@ -8,10 +8,10 @@ enum Reset: String, CaseIterable, Codable, Identifiable {
 
     var title: String {
         switch self {
-        case .breathe: "Paced breathing"
-        case .sigh: "Physiological sigh"
-        case .ground: "Grounding"
-        case .body: "Body break"
+        case .breathe: "Slow Tide"
+        case .sigh: "Sigh Balloon"
+        case .ground: "Pebble Hunt"
+        case .body: "Noodle Break"
         }
     }
 
