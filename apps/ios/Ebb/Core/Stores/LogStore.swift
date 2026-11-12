@@ -12,7 +12,7 @@ final class LogStore: ObservableObject {
     func load() async {
         try? await service.ensureSignedIn()
         if owner != service.currentUserId { week = []; owner = service.currentUserId }  // account swapped: never show the old one's logs
-        week =(try? await service.logs(since: .now.addingTimeInterval(-7 * 86_400))) ?? week
+        week = (try? await service.logs(since: .now.addingTimeInterval(-7 * 86_400))) ?? week
     }
 
     func logDose() async { await add(LogEntry(kind: .dose)) }
