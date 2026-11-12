@@ -168,6 +168,7 @@ Deno.serve(async (req) => {
   reply = safeReply(reply, actions.length > 0);
   reply = reply.replace(/\b(i'?m going to|i'?ll|let me|i will|i'?ve)\s+(note|log|record|save|jot)\b[^.!?]*[.!?]\s*/gi, "").replace(/(noted[.!]?\s*)+/gi, "Noted. ");   // no narrating, one "Noted."
   if (!actions.length) reply = reply.replace(/^(noted|got it)[.,!]?\s*/i, "") || "I'm here. Tell me more?";   // never claim a log that didn't happen
+  if (actions.length && /^noted[.!]?\s*$/i.test(reply)) reply = "Noted. I'm glad you told me. How are you feeling right now?";   // a stronger model sometimes stops after the tool call
   await db.from("chat_messages").insert({ role: "assistant", body: reply });
   const job = maybeUpdateMemory(db, mem);
   const rt = (globalThis as any).EdgeRuntime;
