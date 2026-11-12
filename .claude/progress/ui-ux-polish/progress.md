@@ -22,6 +22,8 @@ A cohesive refinement pass across Ebb’s primary iPhone flows, improving visual
 - references: `.claude/resources/references/design-references/clay/README.md`
 
 ## Session log
+### 2026-11-11 17:50 PST
+- Chat made supportive: SUPPORT step (validate with soothing words + ONE specific follow-up question, 2-3 sentences / 60 words), no narrating of logging, one "Noted." only. Server strips narration, collapses repeated "Noted.", and parses/hides tool calls the model prints as text in either wrapper form (skips guessed "Other"). Extra stressor trigger words (can't switch off, piling, nobody gets me, lonely). Live-tested with throwaway accounts (deleted). Medication/off-topic still refuse.
 ### 2026-11-11 17:20 PST
 - Chat: per-user rate limit (30/hr, 150/day, 429 "busy"), summarizer max_tokens. OpenRouter key has a $1 limit (user set). Flat-reply cause found: llama sometimes prints a tool call as text in `content`; my leak guard then replaced the whole reply. Now such blobs are parsed, run through `runTool` and stripped. Verified live (throwaway account deleted).
 ### 2026-11-11 17:00 PST
