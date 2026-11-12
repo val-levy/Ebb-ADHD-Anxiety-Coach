@@ -11,6 +11,7 @@ and what to build next. Each segment has its own doc.
 | Phase 1: MVP | iPhone screens done; Watch, detection, real nudges missing | [phase-1-mvp.md](phase-1-mvp.md) |
 | Phase 2: personalization | not started | [phase-2-personalization.md](phase-2-personalization.md) |
 | Phase 3: after launch | deferred on purpose | [phase-3-later.md](phase-3-later.md) |
+| **Production plan** | written 2026-11-11, nothing started | [production-plan.md](production-plan.md) |
 | Business and launch | not started | [business-launch.md](business-launch.md) |
 
 ## Suggested order
