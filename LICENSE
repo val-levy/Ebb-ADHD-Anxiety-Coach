@@ -1,0 +1,13 @@
+Copyright (c) 2026 Val Levy. All rights reserved.
+
+Ebb, including its source code, design, artwork, text, product concept and
+documentation, is the proprietary work of Val Levy.
+
+No permission is granted to copy, modify, distribute, sublicense, sell, or
+create derivative works from this repository or any part of it, or to use its
+contents to build a competing product, without prior written permission from
+the copyright holder. Viewing this repository does not grant any license.
+
+Third-party components bundled with or used by Ebb (for example the Grandstander
+font under the SIL Open Font License, and the Supabase Swift SDK under its own
+license) remain under their own licenses and are not claimed by this notice.

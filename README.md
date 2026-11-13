@@ -158,4 +158,4 @@ Known gaps before real users: Sign in with Apple needs a paid Apple developer ac
 
 ## License
 
-No license has been chosen yet. All rights reserved until one is added.
+Copyright © 2026 Val Levy. All rights reserved. See [`LICENSE`](LICENSE). Third-party components keep their own licenses.
