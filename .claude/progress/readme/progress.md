@@ -7,7 +7,7 @@ done
 Public-facing `README.md`: what Ebb is, features, stack, architecture, chat design, setup, tests, deploy, status.
 
 ## To do
-- [ ] Add screenshots or a short screen recording once on-device captures exist
+- [ ] Screenshots: Reflect and Profile (light/dark) still missing; simulator tapping was blocked (cmux-cua daemon down, no Accessibility for osascript). Add to `docs/images/` and the README gallery.
 - [x] License: proprietary, all rights reserved (LICENSE, 2026-11-12)
 - [ ] Update the Status section when TestFlight/App Store happens
 
@@ -20,6 +20,10 @@ Public-facing `README.md`: what Ebb is, features, stack, architecture, chat desi
 - files: `README.md`
 
 ## Session log
+### 2026-11-12 16:48 PST → 2026-11-12 16:52 PST
+- Captured Calm tab light and dark on the iPhone 17 Pro simulator (9:41 status bar); added `docs/images/calm-{light,dark}.png` (1000px tall) and a gallery under the README badges.
+- Not done: Reflect/Profile shots; app was not reinstalled on the physical iPhone (no code changed, only simulator build for captures).
+
 ### 2026-11-12 16:45 PST → 2026-11-12 16:47 PST
 - Added proprietary `LICENSE` (© 2026 Val Levy, all rights reserved); README License section now points to it.
 - Note: a notice protects the code, design and text, not the bare idea; repo privacy is the real protection for the idea.

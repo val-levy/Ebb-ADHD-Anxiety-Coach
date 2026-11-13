@@ -13,6 +13,12 @@ Ebb is a native iPhone app for people who get overwhelmed. Tap once, do a reset 
   <img alt="Status" src="https://img.shields.io/badge/status-prototype-lightgrey">
 </p>
 
+<p align="center">
+  <img src="docs/images/calm-light.png" alt="Ebb Calm tab, day scene" width="300">
+  &nbsp;&nbsp;
+  <img src="docs/images/calm-dark.png" alt="Ebb Calm tab, night scene" width="300">
+</p>
+
 ---
 
 ## What it does
